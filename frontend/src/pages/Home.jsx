@@ -4,7 +4,7 @@ import React from 'react'
 const Home = () => {
   return <>
    
-   hi
+   Dashbord
   </>
 }
 
