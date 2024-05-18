@@ -1,7 +1,5 @@
 import React from 'react'
 import { Link } from 'react-router-dom';
-import logo from '../../assets/images/logo.png';
-import {RiLinkedinFill} from 'react-icons/ri'
 import { AiFillYoutube, AiFillGithub,AiOutlineInstagram } from 'react-icons/ai';
 
 const socialLinks = [
@@ -23,42 +21,14 @@ const socialLinks = [
     path:"/home",
     display:"Home",
   },
-  {
-    path:"/services",
-    display:"Services",
-  },  {
+    {
     path:"/contact",
     display:"Contact",
-  },  {
-    path:"/doctors",
-    display:"Doctors",
   },
+ ];
 
- ];
- const quickLinks02=[
-  {
-    path:"/doctors",
-    display:"Find a Doctor",
-  },
-  {
-    path:"/doctors",
-    display:"Find a Location",
-  },
-  {
-    path:"/doctors",
-    display:"Book Appointment",
-  },
-  {
-    path:"/doctors",
-    display:"Get a Opinion",
-  },
- 
- ];
  const quickLinks03=[
-  {
-    path:"/",
-    display:"Donate",
-  },
+ 
   {
     path:"/contact",
     display:"Contact Us",
@@ -73,7 +43,7 @@ const Footer = () => {
       <div className="container">
         <div className="flex justify-between flex-col md:flex-row flex-wrap gap-[30px]">
           <div>
-            <img src={logo} alt=''/>
+            <p>Ceciliyan</p>
             <p className='text-[16px] leading-7 font-[400]'>Copyright © {year} developed by Dilini Shashikala </p>
           <div className='flex items-center gap-3 mt-4'>
             {socialLinks.map((link,index)=>
@@ -93,16 +63,7 @@ const Footer = () => {
               ))}
             </ul>
           </div>
-          <div>
-            <h2 className='text-[20px] leading-[30px] font-[700] mb-6 text-headingColor'>I want to:</h2>
-            <ul>
-              {quickLinks02.map((item, index) => (
-                <li key={index} className='mb-4'>
-                  <Link to={item.path} className='text-[16px] leading-7 font-[400] text-textColor'>{item.display}</Link>
-                </li>
-              ))}
-            </ul>
-          </div>
+         
           <div>
             <h2 className='text-[20px] leading-[30px] font-[700] mb-6 text-headingColor'>Support</h2>
             <ul>
