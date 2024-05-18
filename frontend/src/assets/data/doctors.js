@@ -10,7 +10,7 @@ export const doctors = [
     avgRating: 4.8,
     totalRating: 272,
     photo: doctorImg01,
-    totalPatients: 1500,
+    totalviewers: 1500,
     hospital: "Mount Adora Hospital, Sylhet.",
   },
   {
@@ -20,7 +20,7 @@ export const doctors = [
     avgRating: 4.8,
     totalRating: 272,
     photo: doctorImg02,
-    totalPatients: 1500,
+    totalviewers: 1500,
     hospital: "Mount Adora Hospital, Sylhet.",
   },
   {
@@ -30,7 +30,7 @@ export const doctors = [
     avgRating: 4.8,
     totalRating: 272,
     photo: doctorImg03,
-    totalPatients: 1500,
+    totalviewers: 1500,
     hospital: "Mount Adora Hospital, Sylhet.",
   },
 ];

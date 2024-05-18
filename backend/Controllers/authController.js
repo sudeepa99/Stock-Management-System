@@ -1,5 +1,5 @@
 import User from '../models/UserSchema.js'
-import Doctor from '../models/Doctorschema.js'
+import Admin from '../models/AdminSchema.js'
 import jwt from 'jsonwebtoken'
 import bcrypt from 'bcrypt'
 
@@ -17,11 +17,11 @@ export const register = async(req,res)=>{
 
         let user=null
 
-        if(role== 'patient'){
+        if(role== 'viewer'){
             user=await User.findOne({email})
         }
-        else if(role=='doctor'){
-            user = await Doctor.findOne({email})
+        else if(role=='admin'){
+            user = await Admin.findOne({email})
         }
 
         //check if user exist
@@ -34,7 +34,7 @@ export const register = async(req,res)=>{
         const salt = await bcrypt.genSalt(10)
         const hashPassword = await bcrypt.hash(password,salt)
 
-        if(role=='patient'){
+        if(role=='viewer'){
             user = new User({
                 name,
                 email,
@@ -43,8 +43,8 @@ export const register = async(req,res)=>{
             })
         }
 
-        if(role=='doctor'){
-            user = new Doctor({
+        if(role=='admin'){
+            user = new Admin({
                 name,
                 email,
                 password:hashPassword,
@@ -71,14 +71,14 @@ export const login = async(req,res) => {
 
     try{
         let user = null
-        const patient = await User.findOne({email})
-        const doctor = await Doctor.findOne({email})
+        const viewer = await User.findOne({email})
+        const admin = await Admin.findOne({email})
 
-        if(patient){
-            user=patient
+        if(viewer){
+            user=viewer
         }
-        if(doctor){
-            user=doctor
+        if(admin){
+            user=admin
         }
 
         //checks if user exist or not

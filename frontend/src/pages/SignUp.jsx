@@ -11,7 +11,7 @@ const Signup = () => {
     name:'',
     email:'',
     password:'',
-    role:'patient'
+    role:'viewer'
   });
 
   const navigate = useNavigate()
@@ -77,7 +77,7 @@ const Signup = () => {
           <div className="mb-5 flex items-center justify-between">
             <label htmlFor='' className='text-headingColor font-bold text-[16px] leading-7'>
               Are you a: <select name='role' value={formData.role} onChange={handleInputChange} className='text-textColor font-semibold text-[15px] leading-7 px-4 py-3 focus:outline-none'>
-                <option value='Patient'>Patient</option>
+                <option value='viewer'>viewer</option>
                 <option value='Doctor'>Doctor</option>
               </select>
             </label>
