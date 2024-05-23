@@ -17,14 +17,28 @@ const ViewerSchema = new mongoose.Schema({
       default: "viewer",
     },
   });
+
+  const AdminsSchema = new mongoose.Schema({
+    email: { type: String, required: true, unique: true },
+    password: { type: String, required: true },
+    name: { type: String, required: true },
+    role: {
+      type: String,
+      enum: ["admin"],
+      default: "admin",
+    },
+  });
+  
   
   const ViewerModel=mongoose.model("Viewer", ViewerSchema);
-app.post("/login",(req,res)=>{
+  const AdminModel=mongoose.model("Admin", AdminsSchema);
+
+  app.post("/login",(req,res)=>{
     const {email,password}=req.body;
     ViewerModel.findOne({email:email}).then(viewer=>{
         if (viewer) {
             if (viewer.password===password) {
-                res.json("Login Successfully")
+                res.json("Viewer Login Successfully")
             } else {
                 res.json("The password is incorrect")
             }
@@ -33,6 +47,22 @@ app.post("/login",(req,res)=>{
         }
     })
 })
+app.post("/login",(req,res)=>{
+    const {email,password}=req.body;
+    AdminModel.findOne({email:email}).then(admin=>{
+        if (admin) {
+            if (admin.password===password) {
+                res.json("Admin Login Successfully")
+            } else {
+                res.json("The password is incorrect")
+            }
+        } else {
+            res.json("No record existed")
+        }
+    })
+})
+
+
 app.listen(3001,()=>{
     console.log("Server is Running");
 })
