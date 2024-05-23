@@ -7,31 +7,6 @@ app.use(express.json())
 
 
 mongoose.connect('mongodb+srv://shashikaladilini11:shashikalanisal@cluster0.s5cehoy.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0')
-const ViewerSchema = new mongoose.Schema({
-    email: { type: String, required: true, unique: true },
-    password: { type: String, required: true },
-    name: { type: String, required: true },
-    role: {
-      type: String,
-      enum: ["viewer"],
-      default: "viewer",
-    },
-  });
-
-  const AdminsSchema = new mongoose.Schema({
-    email: { type: String, required: true, unique: true },
-    password: { type: String, required: true },
-    name: { type: String, required: true },
-    role: {
-      type: String,
-      enum: ["admin"],
-      default: "admin",
-    },
-  });
-  
-  
-  const ViewerModel=mongoose.model("Viewer", ViewerSchema);
-  const AdminModel=mongoose.model("Admin", AdminsSchema);
 
   app.post("/login",(req,res)=>{
     const {email,password}=req.body;

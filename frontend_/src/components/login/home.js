@@ -5,7 +5,7 @@ import './login.css';
 const home = () => {
   return (
     <div className='login'>
-      dilini
+      Dashbord
     </div>
   )
 }
