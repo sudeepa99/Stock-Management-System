@@ -58,9 +58,9 @@ const Login = () => {
     }
   };
   return (
-    <section className='px-5 lg:px-0'>
-      <div className="w-full max-w-[570px] mx-auto rounded-lg shadow-md md:p-10">
-
+    <div  className='bg-cellwhiteColor w-full max-w-[90%] h-[700px] mx-auto rounded-lg shadow-md md:p-10'>
+    <section className='px-1 lg:px-0'>
+      <div className="w-full max-w-[570px] mx-auto rounded-lg shadow-md md:p-10 ">
         <form className='py-4 md:py-0' onSubmit={submitHandler}>
           <div className="mb-5">
             <input type='email' placeholder='Enter Your Email' name='email' value={formData.email} onChange={handleInputChange}
@@ -83,6 +83,7 @@ const Login = () => {
         </form>
       </div>
     </section>
+    </div>
   )
 }
 
