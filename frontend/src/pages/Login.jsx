@@ -4,6 +4,7 @@ import { BASE_URL } from '../config';
 import { toast } from 'react-toastify';
 import { authContext } from '../context/AuthContext.jsx';
 import HashLoader from 'react-spinners/HashLoader.js';
+import loginImg from '../assets/images/Login_image.png'; // changed to lowercase for consistency
 
 const Login = () => {
   const[formData, setFormData]=useState({
@@ -58,9 +59,10 @@ const Login = () => {
     }
   };
   return (
-    <div  className='bg-cellwhiteColor w-full max-w-[90%] h-[700px] mx-auto rounded-lg shadow-md md:p-10'>
     <section className='px-1 lg:px-0'>
-      <div className="w-full max-w-[570px] mx-auto rounded-lg shadow-md md:p-10 ">
+
+      <div className="bg-cellwhiteColor w-full max-w-[80%] mx-auto rounded-lg shadow-md md:p-10 object-cover ">
+        <div className='grid grid-cols-2 md:grid-cols-2 gap-4'>
         <form className='py-4 md:py-0' onSubmit={submitHandler}>
           <div className="mb-5">
             <input type='email' placeholder='Enter Your Email' name='email' value={formData.email} onChange={handleInputChange}
@@ -81,9 +83,12 @@ const Login = () => {
           </div>
          
         </form>
+       <div className='w-full'>
+       <img src={loginImg} alt="Login" />
+       </div>
+       </div>
       </div>
     </section>
-    </div>
   )
 }
 
