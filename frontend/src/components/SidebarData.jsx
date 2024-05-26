@@ -10,7 +10,7 @@ import ReportsIcon from "../assets/icons/reports.png";
 export const SidebarData = [
   {
     title: "Dashboard",
-    path: "/",
+    path: "/dashboard",
     icon: <img src={DashboardIcon} alt="Dashboard" className="dashboard-icon"/>,
     cName: "nav-text dashboard",
   },
