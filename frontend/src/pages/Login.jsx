@@ -51,7 +51,7 @@ const Login = () => {
       toast.success(result.message)
      // console.log(user);
 
-      navigate('/home')
+      navigate('/dashboard')
 
     }catch (err) {
       toast.error(err.message)

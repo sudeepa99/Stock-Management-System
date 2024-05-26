@@ -1,8 +1,6 @@
 import React from "react";
 import { createRoot } from "react-dom/client";
 import { createBrowserRouter, RouterProvider, Outlet } from "react-router-dom";
-import Products from "./Routes/Packing";
-import Home from "./Routes/Dashboard";
 import Reports from "./Routes/Reports";
 import Navbar from "./components/Navbar";
 import "./App.css";
@@ -18,6 +16,7 @@ const AppLayout = () => (
 );
 
 const router = createBrowserRouter([
+  
   {
     element: <AppLayout />,
     children: [
