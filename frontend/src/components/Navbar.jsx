@@ -1,12 +1,16 @@
-import React from "react";
+import React, { useContext } from 'react'
 import { Link, useLocation } from "react-router-dom";
 import { SidebarData } from "./SidebarData";
 import "../App.css";
 import CompanyLogo from "../assets/icons/logo.png";
 import LogoutIcon from "../assets/icons/Logout.png";
+import {authContext} from '../context/AuthContext';
+import {useNavigate} from 'react-router-dom';
+
 const Navbar = () => {
   const location = useLocation();
-  
+  const {dispatch}= useContext(authContext);
+  const navigate= useNavigate();
   const handleLogout =()=>{
     dispatch({type:'LOGOUT'});
     navigate("/");
