@@ -1,5 +1,6 @@
 import User from '../models/UserSchema.js'
 import Admin from '../models/AdminSchema.js'
+import PackingSchema from '../models/PackingSchema.js'
 import jwt from 'jsonwebtoken'
 import bcrypt from 'bcrypt'
 
@@ -110,5 +111,44 @@ export const login = async(req,res) => {
 
     }catch(err){
         res.status(500).json({ status: false, message: "Failed to login"});
+    }
+};
+
+
+
+export const packing = async (req, res) => {
+    const { saleNo, s_date, e_date } = req.body;
+
+    // Debugging logs to ensure the request body is received correctly
+    console.log('Request Body:', req.body);
+
+    // Check if all required fields are provided
+    if (!s_date || !e_date || !saleNo) {
+        return res.status(400).json({ success: false, message: 'Missing required fields' });
+    }
+
+    // Convert dates to ISO format (assuming input is in MM/DD/YYYY)
+    const startDate = new Date(s_date);
+    const endDate = new Date(e_date);
+
+    if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
+        return res.status(400).json({ success: false, message: 'Invalid date format' });
+    }
+
+    try {
+        const packing = new Packing({
+            startDate,
+            endDate,
+            saleNo
+        });
+
+        console.log('Packing Object:', packing); // Debugging log to verify object creation
+
+        await packing.save();
+
+        res.status(200).json({ success: true, message: 'Packing successfully created' });
+    } catch (err) {
+        console.error('Error:', err); // Log the error for debugging purposes
+        res.status(500).json({ success: false, message: 'Internal server error, try again' });
     }
 };
