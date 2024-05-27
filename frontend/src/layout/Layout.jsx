@@ -1,13 +1,13 @@
-import React from 'react'
-import Routers from '../routes/Routers';
- 
+import React from "react";
+import { Outlet } from "react-router-dom";
 
-const layout = () => {
-  return <>
-      <main>
-        <Routers />
-      </main>
-    </> 
-};
+import Navbar from "../components/Navbar";
 
-export default layout;
+  const AppLayout = () => (
+  <>
+    <Navbar />
+    <Outlet />
+  </>
+);
+
+export default AppLayout
