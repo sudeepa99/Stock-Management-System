@@ -1,8 +1,7 @@
 import React from 'react';
 import { createBrowserRouter } from "react-router-dom";
-import Home from '../pages/Home';
 import Login from '../pages/Login';
-import Signup from '../pages/SignUp';
+// import Signup from '../pages/SignUp';
 import Reports from "../pages/Reports";
 import Dashboard from "../pages/Dashboard";
 import Packing from "../pages/Packing";
@@ -24,18 +23,6 @@ import "../App.css";
       {
         path: "/dashboard",
         element: <Dashboard />,
-      },
-      {
-        path: "home",
-        element: <Home />,
-      },
-      {
-        path: "login",
-        element: <Login />,
-      },
-      {
-        path: "register",
-        element: <Signup />,
       },
       {
         path: "packing",
