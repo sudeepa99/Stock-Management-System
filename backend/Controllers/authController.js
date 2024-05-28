@@ -108,92 +108,50 @@ export const login = async(req,res) => {
 
     }catch(err){
         res.status(500).json({ status: false, message: "Failed to login"});
-    }
-};
+    }};
 
-
-
-// export const packing = async (req, res) => {
-//     const { saleNo, s_date, e_date } = req.body;
-
-//     // Debugging logs to ensure the request body is received correctly
-//     console.log('Request Body:', req.body);
-
-//     // Check if all required fields are provided
-//     if (!s_date || !e_date || !saleNo) {
-//         return res.status(400).json({ success: false, message: 'Missing required fields' });
-//     }
-
-//     // Convert dates to ISO format (assuming input is in MM/DD/YYYY)
-//     const startDate = new Date(s_date);
-//     const endDate = new Date(e_date);
-
-//     if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
-//         return res.status(400).json({ success: false, message: 'Invalid date format' });
-//     }
-
-//     try {
-//         const packing = new Packing({
-//             startDate,
-//             endDate,
-//             saleNo
-//         });
-
-//         console.log('Packing Object:', packing); // Debugging log to verify object creation
-
-//         await packing.save();
-
-//         res.status(200).json({ success: true, message: 'Packing successfully created' });
-//     } catch (err) {
-//         console.error('Error:', err); // Log the error for debugging purposes
-//         res.status(500).json({ success: false, message: 'Internal server error, try again' });
-//     }
-// };
-
-export const packingdetails = async (req, res) => {
-    const { saleNo, startDate, endDate, details } = req.body;
-
-    try {
-        let packing_ = null;
-
-        // Debug: Log request body
-        console.log('Request Body:', req.body);
-
-        if (details === 'packing') {
-            packing_ = await Packing.findOne({ saleNo });
+    export const packingdetails = async (req, res) => {
+        const { saleNo, s_date, e_date, details } = req.body;
+        try {
+            let packing_ = null;
+    
+            console.log('Request Body:', req.body);
+    
+            if (details === 'packing') {
+                packing_ = await Packing.findOne({ saleNo });
+            }
+    
+            if (packing_) {
+                return res.status(400).json({ message: 'Packing already exists' });
+            }
+    
+            const parsedStartDate = new Date(s_date);
+            const parsedEndDate = new Date(e_date);
+    
+            const strippedStartDate = new Date(parsedStartDate.setUTCHours(0, 0, 0, 0));
+            const strippedEndDate = new Date(parsedEndDate.setUTCHours(0, 0, 0, 0));
+    
+            if (details === 'packing') {
+                packing_ = new Packing({
+                    saleNo,
+                    s_date: strippedStartDate,
+                    e_date: strippedEndDate,
+                    details,
+                });
+            }
+    
+            if (packing_) {
+                await packing_.save();
+                return res.status(200).json({ success: true, message: 'Packing successfully created' });
+            } else {
+                console.log('Invalid details or unable to create packing:', { saleNo, s_date, e_date, details });
+                return res.status(400).json({ success: false, message: 'Invalid details or unable to create packing' });
+            }
+    
+        } catch (err) {
+    
+            console.error('Error:', err);
+            res.status(500).json({ success: false, err: err.message });
+    
         }
-
-        // Check if packing already exists
-        if (packing_) {
-            return res.status(400).json({ message: 'Packing already exists' });
-        }
-
-        // Create a new packing record if details is 'packing'
-        if (details === 'packing') {
-            packing_ = new Packing({
-                saleNo,
-                startDate,  // Correct field name
-                endDate,    // Correct field name
-                details
-            });
-        }
-
-        // Check if packing_ was created successfully before saving
-        if (packing_) {
-            await packing_.save();
-            return res.status(200).json({ success: true, message: 'Packing successfully created' });
-        } else {
-            // Debug: Log invalid details or creation failure
-            console.log('Invalid details or unable to create packing:', { saleNo, startDate, endDate, details });
-            return res.status(400).json({ success: false, message: 'Invalid details or unable to create packing' });
-        }
-
-    } catch (err) {
-        // Log the error to the console
-        console.error('Error:', err);
-
-        // Send the error response to the client
-        res.status(500).json({ success: false, err: err.message });
-    }
-};
-
+    };
