@@ -11,6 +11,7 @@ const Dashbord = () => {
     saleNo:'',
     s_date:'',
     e_date:'',
+    details:'packing'
   });
 
   const navigate = useNavigate()
@@ -22,7 +23,7 @@ const Dashbord = () => {
     event.preventDefault();
     setLoading(true)
     try{
-      const res = await fetch(`${BASE_URL}/auth/packing`,{
+      const res = await fetch(`${BASE_URL}/auth/packingdetails`,{
         method:'post',
         headers: {
           'Content-Type': 'application/json'
@@ -35,7 +36,7 @@ const Dashbord = () => {
       }
       setLoading(false)
       toast.success(message)
-      navigate('/packing')
+      navigate('/report')
 
     }catch (err) {
       toast.error(err.message)
@@ -74,6 +75,15 @@ const Dashbord = () => {
             type='submit' className='w-full bg-primaryColor text-white text-[18px] leading-[30px] rounded-lg px-4 py-3'>
               { loading ? <HashLoader size={35} color="#ffffff"/> : 'Submit'}
             </button>
+          </div>
+          <div className="mb-5 flex items-center justify-between">
+            <label htmlFor='' className='text-headingColor font-bold text-[16px] leading-7'>
+              Are you a: <select name='details' value={formData.details} onChange={handleInputChange} className='text-textColor font-semibold text-[15px] leading-7 px-4 py-3 focus:outline-none'>
+                <option value='packing'>packing</option>
+              
+              </select>
+            </label>
+
           </div>
           </form>
     </div>
