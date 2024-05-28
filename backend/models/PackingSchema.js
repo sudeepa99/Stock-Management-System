@@ -2,13 +2,16 @@ import mongoose from "mongoose";
 
 const PackingSchema = new mongoose.Schema({
   
-  startDate:{type:Date , required :true},
-  endDate:{type:Date , required :true},
+  startDate:{type:Date },
+  endDate:{type:Date },
   saleNo:{
     type: Number,
     min : 0,
     max : 999
-    }
+    },
+  details: {
+    type: String,
+  },
 
 });
 
