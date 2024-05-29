@@ -19,6 +19,7 @@ const PackingSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  saleDays: { type: [Date], required: true }, // Ensure this line is added
 });
 
 export default mongoose.model("Packing", PackingSchema);

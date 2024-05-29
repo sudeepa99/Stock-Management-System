@@ -110,6 +110,8 @@ export const login = async(req,res) => {
         res.status(500).json({ status: false, message: "Failed to login"});
     }};
 
+   
+
     export const packingdetails = async (req, res) => {
         const { saleNo, s_date, e_date, details } = req.body;
         try {
@@ -131,18 +133,32 @@ export const login = async(req,res) => {
             const strippedStartDate = new Date(parsedStartDate.setUTCHours(0, 0, 0, 0));
             const strippedEndDate = new Date(parsedEndDate.setUTCHours(0, 0, 0, 0));
     
+          
+            const saleDays = [];
+            let currentDate = strippedStartDate;
+            while (currentDate <= strippedEndDate) {
+                saleDays.push(new Date(currentDate));
+                currentDate.setDate(currentDate.getDate() + 1);
+            }
+    
             if (details === 'packing') {
                 packing_ = new Packing({
                     saleNo,
                     s_date: strippedStartDate,
                     e_date: strippedEndDate,
                     details,
+                    saleDays,
                 });
             }
     
             if (packing_) {
-                await packing_.save();
-                return res.status(200).json({ success: true, message: 'Packing successfully created' });
+                if (s_date<e_date) {
+                    await packing_.save();
+                    return res.status(200).json({ success: true, message: 'Packing successfully created' });
+                }
+                else{
+                console.log('Invalid details or unable to create packing:', { saleNo, s_date, e_date, details });
+                return res.status(400).json({ success: false, message: 'Invalid details or unable to create packing' });}
             } else {
                 console.log('Invalid details or unable to create packing:', { saleNo, s_date, e_date, details });
                 return res.status(400).json({ success: false, message: 'Invalid details or unable to create packing' });
@@ -155,3 +171,4 @@ export const login = async(req,res) => {
     
         }
     };
+    
