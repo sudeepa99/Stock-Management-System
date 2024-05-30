@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link,useNavigate } from 'react-router-dom';
-import {BASE_URL} from '../config';
+import {BASE_URL} from '../../config';
 import {toast} from 'react-toastify';
 import HashLoader from 'react-spinners/HashLoader';
 
@@ -13,7 +13,7 @@ const Packing = () => {
     e_date:'',
     details:'packing'
   });
-
+  
   const navigate = useNavigate()
 
   const handleInputChange= e=>{
@@ -36,7 +36,7 @@ const Packing = () => {
       }
       setLoading(false)
       toast.success(message)
-      navigate('/reports')
+      navigate('/packing1')
 
     }catch (err) {
       toast.error(err.message)
