@@ -9,8 +9,8 @@ const Packing = () => {
 
   const[formData, setFormData]=useState({
     saleNo:'',
-    s_date:'',
-    e_date:'',
+    startDate:'',
+    endDate:'',
     details:'packing'
   });
   
@@ -49,6 +49,7 @@ const Packing = () => {
     <div className=" w-full max-w-[50%] mx-auto rounded-lg shadow-md md:p-10 object-cover h-40 ">
       <form className='py-6 md:py-20 bg-greyColor w-full max-w-[70%] mx-auto rounded-lg shadow-md md:p-5'  onSubmit={submitHandler}>
           <div className="mb-5">
+            <label> Sale Number</label>
             <input type='number' name='saleNo' 
             className='w-full px-4 py-3 border-b border-solid border-[#0066ff61] focus:outline-none
             focus:border-b border-primaryColor text-[16px] leading-7 text-headingColor placeholder:text-textColor rounded-md cursor-pointer' required
@@ -56,17 +57,19 @@ const Packing = () => {
             />
           </div>
           <div className="mb-5">
-            <input type='date'  name='s_date' 
+            <label>Start Date</label>
+            <input type='date'  name='startDate' 
             className='w-full  py-3 border-b border-solid border-[#0066ff61] focus:outline-none
             focus:border-b border-primaryColor text-[16px] leading-7 text-headingColor placeholder:text-textColor  cursor-pointer' required
-            value={formData.s_date} onChange={handleInputChange}
+            value={formData.startDate} onChange={handleInputChange}
             />
           </div>
           <div className="mb-5">
-            <input type='date' name='e_date' 
+            <label>End Date</label>
+            <input type='date' name='endDate' 
             className='w-full px-4 py-3 border-b border-solid border-[#0066ff61] focus:outline-none
             focus:border-b border-primaryColor text-[16px] leading-7 text-headingColor placeholder:text-textColor rounded-md cursor-pointer' required
-            value={formData.e_date} onChange={handleInputChange}
+            value={formData.endDate} onChange={handleInputChange}
             />
           </div>
           <div className="mt-7">

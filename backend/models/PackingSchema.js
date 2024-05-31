@@ -1,11 +1,11 @@
 import mongoose from "mongoose";
 
 const PackingSchema = new mongoose.Schema({
-  s_date: {
+  startDate: {
     type: Date,
     required: true,
   },
-  e_date: {
+  endDate: {
     type: Date,
     required: true,
   },
