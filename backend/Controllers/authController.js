@@ -113,7 +113,7 @@ export const login = async(req,res) => {
    
 
     export const packingdetails = async (req, res) => {
-        const { saleNo, s_date, e_date, details } = req.body;
+        const { saleNo, startDate, endDate, details } = req.body;
         try {
             let packing_ = null;
     
@@ -127,8 +127,8 @@ export const login = async(req,res) => {
                 return res.status(400).json({ message: 'Packing already exists' });
             }
     
-            const parsedStartDate = new Date(s_date);
-            const parsedEndDate = new Date(e_date);
+            const parsedStartDate = new Date(startDate);
+            const parsedEndDate = new Date(endDate);
     
             const strippedStartDate = new Date(parsedStartDate.setUTCHours(0, 0, 0, 0));
             const strippedEndDate = new Date(parsedEndDate.setUTCHours(0, 0, 0, 0));
@@ -144,23 +144,25 @@ export const login = async(req,res) => {
             if (details === 'packing') {
                 packing_ = new Packing({
                     saleNo,
-                    s_date: strippedStartDate,
-                    e_date: strippedEndDate,
+                    startDate,
+                    endDate,
                     details,
                     saleDays,
                 });
             }
+           
     
             if (packing_) {
-                if (s_date<e_date) {
+                if (startDate<endDate) {
                     await packing_.save();
+                    console.log(startDate,endDate);
                     return res.status(200).json({ success: true, message: 'Packing successfully created' });
                 }
                 else{
-                console.log('Invalid details or unable to create packing:', { saleNo, s_date, e_date, details });
+                console.log('Invalid details or unable to create packing:', { saleNo, startDate, endDate, details });
                 return res.status(400).json({ success: false, message: 'Invalid details or unable to create packing' });}
             } else {
-                console.log('Invalid details or unable to create packing:', { saleNo, s_date, e_date, details });
+                console.log('Invalid details or unable to create packing:', { saleNo, startDate, endDate, details });
                 return res.status(400).json({ success: false, message: 'Invalid details or unable to create packing' });
             }
     
