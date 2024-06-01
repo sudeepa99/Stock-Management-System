@@ -23,7 +23,7 @@ const Packing = () => {
     event.preventDefault();
     setLoading(true)
     try{
-      const res = await fetch(`${BASE_URL}/auth/packingdetails`,{
+      const res = await fetch(`${BASE_URL}/packing/packingdetails`,{
         method:'post',
         headers: {
           'Content-Type': 'application/json'

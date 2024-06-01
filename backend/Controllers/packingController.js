@@ -15,19 +15,19 @@ export const packingdetails = async (req, res) => {
           return res.status(400).json({ message: 'Packing already exists' });
       }
 
-      const parsedStartDate = new Date(startDate);
-      const parsedEndDate = new Date(endDate);
+      // const parsedStartDate = new Date(startDate);
+      // const parsedEndDate = new Date(endDate);
 
-      const strippedStartDate = new Date(parsedStartDate.setUTCHours(0, 0, 0, 0));
-      const strippedEndDate = new Date(parsedEndDate.setUTCHours(0, 0, 0, 0));
+      // const strippedStartDate = new Date(parsedStartDate.setUTCHours(0, 0, 0, 0));
+      // const strippedEndDate = new Date(parsedEndDate.setUTCHours(0, 0, 0, 0));
 
     
-      const saleDays = [];
-      let currentDate = strippedStartDate;
-      while (currentDate <= strippedEndDate) {
-          saleDays.push(new Date(currentDate));
-          currentDate.setDate(currentDate.getDate() + 1);
-      }
+      // const saleDays = [];
+      // let currentDate = strippedStartDate;
+      // while (currentDate <= strippedEndDate) {
+      //     saleDays.push(new Date(currentDate));
+      //     currentDate.setDate(currentDate.getDate() + 1);
+      // }
 
       if (details === 'packing') {
           packing_ = new Packing({
@@ -35,7 +35,7 @@ export const packingdetails = async (req, res) => {
               startDate,
               endDate,
               details,
-              saleDays,
+             // saleDays,
           });
       }
      
