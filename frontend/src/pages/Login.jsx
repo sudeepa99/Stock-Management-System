@@ -82,9 +82,9 @@ const Login = () => {
             focus:border-b border-primaryColor text-[16px] leading-7 text-headingColor placeholder:text-textColor rounded-md cursor-pointer' required
             />
           </div>
-          <div className="mt-7">
+          <div className="mt-8">
             <button type='submit' className='w-[50%] bg-primaryColor text-white text-[18px] leading-[30px] rounded-lg px-4 py-3'>
-              { loading ?<HashLoader size={25} color='#fff'/> :'login'}
+              { loading ?<HashLoader size={25} color='#fff'/> :'Login'}
             </button>
           </div>
          

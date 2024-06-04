@@ -63,14 +63,14 @@ const Packing = () => {
           </div>
           <div className='row'>
           <div className="mb-6">
-            <label>Sale Start Date</label>
+            <label>Catelogue Start Date</label>
             <input type='date'  name='startDate' 
             className='control' required
             value={formData.startDate} onChange={handleInputChange}
             />
           </div>
           <div className="mb-6">
-            <label>Sale End Date</label>
+            <label>Catelogue End Date</label>
             <input type='date' name='endDate' 
             className='control' required
             value={formData.endDate} onChange={handleInputChange}

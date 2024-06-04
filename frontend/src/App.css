@@ -162,6 +162,8 @@ body {
   object-fit: fill;
 }
 
+/*packing stylings*/
+
 .container{
   margin-left: 250px;
   margin-top: 0px;
@@ -265,4 +267,36 @@ body {
   font-size: 23px;
   align-content: center;
   margin-left: 330px;
+}
+.mt-8{
+  background-color: #54ED50;
+  width: 150px;
+  text-align: center;
+  border-radius: 10px;
+  padding: 0px;
+  font-size: 23px;
+  align-content: center;
+  margin-left: 50px;
+
+}
+
+/* packing1 stylings */
+
+.green-leaf{
+  text-align: center;
+  margin-bottom: 0px;
+  font-size: larger;
+  color: #D5D767;
+
+}
+.control2::placeholder{
+  text-align: end;
+
+}
+
+.made-tea{
+  color: #50EDED;
+  text-align: center;
+  margin-bottom: 0px;
+  font-size: larger;
 }
