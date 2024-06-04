@@ -68,18 +68,18 @@ const Login = () => {
             <img src={logo}/>
           <p className='text-[25px] text-b py-4'>Stock Management System</p>
         <form className='py-6 md:py-20 bg-greyColor w-full max-w-[70%] mx-auto rounded-lg shadow-md md:p-5' onSubmit={submitHandler}>
-          Login
-          <div className="mb-5">
+          <p className='text-[25px] px-4 py-10 leading-7 text-headingColor'>Login</p>
+          <div className="mb-5 ">
             
             <input type='email' placeholder='Enter Your Email' name='email' value={formData.email} onChange={handleInputChange}
-            className='w-full  py-3 border-b border-solid border-[#0066ff61] focus:outline-none
-            focus:border-b border-primaryColor text-[16px] leading-7 text-headingColor placeholder:text-textColor  cursor-pointer' required
+            className='w-full px-4 py-3 border-b border-solid  focus:outline-none bg-brownColor rounded-lg
+            focus:border-b  text-[16px] leading-7 text-headingColor placeholder:text-textColor rounded-md cursor-pointer' required
             />
           </div>
           <div className="mb-5">
             <input type='password' placeholder='Enter Your Password' name='password' value={formData.password} onChange={handleInputChange}
-            className='w-full px-4 py-3 border-b border-solid border-[#0066ff61] focus:outline-none
-            focus:border-b border-primaryColor text-[16px] leading-7 text-headingColor placeholder:text-textColor rounded-md cursor-pointer' required
+            className='w-full px-4 py-3 border-b border-solid  focus:outline-none bg-brownColor rounded-lg
+            focus:border-b  text-[16px] leading-7 text-headingColor placeholder:text-textColor rounded-md cursor-pointer' required
             />
           </div>
           <div className="mt-8">
