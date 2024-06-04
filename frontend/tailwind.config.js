@@ -11,7 +11,7 @@ export default {
         headingColor: "#181A1E",
         textColor: "#4E545F",
         cellwhiteColor:"#fff",
-        greyColor:"#F0E6E6",
+        greyColor:"#1F2327",
       },
 
       boxShadow: {
