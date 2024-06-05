@@ -19,8 +19,10 @@ const PackingSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
- // saleDays: { type: [Date], required: true }, 
   saleDays: [{ type: mongoose.Types.ObjectId, ref: "PackingDispatcher" }],
+
+
+  
 
 });
 
