@@ -86,3 +86,12 @@ export const saleDetails = async (req, res) => {
   
     }
   };
+
+  export const getAllPackingDetails = async (req, res) => {
+    try {
+        const packingD = await PackingDetailsSchema.find({}).select('-password');
+        res.status(200).json({ success: true, message: "Users found", data: packingD });
+    } catch (err) {
+        res.status(404).json({ success: false, message: "Not Found" });
+    }
+};
