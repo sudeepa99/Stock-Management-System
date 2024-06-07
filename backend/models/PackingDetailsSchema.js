@@ -1,19 +1,28 @@
 import mongoose from "mongoose";
 
-const packingDetailsShema = new mongoose.Schema(
+const categoryDetailsSchema = new mongoose.Schema(
   {
 
-    date: { type: Date, required: true },
-    details: { type: String, required: true },
+   
+    details: { type: String },
     // Fields from categoryDetails
     teacategory: { type: String },
     sizeofbag: { type: Number },
     numofbags: { type: Number },
-    // Fields from packingdetails
-    greenleaves: { type: Number },
-    madetea: { type: Number }
+   
 
 },
 );
+
+const packingDetailsShema = new mongoose.Schema({
+   // Fields from packingdetails
+  greenleaves: { type: Number },
+  madetea: { type: Number },
+  details: { type: String, required: true },
+  date: { type: Date,  },
+  categoryDetails: categoryDetailsSchema
+});
+
+
 
 export default mongoose.model("packingDetails", packingDetailsShema);
