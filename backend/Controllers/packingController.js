@@ -66,14 +66,14 @@ export const saleDetails = async (req, res) => {
 
 
   export const categoryDetails = async (req, res) => {
-    const { teacategory, sizeofbag, numofbags, details, date } = req.body;
+    const { teacategory, sizeofbag, numofbags, details } = req.body;
     try {
         let record = null;
 
         console.log('Request Body:', req.body);
 
         if (details === 'packing') {
-            record = await PackingDetailsSchema.findOne({ date });
+            record = await PackingDetailsSchema.findOne({ teacategory });
         }
 
         if (record) {
@@ -82,11 +82,12 @@ export const saleDetails = async (req, res) => {
 
         if (details === 'packing') {
             record = new PackingDetailsSchema({
-                date,
+                
                 details,
-                teacategory,
+
+                categoryDetails:{teacategory,
                 sizeofbag,
-                numofbags
+                numofbags}
             });
         }
 
