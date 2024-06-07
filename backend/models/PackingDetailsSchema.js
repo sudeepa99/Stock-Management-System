@@ -3,26 +3,16 @@ import mongoose from "mongoose";
 const packingDetailsShema = new mongoose.Schema(
   {
 
-    date: {
-      type: Date,
-      required: true,
-    },
-    greenleaves: {
-      type: Number,
-      min: 0,
-      max: 999,
-      required: true,
-    },
-    madetea: {
-      type: Number,
-      min: 0,
-      max: 999,
-      required: true,
-    },
-    details: {
-      type: String,
-      required: true,
-    },
+    date: { type: Date, required: true },
+    details: { type: String, required: true },
+    // Fields from categoryDetails
+    teacategory: { type: String },
+    sizeofbag: { type: Number },
+    numofbags: { type: Number },
+    // Fields from packingdetails
+    greenleaves: { type: Number },
+    madetea: { type: Number }
+
 },
 );
 
