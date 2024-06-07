@@ -143,3 +143,26 @@ export const packingdetails = async (req, res) => {
         res.status(500).json({ success: false, err: err.message });
     }
 };
+
+
+export const updatepackingdetails= async (req,res) => {
+    const id = req.params.id;
+     
+    try{
+        const updatepackingdetails = await PackingDetailsSchema.findByIdAndUpdate(
+            id,
+            {$set: req.body},
+            {new: true}
+        );
+
+        res
+        .status(200)
+        .json({
+            success: true,
+            message: "Successfully updated",
+            data: updatepackingdetails,
+        });
+    } catch (err){
+        res.status(500).json({success: false,message:"Failed to update"});
+    }
+};
