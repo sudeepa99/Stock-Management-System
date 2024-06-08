@@ -33,7 +33,6 @@ const packingDetailsShema = new mongoose.Schema(
       min: 0,
       max: 999,
     },
-
 },
 );
 

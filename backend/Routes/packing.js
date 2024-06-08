@@ -7,7 +7,7 @@ const router = express.Router();
 router.post("/saledetails",saleDetails);
 router.post("/packingdetails",packingdetails);
 router.get("/getAllPacking",getAllPackingDetails);
-router.post("/:id",updatepackingdetails);
+router.put("/update",updatepackingdetails);
 
 export default router;
 
