@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { BASE_URL } from '../../config';
 import { toast } from 'react-toastify';
 import HashLoader from 'react-spinners/HashLoader';
@@ -7,13 +7,12 @@ import HashLoader from 'react-spinners/HashLoader';
 const Packing2 = () => {
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
-    greenleaves: '',
-    madetea: '',
-    details:'packing',
-    date: new Date().toISOString().substr(0, 10) // Set the default date to the current date
-});
+    teacategory: '',
+    sizeofbag: '',
+    details: 'packing',
+    numofbags: ''
+  });
 
-  
   const navigate = useNavigate();
 
   const handleInputChange = e => {
@@ -24,8 +23,8 @@ const Packing2 = () => {
     event.preventDefault();
     setLoading(true);
     try {
-      const res = await fetch(`${BASE_URL}/packing/packingdetails`, {
-        method: 'post',
+      const res = await fetch(`${BASE_URL}/packing/update`, {
+        method: 'put',
         headers: {
           'Content-Type': 'application/json'
         },
@@ -37,7 +36,7 @@ const Packing2 = () => {
       }
       setLoading(false);
       toast.success(message);
-      navigate('/packing2');
+      navigate('/packing');
     } catch (err) {
       toast.error(err.message);
       setLoading(false);
@@ -51,17 +50,22 @@ const Packing2 = () => {
         <p className='b2'>Please enter the following details to continue the process.</p>
 
         <div className="mb-5">
-          <label className='green-leaf'>Amount of green leaf received</label>
+          <label className='green-leaf'>Tea Category</label>
           <br />
-          <input type='number' name='greenleaves' placeholder='kg' className='control2' value={formData.greenleaves} onChange={handleInputChange} />
+          <input type='text' name='teacategory' placeholder='0' className='control2' value={formData.teacategory} onChange={handleInputChange} />
         </div>
         <div className="mb-5">
-          <label className='made-tea'>Amount of tea made</label>
+          <label className='made-tea'>Size Of Bag</label>
           <br />
-          <input type='number' name='madetea' placeholder='kg' className='control2' value={formData.madetea} onChange={handleInputChange} />
-        </div>        
+          <input type='number' name='sizeofbag' placeholder='kg' className='control2' value={formData.sizeofbag} onChange={handleInputChange} />
+        </div>
+        <div className="mb-5">
+          <label className='made-tea'>Num Of Bag</label>
+          <br />
+          <input type='number' name='numofbags' placeholder='kg' className='control2' value={formData.numofbags} onChange={handleInputChange} />
+        </div>
         <div className="mt-7">
-          <button disabled={loading && true} type='submit'>
+          <button disabled={loading} type='submit'>
             {loading ? <HashLoader size={35} color="#ffffff" /> : 'Submit'}
           </button>
         </div>

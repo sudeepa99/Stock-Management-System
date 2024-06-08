@@ -1,12 +1,7 @@
 import Packing from '../models/PackingSchema.js'
 import PackingDetailsSchema from '../models/PackingDetailsSchema.js';
 
-
-
-
-
-
-  export const getAllPackingDetails = async (req, res) => {
+export const getAllPackingDetails = async (req, res) => {
     try {
         const packingD = await PackingDetailsSchema.find({}).select('-password');
         res.status(200).json({ success: true, message: "Packing  found", data: packingD });
@@ -62,50 +57,6 @@ export const saleDetails = async (req, res) => {
     }
   };
 
-
-
-
-  export const categoryDetails = async (req, res) => {
-    const { teacategory, sizeofbag, numofbags, details } = req.body;
-    try {
-        let record = null;
-
-        console.log('Request Body:', req.body);
-
-        if (details === 'packing') {
-            record = await PackingDetailsSchema.findOne({ teacategory });
-        }
-
-        if (record) {
-            return res.status(400).json({ message: 'Packing already exists' });
-        }
-
-        if (details === 'packing') {
-            record = new PackingDetailsSchema({
-                
-                details,
-
-                categoryDetails:{teacategory,
-                sizeofbag,
-                numofbags}
-            });
-        }
-
-        if (record) {
-            await record.save();
-            console.log(teacategory, sizeofbag, numofbags, details);
-            return res.status(200).json({ success: true, message: 'Packing successfully created' });
-        } else {
-            console.log('Invalid details or unable to create packing:', { teacategory, sizeofbag, numofbags, details });
-            return res.status(400).json({ success: false, message: 'Invalid details or unable to create packing' });
-        }
-
-    } catch (err) {
-        console.error('Error:', err);
-        res.status(500).json({ success: false, err: err.message });
-    }
-};
-
 export const packingdetails = async (req, res) => {
     const { date, greenleaves, madetea, details } = req.body;
     try {
@@ -144,25 +95,84 @@ export const packingdetails = async (req, res) => {
     }
 };
 
-
-export const updatepackingdetails= async (req,res) => {
-    const id = req.params.id;
+// export const updatepackingdetails= async (req,res) => {
+//     const id = req.params.id;
      
-    try{
-        const updatepackingdetails = await PackingDetailsSchema.findByIdAndUpdate(
-            id,
-            {$set: req.body},
-            {new: true}
-        );
+//     try{
+//         const updatepackingdetails = await PackingDetailsSchema.findByIdAndUpdate(
+//             id,
+//             {$set: req.body},
+//             {new: true}
+//         );
 
-        res
-        .status(200)
-        .json({
-            success: true,
-            message: "Successfully updated",
-            data: updatepackingdetails,
-        });
-    } catch (err){
-        res.status(500).json({success: false,message:"Failed to update"});
+//         res
+//         .status(200)
+//         .json({
+//             success: true,
+//             message: "Successfully updated",
+//             data: updatepackingdetails,
+//         });
+//     } catch (err){
+//         res.status(500).json({success: false,message:"Failed to update"});
+//     }
+// };
+
+
+
+// export const updatepackingdetails = async (req, res) => {
+//   const id = req.params.id;
+
+//   try {
+//     const updatepackingdetails = await PackingDetailsSchema.findByIdAndUpdate(
+//       id,
+//       { $set: req.body },
+//       { new: true }
+//     );
+
+//     res.status(200).json({
+//       success: true,
+//       message: "Successfully updated",
+//       data: updatepackingdetails,
+//     });
+//   } catch (err) {
+//     res.status(500).json({
+//       success: false,
+//       message: "Failed to update",
+//     });
+//   }
+// };
+
+export const updatepackingdetails = async (req, res) => {
+  try {
+    // Get the current date 
+    const currentDate = new Date().toISOString().split('T')[0];
+
+    // Find the document with the current date
+    const document = await PackingDetailsSchema.findOne({ date: currentDate });
+
+    if (!document) {
+      return res.status(404).json({
+        success: false,
+        message: "Document with the current date not found",
+      });
     }
+
+    // Use the found document's ID to update
+    const updatepackingdetails = await PackingDetailsSchema.findByIdAndUpdate(
+      document._id,
+      { $set: req.body },
+      { new: true }
+    );
+
+    res.status(200).json({
+      success: true,
+      message: "Successfully updated",
+      data: updatepackingdetails,
+    });
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      message: "Failed to update",
+    });
+  }
 };
