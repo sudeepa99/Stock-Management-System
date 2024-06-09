@@ -29,9 +29,7 @@ const packingDetailsShema = new mongoose.Schema(
       max: 999,
     },
     numofbags: {
-      type: Number,
-      min: 0,
-      max: 999,
+      type: String,
     },
 },
 );

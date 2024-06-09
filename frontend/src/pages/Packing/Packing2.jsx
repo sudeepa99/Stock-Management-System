@@ -52,7 +52,30 @@ const Packing2 = () => {
         <div className="mb-5">
           <label className='green-leaf'>Tea Category</label>
           <br />
-          <input type='text' name='teacategory' placeholder='0' className='control2' value={formData.teacategory} onChange={handleInputChange} />
+          <select
+                    name='teacategory'
+                    value={formData.teacategory}
+                    onChange={handleInputChange}
+                    className='text-textColor font-semibold text-[15px] leading-7 px-4 py-3 focus:outline-none'>
+                    <option>BOP1A</option>
+                    <option>FBOP</option>
+                    <option>FBOPF1</option>
+                    <option>OPA</option>
+                    <option>OP</option>
+                    <option>PEKOE</option>
+                    <option>PEKOE1</option>
+                    <option>BOP</option>
+                    <option>BOP Sp</option>
+                    <option>BOP1</option>
+                    <option>BOPA</option>
+                    <option>BOPF</option>
+                    <option>FBOP1</option>
+                    <option>FBOPF</option>
+                    <option>OP1</option>
+                    <option>BP</option>
+                    <option>FBOPF Sp</option>
+                    <option>FF EX SP</option>
+                  </select>         
         </div>
         <div className="mb-5">
           <label className='made-tea'>Size Of Bag</label>
@@ -62,7 +85,18 @@ const Packing2 = () => {
         <div className="mb-5">
           <label className='made-tea'>Num Of Bag</label>
           <br />
-          <input type='number' name='numofbags' placeholder='kg' className='control2' value={formData.numofbags} onChange={handleInputChange} />
+          <select
+                    name='numofbags'
+                    value={formData.numofbags}
+                    onChange={handleInputChange}
+                    className='text-textColor font-semibold text-[15px] leading-7 px-4 py-3 focus:outline-none'
+                  >
+                <option>10B</option>
+                                        <option>15B</option>
+                                        <option>20B</option>
+                                        <option>30B</option>
+                                        <option>40B</option>                       
+                  </select>
         </div>
         <div className="mt-7">
           <button disabled={loading} type='submit'>
