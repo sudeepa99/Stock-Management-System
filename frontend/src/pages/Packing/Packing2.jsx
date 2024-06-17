@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { BASE_URL } from '../../config';
 import { toast } from 'react-toastify';
 import HashLoader from 'react-spinners/HashLoader';
@@ -22,20 +22,33 @@ const Packing2 = () => {
   const submitHandler = async event => {
     event.preventDefault();
     setLoading(true);
+
     try {
+      // Create the payload in the expected structure
+      const payload = {
+        teacategory: formData.teacategory,
+        teacategoryData: {
+          teacategory: formData.teacategory,
+          sizeofbag: parseInt(formData.sizeofbag, 10),
+          numofbags: formData.numofbags
+        }
+      };
+
       const res = await fetch(`${BASE_URL}/packing/update`, {
-        method: 'put',
+        method: 'PUT',
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify(formData)
+        body: JSON.stringify(payload)
       });
-      const { message } = await res.json();
+
+      const data = await res.json();
       if (!res.ok) {
-        throw new Error(message);
+        throw new Error(data.message || 'Something went wrong');
       }
+
       setLoading(false);
-      toast.success(message);
+      toast.success(data.message);
       navigate('/packing');
     } catch (err) {
       toast.error(err.message);
@@ -53,29 +66,30 @@ const Packing2 = () => {
           <label className='green-leaf'>Tea Category</label>
           <br />
           <select
-                    name='teacategory'
-                    value={formData.teacategory}
-                    onChange={handleInputChange}
-                    className='text-textColor font-semibold text-[15px] leading-7 px-4 py-3 focus:outline-none'>
-                    <option>BOP1A</option>
-                    <option>FBOP</option>
-                    <option>FBOPF1</option>
-                    <option>OPA</option>
-                    <option>OP</option>
-                    <option>PEKOE</option>
-                    <option>PEKOE1</option>
-                    <option>BOP</option>
-                    <option>BOP Sp</option>
-                    <option>BOP1</option>
-                    <option>BOPA</option>
-                    <option>BOPF</option>
-                    <option>FBOP1</option>
-                    <option>FBOPF</option>
-                    <option>OP1</option>
-                    <option>BP</option>
-                    <option>FBOPF Sp</option>
-                    <option>FF EX SP</option>
-                  </select>         
+            name='teacategory'
+            value={formData.teacategory}
+            onChange={handleInputChange}
+            className='text-textColor font-semibold text-[15px] leading-7 px-4 py-3 focus:outline-none'>
+            <option value="">Select a category</option>
+            <option value="BOP1A">BOP1A</option>
+            <option value="FBOP">FBOP</option>
+            <option value="FBOPF1">FBOPF1</option>
+            <option value="OPA">OPA</option>
+            <option value="OP">OP</option>
+            <option value="PEKOE">PEKOE</option>
+            <option value="PEKOE1">PEKOE1</option>
+            <option value="BOP">BOP</option>
+            <option value="BOPSp">BOP Sp</option>
+            <option value="BOP1">BOP1</option>
+            <option value="BOPA">BOPA</option>
+            <option value="BOPF">BOPF</option>
+            <option value="FBOP1">FBOP1</option>
+            <option value="FBOPF">FBOPF</option>
+            <option value="OP1">OP1</option>
+            <option value="BP">BP</option>
+            <option value="FBOPFSp">FBOPF Sp</option>
+            <option value="FFEXSP">FF EX SP</option>
+          </select>
         </div>
         <div className="mb-5">
           <label className='made-tea'>Size Of Bag</label>
@@ -86,17 +100,18 @@ const Packing2 = () => {
           <label className='made-tea'>Num Of Bag</label>
           <br />
           <select
-                    name='numofbags'
-                    value={formData.numofbags}
-                    onChange={handleInputChange}
-                    className='text-textColor font-semibold text-[15px] leading-7 px-4 py-3 focus:outline-none'
-                  >
-                <option>10B</option>
-                                        <option>15B</option>
-                                        <option>20B</option>
-                                        <option>30B</option>
-                                        <option>40B</option>                       
-                  </select>
+            name='numofbags'
+            value={formData.numofbags}
+            onChange={handleInputChange}
+            className='text-textColor font-semibold text-[15px] leading-7 px-4 py-3 focus:outline-none'
+          >
+            <option value="">Select number of bags</option>
+            <option value="10B">10B</option>
+            <option value="15B">15B</option>
+            <option value="20B">20B</option>
+            <option value="30B">30B</option>
+            <option value="40B">40B</option>
+          </select>
         </div>
         <div className="mt-7">
           <button disabled={loading} type='submit'>
