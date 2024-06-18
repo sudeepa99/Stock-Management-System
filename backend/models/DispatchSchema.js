@@ -23,16 +23,7 @@ const dispatchDetailsSchema = new mongoose.Schema({
     type: Date,
     required: true,
   },
-  greenleaves: {
-    type: Number,
-    min: 0,
-    max: 999,
-  },
-  madetea: {
-    type: Number,
-    min: 0,
-    max: 999,
-  },
+ 
   details: {
     type: String,
   },
