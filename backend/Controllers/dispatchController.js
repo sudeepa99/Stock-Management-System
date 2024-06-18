@@ -1,4 +1,4 @@
-import DispatchSchema from "../models/DispatchSchema";
+import DispatchSchema from "../models/DispatchSchema.js";
 export const dispatchdetails = async (req, res) => {
     const { date, details } = req.body;
     try {
