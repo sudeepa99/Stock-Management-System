@@ -25,9 +25,9 @@ const Dispatch = () => {
     event.preventDefault();
     setLoading(true);
     try {
-      const teacategoryData = {
-        invoicenumber: formData.invoicenumber,
+      const update = {
         teacategory: formData.teacategory,
+        invoicenumber: formData.invoicenumber,
         sizeofbag: formData.sizeofbag,
         numofbags: formData.numofbags
       };
@@ -35,9 +35,7 @@ const Dispatch = () => {
       const payload = {
         date: formData.date,
         details: formData.details,
-        teacategory: formData.teacategory,
-        teacategoryData: teacategoryData,
-        invoicenumber: formData.invoicenumber
+        updates: [update] // wrap update object in an array
       };
 
       const res = await fetch(`${BASE_URL}/dispatch/dispatchdetails`, {
