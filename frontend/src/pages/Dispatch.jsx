@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { BASE_URL } from '../config';
 import { toast } from 'react-toastify';
 import HashLoader from 'react-spinners/HashLoader';
@@ -7,10 +7,12 @@ import HashLoader from 'react-spinners/HashLoader';
 const Dispatch = () => {
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
-    invoice: '',
+    date: new Date().toISOString().substr(0, 10),
+    details: 'packing',
     teacategory: '',
     sizeofbag: '',
-    numofbags: ''
+    numofbags: '',
+    invoicenumber: ''
   });
 
   const navigate = useNavigate();
@@ -22,34 +24,38 @@ const Dispatch = () => {
   const submitHandler = async event => {
     event.preventDefault();
     setLoading(true);
-
     try {
-      const payload = {
-        invoice: formData.invoice,
+      const teacategoryData = {
+        invoicenumber: formData.invoicenumber,
         teacategory: formData.teacategory,
-        teacategoryData: {
-          teacategory: formData.teacategory,
-          sizeofbag: parseInt(formData.sizeofbag, 10),
-          numofbags: formData.numofbags
-        }
+        sizeofbag: formData.sizeofbag,
+        numofbags: formData.numofbags
       };
 
-      const res = await fetch(`${BASE_URL}/dispatch/update`, {
-        method: 'PUT',
+      const payload = {
+        date: formData.date,
+        details: formData.details,
+        teacategory: formData.teacategory,
+        teacategoryData: teacategoryData,
+        invoicenumber: formData.invoicenumber
+      };
+
+      const res = await fetch(`${BASE_URL}/dispatch/dispatchdetails`, {
+        method: 'post',
         headers: {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify(payload)
       });
 
-      const data = await res.json();
+      const { message } = await res.json();
       if (!res.ok) {
-        throw new Error(data.message || 'Something went wrong');
+        throw new Error(message);
       }
 
       setLoading(false);
-      toast.success(data.message);
-      navigate('/packing');
+      toast.success(message);
+      navigate('/packing2');
     } catch (err) {
       toast.error(err.message);
       setLoading(false);
@@ -64,7 +70,13 @@ const Dispatch = () => {
         <div className="mb-5">
           <label className='made-tea'>Invoice Number</label>
           <br />
-          <input type='text' name='invoice' className='control2' value={formData.invoice} onChange={handleInputChange} />
+          <input
+            type='text'
+            name='invoicenumber'
+            className='control2'
+            value={formData.invoicenumber}
+            onChange={handleInputChange}
+          />
         </div>
         <div className="mb-5">
           <label className='green-leaf'>Tea Category</label>
@@ -73,7 +85,8 @@ const Dispatch = () => {
             name='teacategory'
             value={formData.teacategory}
             onChange={handleInputChange}
-            className='text-textColor font-semibold text-[15px] leading-7 px-4 py-3 focus:outline-none'>
+            className='text-textColor font-semibold text-[15px] leading-7 px-4 py-3 focus:outline-none'
+          >
             <option value="">Select a category</option>
             <option value="BOP1A">BOP1A</option>
             <option value="FBOP">FBOP</option>
@@ -98,7 +111,14 @@ const Dispatch = () => {
         <div className="mb-5">
           <label className='made-tea'>Size Of Bag</label>
           <br />
-          <input type='number' name='sizeofbag' placeholder='kg' className='control2' value={formData.sizeofbag} onChange={handleInputChange} />
+          <input
+            type='number'
+            name='sizeofbag'
+            placeholder='kg'
+            className='control2'
+            value={formData.sizeofbag}
+            onChange={handleInputChange}
+          />
         </div>
         <div className="mb-5">
           <label className='made-tea'>Num Of Bag</label>
@@ -125,6 +145,6 @@ const Dispatch = () => {
       </form>
     </div>
   );
-}
+};
 
 export default Dispatch;
