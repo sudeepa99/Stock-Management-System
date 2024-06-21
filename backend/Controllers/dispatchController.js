@@ -2,7 +2,7 @@ import DispatchSchema from "../models/DispatchSchema.js";
 
 
 export const dispatchdetails = async (req, res) => {
-    const { date, details, teacategory, teacategoryData, invoicenumber } = req.body;
+    const { date, details, teacategory, teacategoryData } = req.body;
 
     try {
         let record = null;
@@ -21,7 +21,6 @@ export const dispatchdetails = async (req, res) => {
             record = new DispatchSchema({
                 date,
                 details,
-                invoicenumber,
                 [teacategory]: teacategoryData
             });
         }
