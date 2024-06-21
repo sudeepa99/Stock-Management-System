@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 
 const dispatchteaSchema = new mongoose.Schema({
   invoicenumber:{
-    type: Number,
+    type: String,
   },
   teacategory: {
     type: String,
