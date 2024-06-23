@@ -5,6 +5,7 @@ import { toast } from 'react-toastify';
 import HashLoader from 'react-spinners/HashLoader';
 import "./packing.css";
 
+
 const Packing2 = () => {
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
@@ -63,6 +64,7 @@ const Packing2 = () => {
         <p className='b1'>Date</p>
         <p className='b2'>Please enter the following details to continue the process.</p>
 
+        
         <div className="mb-5">
           <label className='green-leaf'>Tea Category</label>
           <br />
@@ -92,6 +94,7 @@ const Packing2 = () => {
             <option value="FFEXSP">FF EX SP</option>
           </select>
         </div>
+    
         <div className="mb-5">
           <label className='made-tea'>Size Of Bag</label>
           <br />
