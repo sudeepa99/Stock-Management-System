@@ -169,6 +169,7 @@ body {
   margin-top: 0px;
   width: 80%;
   height: 50%;
+  position: fixed;
   /* align-content: center;  */
   /* padding: 20px; */
   color: #F3F4F3;
@@ -232,6 +233,7 @@ body {
   margin-top: 10px;
   color: #000000;
   background-color: #D9D9D9;
+
 }
 .control2{
   display: flex;
@@ -266,7 +268,7 @@ body {
   padding: 2px;
   font-size: 23px;
   align-content: center;
-  margin-left: 330px;
+  margin-left: 350px;
 }
 .mt-8{
   background-color: #54ED50;
