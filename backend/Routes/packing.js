@@ -1,12 +1,13 @@
 import express from "express";
-import {packingdetails} from "../Controllers/packingController.js";
-import {createPackingDispatcher} from '../Controllers/packingDispatcher.js'
- 
+import {saleDetails, packingdetails,getAllPackingDetails,updatepackingdetails} from "../Controllers/packingController.js";
+
 
 const router = express.Router();
 
+router.post("/saledetails",saleDetails);
 router.post("/packingdetails",packingdetails);
-router.use("/:packingId/packingDist", createPackingDispatcher);
+router.get("/getAllPacking",getAllPackingDetails);
+router.put("/update",updatepackingdetails);
 
 export default router;
 

@@ -7,11 +7,12 @@ import HashLoader from 'react-spinners/HashLoader';
 const Packing1 = () => {
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
-    saleNo: '',
-    startDate: '',
-    endDate: '',
-    details: 'packing'
-  });
+    greenleaves: '',
+    madetea: '',
+    details:'packing',
+    date: new Date().toISOString().substr(0, 10) // Set the default date to the current date
+});
+
   
   const navigate = useNavigate();
 
@@ -36,7 +37,7 @@ const Packing1 = () => {
       }
       setLoading(false);
       toast.success(message);
-      navigate('/packing1');
+      navigate('/packing2');
     } catch (err) {
       toast.error(err.message);
       setLoading(false);
@@ -52,15 +53,13 @@ const Packing1 = () => {
         <div className="mb-5">
           <label className='green-leaf'>Amount of green leaf received</label>
           <br />
-          <input type='number' name='green_leaves' placeholder='kg' className='control2' value={formData.saleNo} onChange={handleInputChange} />
+          <input type='number' name='greenleaves' placeholder='kg' className='control2' value={formData.greenleaves} onChange={handleInputChange} />
         </div>
         <div className="mb-5">
           <label className='made-tea'>Amount of tea made</label>
           <br />
-          <input type='number' name='green_leaves' placeholder='kg' className='control2' value={formData.saleNo} onChange={handleInputChange} />
-        </div>
-        
-        
+          <input type='number' name='madetea' placeholder='kg' className='control2' value={formData.madetea} onChange={handleInputChange} />
+        </div>        
         <div className="mt-7">
           <button disabled={loading && true} type='submit'>
             {loading ? <HashLoader size={35} color="#ffffff" /> : 'Submit'}
