@@ -4,9 +4,6 @@ import { BASE_URL } from '../config';
 import { toast } from 'react-toastify';
 import HashLoader from 'react-spinners/HashLoader';
 
-export default function Dispatch() {
-  return (
-    <div className="container">
 const Dispatch = () => {
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
