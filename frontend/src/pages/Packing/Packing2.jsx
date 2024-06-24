@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { BASE_URL } from '../../config';
 import { toast } from 'react-toastify';
 import HashLoader from 'react-spinners/HashLoader';
+import "./packing.css";
+
 
 const Packing2 = () => {
   const [loading, setLoading] = useState(false);
@@ -62,6 +64,7 @@ const Packing2 = () => {
         <p className='b1'>Date</p>
         <p className='b2'>Please enter the following details to continue the process.</p>
 
+        
         <div className="mb-5">
           <label className='green-leaf'>Tea Category</label>
           <br />
@@ -69,8 +72,8 @@ const Packing2 = () => {
             name='teacategory'
             value={formData.teacategory}
             onChange={handleInputChange}
-            className='text-textColor font-semibold text-[15px] leading-7 px-4 py-3 focus:outline-none'>
-            <option value="">Select a category</option>
+            className='tea_category'>
+            <option value="">Select the tea category</option>
             <option value="BOP1A">BOP1A</option>
             <option value="FBOP">FBOP</option>
             <option value="FBOPF1">FBOPF1</option>
@@ -91,6 +94,7 @@ const Packing2 = () => {
             <option value="FFEXSP">FF EX SP</option>
           </select>
         </div>
+    
         <div className="mb-5">
           <label className='made-tea'>Size Of Bag</label>
           <br />
@@ -103,7 +107,7 @@ const Packing2 = () => {
             name='numofbags'
             value={formData.numofbags}
             onChange={handleInputChange}
-            className='text-textColor font-semibold text-[15px] leading-7 px-4 py-3 focus:outline-none'
+            className='bags_no'
           >
             <option value="">Select number of bags</option>
             <option value="10B">10B</option>
