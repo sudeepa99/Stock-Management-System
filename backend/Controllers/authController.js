@@ -60,9 +60,6 @@ export const register = async(req,res)=>{
 
     }catch(err){
         res.status(500).json({success:false,message: 'Internal server error, Try again'});
-
-
-
     }
 };
 
@@ -110,5 +107,6 @@ export const login = async(req,res) => {
 
     }catch(err){
         res.status(500).json({ status: false, message: "Failed to login"});
-    }
-};
+    }};
+
+   

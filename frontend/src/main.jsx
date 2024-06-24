@@ -1,21 +1,31 @@
-import React from 'react'
-import ReactDOM from 'react-dom/client'
-import App from './App.jsx'
-import './index.css'
-import 'tailwindcss/tailwind.css'
-import { BrowserRouter } from 'react-router-dom'
-import { ToastContainer } from 'react-toastify'
+import React from 'react';
+import { createRoot } from 'react-dom/client';
+import {  RouterProvider } from 'react-router-dom';
+import './index.css';
+import 'tailwindcss/tailwind.css';
+import { ToastContainer } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
-import { AuthContextProvider } from './context/AuthContext.jsx'
+import { AuthContextProvider } from './context/AuthContext.jsx';
+import router  from './routes/Routers.jsx';
+let root;
+const container = document.getElementById("root");
 
-ReactDOM.createRoot(document.getElementById('root')).render(
+if (!container._reactRoot) {
+  root = createRoot(container);
+  container._reactRoot = root;
+} else {
+  root = container._reactRoot;
+}
+
+root.render(
   <React.StrictMode>
-    <BrowserRouter>
     <AuthContextProvider>
-
-    <ToastContainer theme="dark" position="top-right" autoClose={3000} closeOnClick pauseOnHover={false}/>
-    <App />
+      <ToastContainer theme="dark" position="top-right" autoClose={3000} closeOnClick pauseOnHover={false}/>
+      <RouterProvider router={router} />
     </AuthContextProvider>
-    </BrowserRouter>
-  </React.StrictMode>,
-)
+  </React.StrictMode>
+);
+
+export default function Routers() {
+  return null; 
+}

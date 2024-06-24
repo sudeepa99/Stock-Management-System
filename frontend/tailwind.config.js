@@ -4,12 +4,15 @@ export default {
   theme: {
     extend: {
       colors: {
-        primaryColor: "#0067FF",
+        primaryColor: "#54ED50",
         yellowColor: "#FEB60D",
         purpleColor: "#9771FF",
         irisBlueColor: "#01B5C5",
         headingColor: "#181A1E",
         textColor: "#4E545F",
+        cellwhiteColor:"#fff",
+        greyColor:"#F0E6E6",
+        brownColor:"#D9D9D9"
       },
 
       boxShadow: {
