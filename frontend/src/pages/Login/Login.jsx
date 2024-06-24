@@ -1,11 +1,11 @@
 import {useState, useContext} from 'react'
 import { Link,useNavigate } from 'react-router-dom';
-import { BASE_URL } from '../config';
+import { BASE_URL } from '../../config.js';
 import { toast } from 'react-toastify';
-import { authContext } from '../context/AuthContext.jsx';
+import { authContext } from '../../context/AuthContext.jsx';
 import HashLoader from 'react-spinners/HashLoader.js';
-import loginImg from '../assets/images/Login_image.png'; // changed to lowercase for consistency
-import logo from '../assets/images/logo.png';
+import loginImg from '../../assets/images/Login_image.png'; // changed to lowercase for consistency
+import logo from '../../assets/images/logo.png';
 
 const Login = () => {
   const[formData, setFormData]=useState({
