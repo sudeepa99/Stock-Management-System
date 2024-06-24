@@ -3,7 +3,7 @@ import { Link,useNavigate } from 'react-router-dom';
 import {BASE_URL} from '../../config';
 import {toast} from 'react-toastify';
 import HashLoader from 'react-spinners/HashLoader';
-
+import './packing.css'
 const Packing = () => {
   const[loading,setLoading] = useState(false)
 
@@ -47,8 +47,6 @@ const Packing = () => {
 
   return (
     <div className="container">
-      
-
       <form className='a1'  onSubmit={submitHandler}>
       <p className='b1'>Sale Details</p>
        <p className='b2'> Please enter following details to continue the process.</p>
