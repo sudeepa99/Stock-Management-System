@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { BASE_URL } from '../../config.js';
 import { toast } from 'react-toastify';
 import HashLoader from 'react-spinners/HashLoader';
-
+import './Dispatch.css'
 const Dispatch = () => {
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
