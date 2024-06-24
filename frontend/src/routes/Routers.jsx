@@ -1,10 +1,10 @@
 import React from 'react';
 import { createBrowserRouter } from "react-router-dom";
-import Login from '../pages/Login';
+import Login from '../pages/Login/Login';
 // import Signup from '../pages/SignUp';
-import Reports from "../pages/Reports";
-import Dashboard from "../pages/Dashboard";
-import Dispatch from "../pages/Dispatch";
+import Reports from "../pages/Report/Reports";
+import Dashboard from "../pages/Dashbord/Dashboard";
+import Dispatch from "../pages/Dispatch/Dispatch";
 import AppLayout from '../layout/Layout';
 import Packing from '../pages/Packing/Packing';
 import Packing1 from '../pages/Packing/Packing1';
