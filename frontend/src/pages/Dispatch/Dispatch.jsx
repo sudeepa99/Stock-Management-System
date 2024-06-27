@@ -4,6 +4,7 @@ import { BASE_URL } from '../../config.js';
 import { toast } from 'react-toastify';
 import HashLoader from 'react-spinners/HashLoader';
 import './Dispatch.css'
+
 const Dispatch = () => {
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
@@ -14,6 +15,7 @@ const Dispatch = () => {
     numofbags: '',
     invoicenumber: ''
   });
+
   const navigate = useNavigate();
 
   const handleInputChange = e => {
@@ -23,6 +25,7 @@ const Dispatch = () => {
   const submitHandler = async event => {
     event.preventDefault();
     setLoading(true);
+
     try {
       const update = {
         teacategory: formData.teacategory,
@@ -38,7 +41,7 @@ const Dispatch = () => {
       };
 
       const res = await fetch(`${BASE_URL}/dispatch/dispatchdetails`, {
-        method: 'post',
+        method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
@@ -52,7 +55,17 @@ const Dispatch = () => {
 
       setLoading(false);
       toast.success(message);
-      navigate('/packing2');
+      navigate('/dispatch');
+
+      // Reset the form fields to default values
+      setFormData({
+        date: new Date().toISOString().substr(0, 10),
+        details: 'packing',
+        teacategory: '',
+        sizeofbag: '',
+        numofbags: '',
+        invoicenumber: ''
+      });
     } catch (err) {
       toast.error(err.message);
       setLoading(false);
