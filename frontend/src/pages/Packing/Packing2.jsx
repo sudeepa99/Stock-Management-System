@@ -5,7 +5,6 @@ import { toast } from 'react-toastify';
 import HashLoader from 'react-spinners/HashLoader';
 import "./packing.css";
 
-
 const Packing2 = () => {
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
@@ -51,7 +50,15 @@ const Packing2 = () => {
 
       setLoading(false);
       toast.success(data.message);
-      navigate('/packing');
+      navigate('/packing2');
+
+      // Reset the form fields to default values
+      setFormData({
+        teacategory: '',
+        sizeofbag: '',
+        details: 'packing',
+        numofbags: ''
+      });
     } catch (err) {
       toast.error(err.message);
       setLoading(false);
@@ -64,7 +71,6 @@ const Packing2 = () => {
         <p className='b1'>Date</p>
         <p className='b2'>Please enter the following details to continue the process.</p>
 
-        
         <div className="mb-5">
           <label className='green-leaf'>Tea Category</label>
           <br />
