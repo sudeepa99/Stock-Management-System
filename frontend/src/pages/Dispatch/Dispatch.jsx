@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { BASE_URL } from '../../config.js';
 import { toast } from 'react-toastify';
 import HashLoader from 'react-spinners/HashLoader';
-import './Dispatch.css'
+import './Dispatch.css';
 
 const Dispatch = () => {
   const [loading, setLoading] = useState(false);
@@ -86,6 +86,7 @@ const Dispatch = () => {
             className='control2'
             value={formData.invoicenumber}
             onChange={handleInputChange}
+            required
           />
         </div>
         <div className="mb-5">
@@ -96,6 +97,7 @@ const Dispatch = () => {
             value={formData.teacategory}
             onChange={handleInputChange}
             className='tea_category'
+            required
           >
             <option value="">Select a category</option>
             <option value="BOP1A">BOP1A</option>
@@ -128,24 +130,27 @@ const Dispatch = () => {
             className='control2'
             value={formData.sizeofbag}
             onChange={handleInputChange}
+            required
           />
         </div>
         <div className="mb-5">
           <label className='made-tea'>Number of Bags</label>
           <br />
-          <select
-            name='numofbags'
-            value={formData.numofbags}
-            onChange={handleInputChange}
-            className='bags_no'
-          >
-            <option value="">Select number of bags</option>
-            <option value="10B">10B</option>
-            <option value="15B">15B</option>
-            <option value="20B">20B</option>
-            <option value="30B">30B</option>
-            <option value="40B">40B</option>
-          </select>
+          {formData.teacategory === "BP" && (
+            <select
+              name='numofbags'
+              value={formData.numofbags}
+              onChange={handleInputChange}
+              className='bags_no'
+            >
+              <option value="">Select number of bags</option>
+              <option value="10B">10B</option>
+              <option value="15B">15B</option>
+              <option value="20B">20B</option>
+              <option value="30B">30B</option>
+              <option value="40B">40B</option>
+            </select>
+          )}
         </div>
         <div className="mt-7">
           <button disabled={loading} type='submit'>
