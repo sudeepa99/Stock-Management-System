@@ -15,12 +15,13 @@ const Dispatch = () => {
     numofbags: '',
     invoicenumber: ''
   });
-
   const navigate = useNavigate();
 
   const handleInputChange = e => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
+  const disable10b= formData.teacategory ==='BOP1A'|| formData.teacategory === 'BOPA'|| formData.teacategory === 'FBOP'|| formData.teacategory === 'FBOPF'|| formData.teacategory === 'OPA'|| formData.teacategory === 'OP'|| formData.teacategory === 'PEKOE'|| formData.teacategory === 'BOP'|| formData.teacategory ===
+    'BOPSp'|| formData.teacategory === 'BOPF'|| formData.teacategory === 'FBOP1'|| formData.teacategory === 'FBOPF'|| formData.teacategory === 'OP1'|| formData.teacategory === 'BP';
 
   const submitHandler = async event => {
     event.preventDefault();
@@ -136,21 +137,19 @@ const Dispatch = () => {
         <div className="mb-5">
           <label className='made-tea'>Number of Bags</label>
           <br />
-          {formData.teacategory === "BP" && (
-            <select
-              name='numofbags'
-              value={formData.numofbags}
-              onChange={handleInputChange}
-              className='bags_no'
-            >
-              <option value="">Select number of bags</option>
-              <option value="10B">10B</option>
-              <option value="15B">15B</option>
-              <option value="20B">20B</option>
-              <option value="30B">30B</option>
-              <option value="40B">40B</option>
-            </select>
-          )}
+          <select
+            name='numofbags'
+            value={formData.numofbags}
+            onChange={handleInputChange}
+            className='bags_no'
+          >
+            <option value="">Select number of bags</option>
+            <option value="10B" className={disable10b ? 'red-option' : 'black-option'} disabled={disable10b}>10B</option>
+            <option value="15B">15B</option>
+            <option value="20B" className={disable10b ? 'red-option' : 'black-option'}>20B</option>
+            <option value="30B">30B</option>
+            <option value="40B">40B</option>
+          </select>
         </div>
         <div className="mt-7">
           <button disabled={loading} type='submit'>
