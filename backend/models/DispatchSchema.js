@@ -44,6 +44,8 @@ const dispatchDetailsSchema = new mongoose.Schema({
   BP: [dispatchteaSchema],
   FBOPFSp: [dispatchteaSchema],
   FFEXSP: [dispatchteaSchema],
+  FFEXSP1: [dispatchteaSchema],
+
 });
 
 export default mongoose.model("DispatchDetails", dispatchDetailsSchema);
