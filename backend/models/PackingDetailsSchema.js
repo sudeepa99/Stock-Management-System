@@ -56,6 +56,8 @@ const packingDetailsSchema = new mongoose.Schema({
   BP: [teaSchema],
   FBOPFSp: [teaSchema],
   FFEXSP: [teaSchema],
+  FFEXSP1: [teaSchema],
+
 });
 
 export default mongoose.model("packingDetails", packingDetailsSchema);

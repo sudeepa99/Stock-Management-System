@@ -106,3 +106,9 @@
   margin-bottom: 0px;
   font-size: larger;
 }
+.red-option {
+  color: rgb(147, 145, 145);
+}
+.black-option{
+  color: #000;
+}

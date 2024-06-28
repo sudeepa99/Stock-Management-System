@@ -25,7 +25,7 @@ export const dispatchdetails = async (req, res) => {
         const teaCategories = [
             'BOP1A', 'FBOP', 'FBOPF1', 'OPA', 'OP', 'PEKOE', 'PEKOE1',
             'BOP', 'BOPSp', 'BOP1', 'BOPA', 'BOPF', 'FBOP1', 'FBOPF',
-            'OP1', 'BP', 'FBOPFSp', 'FFEXSP'
+            'OP1', 'BP', 'FBOPFSp', 'FFEXSP', 'FFEXSP1'
         ];
 
         if (record) {
@@ -47,8 +47,15 @@ export const dispatchdetails = async (req, res) => {
                 if (existingEntry) {
                     existingEntry.sizeofbag = sizeofbag;
                     existingEntry.numofbags = numofbags;
+                    console.log("I am adding");
                 } else {
-                    teaCategoryArray.push({ invoicenumber, sizeofbag, numofbags });
+                    if (numofbags=='10B') {
+                        teaCategoryArray.push({ invoicenumber, sizeofbag, numofbags });
+   
+                    }
+                    else {
+                        console.log("I am not adding");
+                    }
                 }
             }
 

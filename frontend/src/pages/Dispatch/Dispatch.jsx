@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { BASE_URL } from '../../config.js';
 import { toast } from 'react-toastify';
 import HashLoader from 'react-spinners/HashLoader';
-import './Dispatch.css'
+import './Dispatch.css';
 
 const Dispatch = () => {
   const [loading, setLoading] = useState(false);
@@ -15,14 +15,15 @@ const Dispatch = () => {
     numofbags: '',
     invoicenumber: ''
   });
-
   const navigate = useNavigate();
 
   const handleInputChange = e => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
-
-  const submitHandler = async event => {
+  const disable10b= formData.teacategory ==='BOP1A'|| formData.teacategory === 'BOPA'|| formData.teacategory === 'FBOP'|| formData.teacategory === 'FBOPF'|| formData.teacategory === 'OPA'|| formData.teacategory === 'OP'|| formData.teacategory === 'PEKOE'||formData.teacategory === 'PEKOE1'|| formData.teacategory === 'BOP'|| formData.teacategory ===
+    'BOPSp'|| formData.teacategory === 'BOPF'|| formData.teacategory === 'FBOP1'|| formData.teacategory === 'FBOPF'|| formData.teacategory === 'OP1'|| formData.teacategory === 'BP';
+  const disable20b30b=formData.teacategory ==='BOP1A'|| formData.teacategory === 'BOPA'|| formData.teacategory === 'FBOP'|| formData.teacategory === 'FBOPF'|| formData.teacategory === 'OPA'|| formData.teacategory === 'OP'|| formData.teacategory === 'PEKOE';
+    const submitHandler = async event => {
     event.preventDefault();
     setLoading(true);
 
@@ -86,6 +87,7 @@ const Dispatch = () => {
             className='control2'
             value={formData.invoicenumber}
             onChange={handleInputChange}
+            required
           />
         </div>
         <div className="mb-5">
@@ -96,6 +98,7 @@ const Dispatch = () => {
             value={formData.teacategory}
             onChange={handleInputChange}
             className='tea_category'
+            required
           >
             <option value="">Select a category</option>
             <option value="BOP1A">BOP1A</option>
@@ -116,6 +119,8 @@ const Dispatch = () => {
             <option value="BP">BP</option>
             <option value="FBOPFSp">FBOPF Sp</option>
             <option value="FFEXSP">FF EX SP</option>
+            <option value="FFEXSP1">FF EX SP 1</option>
+
           </select>
         </div>
         <div className="mb-5">
@@ -128,6 +133,7 @@ const Dispatch = () => {
             className='control2'
             value={formData.sizeofbag}
             onChange={handleInputChange}
+            required
           />
         </div>
         <div className="mb-5">
@@ -140,10 +146,10 @@ const Dispatch = () => {
             className='bags_no'
           >
             <option value="">Select number of bags</option>
-            <option value="10B">10B</option>
+            <option value="10B" className={disable10b ? 'red-option' : 'black-option'} disabled={disable10b}>10B</option>
             <option value="15B">15B</option>
-            <option value="20B">20B</option>
-            <option value="30B">30B</option>
+            <option value="20B" className={disable20b30b||formData.teacategory==="PEKOE1" ? 'red-option' : 'black-option'} disabled={disable20b30b||formData.teacategory==="PEKOE1"}>20B</option>
+            <option value="30B" className={disable20b30b||formData.teacategory === 'BP' ? 'red-option' : 'black-option'} disabled={disable20b30b||formData.teacategory === 'BP'}>30B</option>
             <option value="40B">40B</option>
           </select>
         </div>
