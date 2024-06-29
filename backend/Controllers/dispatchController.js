@@ -53,39 +53,37 @@ export const dispatchdetails = async (req, res) => {
 
 
                     if (teacategory ==='BOP1A'||  teacategory === 'FBOP'|| teacategory === 'FBOPF'|| teacategory === 'OPA'|| teacategory === 'OP'|| teacategory === 'PEKOE'|| teacategory === 'PEKOE') {
-                        if(sizeofbagValues.length<19){
+                        if(sizeofbagValues.length<4&&(numofbags=="10B"||numofbags=="20B")){
+                            console.log("You chack me");
                         console.log("Gread! You have updated");    
                         teaCategoryArray.push({ invoicenumber, sizeofbag, numofbags });}
-                        
-                        else if(teacategory === 'BOP'|| teacategory ==='BOPSp'|| teacategory === 'BOPF'|| teacategory === 'FBOP1'|| teacategory === 'FBOPF'|| teacategory === 'OP1'){
-                            if(sizeofbagValues.length<19){
-                                console.log("Gread! You have updated");    
-                                teaCategoryArray.push({ invoicenumber, sizeofbag, numofbags });}
-                        }
-
-                        else if(teacategory === 'BP'){
-                            if(sizeofbagValues.length<19){
-                                console.log("Gread! You have updated");    
-                                teaCategoryArray.push({ invoicenumber, sizeofbag, numofbags });}
-                        }
-
-                        else if(teacategory === 'FBOPFSp'|| teacategory === 'FFEXSP'||teacategory === 'FFEXSP1'){
-                            if(sizeofbagValues.length<19){
-                                console.log("Gread! You have updated");    
-                                teaCategoryArray.push({ invoicenumber, sizeofbag, numofbags });}
-                        }
-                        
-                        else{
-                            return res.status(400).json({
-                                success: false,
-                                message: 'Invalid details provided',
-                            });
-                        }
-
-                    } else {
-                        console.log("check");
+                    }
+                    else if(teacategory === 'BOP'|| teacategory ==='BOPSp'|| teacategory === 'BOPF'|| teacategory === 'FBOP1'|| teacategory === 'FBOPF'|| teacategory === 'OP1'){
+                        if(sizeofbagValues.length<19){
+                            console.log("Gread! You have updated");    
+                            teaCategoryArray.push({ invoicenumber, sizeofbag, numofbags });}
                     }
 
+                    else if(teacategory === 'BP'){
+                        if(sizeofbagValues.length<19){
+                            console.log("Gread! You have updated");    
+                            teaCategoryArray.push({ invoicenumber, sizeofbag, numofbags });}
+                    }
+
+                    else if(teacategory === 'FBOPFSp'|| teacategory === 'FFEXSP'||teacategory === 'FFEXSP1'){
+                        if(sizeofbagValues.length<19){
+                            console.log("Gread! You have updated");    
+                            teaCategoryArray.push({ invoicenumber, sizeofbag, numofbags });}
+                    }
+
+                    else{
+                        return res.status(400).json({
+                            success: false,
+                            message: 'Invalid details provided',
+                        });
+                    }
+    
+             
 
 
 
