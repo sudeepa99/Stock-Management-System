@@ -20,9 +20,9 @@ const Dispatch = () => {
   const handleInputChange = e => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
-  const disable10b= formData.teacategory ==='BOP1A'|| formData.teacategory === 'BOPA'|| formData.teacategory === 'FBOP'|| formData.teacategory === 'FBOPF'|| formData.teacategory === 'OPA'|| formData.teacategory === 'OP'|| formData.teacategory === 'PEKOE'||formData.teacategory === 'PEKOE1'|| formData.teacategory === 'BOP'|| formData.teacategory ===
-    'BOPSp'|| formData.teacategory === 'BOPF'|| formData.teacategory === 'FBOP1'|| formData.teacategory === 'FBOPF'|| formData.teacategory === 'OP1'|| formData.teacategory === 'BP';
-  const disable20b30b=formData.teacategory ==='BOP1A'|| formData.teacategory === 'BOPA'|| formData.teacategory === 'FBOP'|| formData.teacategory === 'FBOPF'|| formData.teacategory === 'OPA'|| formData.teacategory === 'OP'|| formData.teacategory === 'PEKOE';
+  const disable10b= formData.teacategory ==='BOP1A'|| formData.teacategory === 'FBOP'|| formData.teacategory === 'FBOPF1'|| formData.teacategory === 'OPA'|| formData.teacategory === 'OP'|| formData.teacategory === 'PEKOE'||formData.teacategory === 'PEKOE1'|| formData.teacategory === 'BOP'|| formData.teacategory ===
+    'BOPSp'|| formData.teacategory === 'BOP1'|| formData.teacategory === 'BOPA'|| formData.teacategory === 'BOPF'|| formData.teacategory === 'FBOP1'||formData.teacategory === 'FBOPF'|| formData.teacategory === 'OP1'||formData.teacategory === 'BP';
+  const disable20b30b=formData.teacategory ==='BOP1A'|| formData.teacategory === 'FBOP'|| formData.teacategory === 'FBOPF1'|| formData.teacategory === 'OPA'|| formData.teacategory === 'OP'|| formData.teacategory === 'PEKOE';
     const submitHandler = async event => {
     event.preventDefault();
     setLoading(true);
@@ -146,9 +146,10 @@ const Dispatch = () => {
             className='bags_no'
           >
             <option value="">Select number of bags</option>
+            <option value="Below 10B" className={disable10b ? 'red-option' : 'black-option'} disabled={disable10b} >Below 10B</option>
             <option value="10B" >10B</option>
-            <option value="15B" className={disable10b ? 'red-option' : 'black-option'} disabled={disable10b}>15B</option>
-            <option value="20B" className={disable20b30b||formData.teacategory==="PEKOE1" ? 'red-option' : 'black-option'} disabled={disable20b30b||formData.teacategory==="PEKOE1"}>20B</option>
+            <option value="15B" className={disable20b30b||formData.teacategory==="PEKOE1" ? 'red-option' : 'black-option'} disabled={disable20b30b||formData.teacategory==="PEKOE1"} >15B</option>
+            <option value="20B" >20B</option>
             <option value="30B" className={disable20b30b||formData.teacategory === 'BP' ? 'red-option' : 'black-option'} disabled={disable20b30b||formData.teacategory === 'BP'}>30B</option>
             <option value="40B">40B</option>
           </select>
