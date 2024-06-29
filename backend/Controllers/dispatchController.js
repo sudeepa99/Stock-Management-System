@@ -45,17 +45,11 @@ export const dispatchdetails = async (req, res) => {
                 const existingEntry = teaCategoryArray.find(entry => entry.invoicenumber === invoicenumber);
 
                 if (existingEntry) {
+                    console.log(existingEntry);
                     existingEntry.sizeofbag = sizeofbag;
                     existingEntry.numofbags = numofbags;
-                    console.log("I am adding");
                 } else {
-                    if (numofbags=='10B') {
-                        teaCategoryArray.push({ invoicenumber, sizeofbag, numofbags });
-   
-                    }
-                    else {
-                        console.log("I am not adding");
-                    }
+                    teaCategoryArray.push({ invoicenumber, sizeofbag, numofbags });
                 }
             }
 
