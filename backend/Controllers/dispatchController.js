@@ -56,14 +56,30 @@ export const dispatchdetails = async (req, res) => {
                         if(sizeofbagValues.length<19){
                         console.log("Gread! You have updated");    
                         teaCategoryArray.push({ invoicenumber, sizeofbag, numofbags });}
+                        
                         else if(teacategory === 'BOP'|| teacategory ==='BOPSp'|| teacategory === 'BOPF'|| teacategory === 'FBOP1'|| teacategory === 'FBOPF'|| teacategory === 'OP1'){
-                            console.log("Sorry! You already exceeded the number of bags");
+                            if(sizeofbagValues.length<19){
+                                console.log("Gread! You have updated");    
+                                teaCategoryArray.push({ invoicenumber, sizeofbag, numofbags });}
                         }
+
                         else if(teacategory === 'BP'){
-                            console.log("Sorry! 2");
+                            if(sizeofbagValues.length<19){
+                                console.log("Gread! You have updated");    
+                                teaCategoryArray.push({ invoicenumber, sizeofbag, numofbags });}
                         }
+
                         else if(teacategory === 'FBOPFSp'|| teacategory === 'FFEXSP'||teacategory === 'FFEXSP1'){
-                            console.log("Sorry! 3");
+                            if(sizeofbagValues.length<19){
+                                console.log("Gread! You have updated");    
+                                teaCategoryArray.push({ invoicenumber, sizeofbag, numofbags });}
+                        }
+                        
+                        else{
+                            return res.status(400).json({
+                                success: false,
+                                message: 'Invalid details provided',
+                            });
                         }
 
                     } else {
