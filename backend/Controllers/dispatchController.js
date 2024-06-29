@@ -38,11 +38,9 @@ export const dispatchdetails = async (req, res) => {
                         message: `Invalid teacategory provided: ${teacategory}`,
                     });
                 }
-
                 if (!record[teacategory]) {
                     record[teacategory] = [];
                 }
-
                 const teaCategoryArray = record[teacategory];
                 const existingEntry = teaCategoryArray.find(entry => entry.numofbags === numofbags);
                 if (existingEntry) {
@@ -124,20 +122,22 @@ export const dispatchdetails = async (req, res) => {
                                 });
                             }
                     }
-
                     else if(teacategory === 'FBOPFSp'|| teacategory === 'FFEXSP'||teacategory === 'FFEXSP1'){
-                        if((numofbags==="10B"&&sizeofbagValues.length<2)&& (numofbags==="15B"&&sizeofbagValues.length<2)||(numofbags==="20B"&&sizeofbagValues.length<2)|| (numofbags==="30B"&&sizeofbagValues.length<2)||(numofbags==="10B Below"&&sizeofbagValues.length<2)&& (numofbags==="20B"&&sizeofbagValues.length<2)){
-                            console.log("10B * 2 20 B");
-                            console.log("Gread! You have updated");    
-                            teaCategoryArray.push({ invoicenumber, sizeofbag, numofbags });}
-                            else{
-                                return res.status(400).json({
-                                    success: false,
-                                    message: 'You cannot add more than',
-                                });
+                        if (sizeofbagValues.length < 2) {
+                            if ((numofbags === "10B" && sizeofbagValues.includes("10B")) ||
+                                (numofbags === "15B" && sizeofbagValues.includes("15B")) ||
+                                (numofbags === "20B" && sizeofbagValues.includes("20B")) ||
+                                (numofbags === "30B" && sizeofbagValues.includes("30B")) ||
+                                (numofbags === "10B Below" && sizeofbagValues.includes("10B Below"))) {
+                                console.log("You have exceeded the limit. You cannot add this bag type again.");
+                            } else {
+                                sizeofbagValues.push(numofbags);
+                                console.log("Bag added successfully.");
                             }
+                        } else {
+                            console.log("You have reached the maximum number of bags.");
+                        }
                     }
-
                     else{
                         return res.status(400).json({
                             success: false,
@@ -146,8 +146,7 @@ export const dispatchdetails = async (req, res) => {
                     }
 
                 } else {
-                    console.log(`You added new ${numofbags} bag entry`);
-                    teaCategoryArray.push({ invoicenumber, sizeofbag, numofbags });
+                    console.log("You have reached the maximum number of bags.");
                 }
             }
 
