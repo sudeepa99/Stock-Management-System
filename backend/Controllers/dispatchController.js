@@ -27,9 +27,6 @@ export const dispatchdetails = async (req, res) => {
             'BOP', 'BOPSp', 'BOP1', 'BOPA', 'BOPF', 'FBOP1', 'FBOPF',
             'OP1', 'BP', 'FBOPFSp', 'FFEXSP', 'FFEXSP1'
         ];
-
-        const oneTeaCatogory= ['BOP1A', 'FBOP', 'FBOPF1', 'OPA', 'OP', 'PEKOE','PEKOE1'];
-
         if (record) {
             for (const update of updates) {
 
@@ -50,14 +47,37 @@ export const dispatchdetails = async (req, res) => {
                 const existingEntry = teaCategoryArray.find(entry => entry.numofbags === numofbags);
                 console.log(teacategory); 
                 if (existingEntry) {
+                    console.log('hi');
                     const sameSizeofBagEntries = teaCategoryArray.filter(entry => entry.numofbags === existingEntry.numofbags);
                     const sizeofbagValues = sameSizeofBagEntries.map(entry => entry.sizeofbag);
-                    if(sizeofbagValues.length<19){
+
+
+                    if (teacategory ==='BOP1A'||  teacategory === 'FBOP'|| teacategory === 'FBOPF'|| teacategory === 'OPA'|| teacategory === 'OP'|| teacategory === 'PEKOE'|| teacategory === 'PEKOE') {
+                        if(sizeofbagValues.length<19){
                         console.log("Gread! You have updated");    
                         teaCategoryArray.push({ invoicenumber, sizeofbag, numofbags });}
-                    else{
-                        console.log("Sorry! You already exceeded the number of bags");
+                        else if(teacategory === 'BOP'|| teacategory ==='BOPSp'|| teacategory === 'BOPF'|| teacategory === 'FBOP1'|| teacategory === 'FBOPF'|| teacategory === 'OP1'){
+                            console.log("Sorry! You already exceeded the number of bags");
+                        }
+                        else if(teacategory === 'BP'){
+                            console.log("Sorry! 2");
+                        }
+                        else if(teacategory === 'FBOPFSp'|| teacategory === 'FFEXSP'||teacategory === 'FFEXSP1'){
+                            console.log("Sorry! 3");
+                        }
+
+                    } else {
+                        console.log("check");
                     }
+
+
+
+
+
+
+
+
+
                 } else {
                     console.log(`You added new ${numofbags} bag entry`);
                     teaCategoryArray.push({ invoicenumber, sizeofbag, numofbags });
