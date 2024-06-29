@@ -126,22 +126,10 @@ export const dispatchdetails = async (req, res) => {
                     }
 
                     else if(teacategory === 'FBOPFSp'|| teacategory === 'FFEXSP'||teacategory === 'FFEXSP1'){
-                        if((numofbags==="10B"&&sizeofbagValues.length<3)&& (numofbags==="20B"&&sizeofbagValues.length<2)){
+                        if((numofbags==="10B"&&sizeofbagValues.length<2)&& (numofbags==="15B"&&sizeofbagValues.length<2)||(numofbags==="20B"&&sizeofbagValues.length<2)|| (numofbags==="30B"&&sizeofbagValues.length<2)||(numofbags==="10B Below"&&sizeofbagValues.length<2)&& (numofbags==="20B"&&sizeofbagValues.length<2)){
                             console.log("10B * 2 20 B");
                             console.log("Gread! You have updated");    
                             teaCategoryArray.push({ invoicenumber, sizeofbag, numofbags });}
-                            else if((numofbags==="10B"&&sizeofbagValues.length<2)&& (numofbags==="20B"&&sizeofbagValues.length<1)){
-                            console.log("10B * 1 20 B * 2");
-                            console.log("Gread! You have updated");    
-                            teaCategoryArray.push({ invoicenumber, sizeofbag, numofbags });}
-                            else if((numofbags==="10B"&&sizeofbagValues.length<4)&& (numofbags==="20B"&&sizeofbagValues.length==0)){
-                            console.log("10B * 3");
-                            console.log("Gread! You have updated");    
-                            teaCategoryArray.push({ invoicenumber, sizeofbag, numofbags });}
-                            else if((numofbags==="10B"&&sizeofbagValues.length==0)&& (numofbags==="20B"&&sizeofbagValues.length<4)){
-                                console.log("10B * 3");
-                                console.log("Gread! You have updated");    
-                                teaCategoryArray.push({ invoicenumber, sizeofbag, numofbags });}
                             else{
                                 return res.status(400).json({
                                     success: false,
