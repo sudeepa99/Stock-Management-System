@@ -28,9 +28,11 @@ export const dispatchdetails = async (req, res) => {
             'OP1', 'BP', 'FBOPFSp', 'FFEXSP', 'FFEXSP1'
         ];
 
+        const oneTeaCatogory= ['BOP1A', 'FBOP', 'FBOPF1', 'OPA', 'OP', 'PEKOE','PEKOE1'];
+
         if (record) {
-            // Update the existing record
             for (const update of updates) {
+
                 const { teacategory, invoicenumber, sizeofbag, numofbags } = update;
 
                 if (!teaCategories.includes(teacategory)) {
@@ -46,19 +48,18 @@ export const dispatchdetails = async (req, res) => {
 
                 const teaCategoryArray = record[teacategory];
                 const existingEntry = teaCategoryArray.find(entry => entry.numofbags === numofbags);
-
+                console.log(teacategory); 
                 if (existingEntry) {
                     const sameSizeofBagEntries = teaCategoryArray.filter(entry => entry.numofbags === existingEntry.numofbags);
                     const sizeofbagValues = sameSizeofBagEntries.map(entry => entry.sizeofbag);
-                    if(sizeofbagValues.length<9){
-
-                    console.log('All sizeofbag values for entries with the same numofbags:', sizeofbagValues.length);
-                    teaCategoryArray.push({ invoicenumber, sizeofbag, numofbags });}
+                    if(sizeofbagValues.length<19){
+                        console.log("Gread! You have updated");    
+                        teaCategoryArray.push({ invoicenumber, sizeofbag, numofbags });}
                     else{
-                        console.log("Sorry");
+                        console.log("Sorry! You already exceeded the number of bags");
                     }
                 } else {
-                    console.log(`New entry: invoicenumber = ${invoicenumber}, sizeofbag = ${sizeofbag}, numofbags = ${numofbags}`);
+                    console.log(`You added new ${numofbags} bag entry`);
                     teaCategoryArray.push({ invoicenumber, sizeofbag, numofbags });
                 }
             }
