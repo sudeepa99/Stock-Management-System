@@ -48,15 +48,16 @@ export const dispatchdetails = async (req, res) => {
                 const existingEntry = teaCategoryArray.find(entry => entry.numofbags === numofbags);
 
                 if (existingEntry) {
-                    console.log(`Existing entry: sizeofbag = ${existingEntry.sizeofbag}, numofbags = ${existingEntry.numofbags}`);
                     const sameSizeofBagEntries = teaCategoryArray.filter(entry => entry.numofbags === existingEntry.numofbags);
-
                     const sizeofbagValues = sameSizeofBagEntries.map(entry => entry.sizeofbag);
+                    if(sizeofbagValues.length<9){
 
-                    console.log('All sizeofbag values for entries with the same numofbags:', sizeofbagValues.length);        
-                    teaCategoryArray.push({ invoicenumber, sizeofbag, numofbags });
-                            }
-                else {
+                    console.log('All sizeofbag values for entries with the same numofbags:', sizeofbagValues.length);
+                    teaCategoryArray.push({ invoicenumber, sizeofbag, numofbags });}
+                    else{
+                        console.log("Sorry");
+                    }
+                } else {
                     console.log(`New entry: invoicenumber = ${invoicenumber}, sizeofbag = ${sizeofbag}, numofbags = ${numofbags}`);
                     teaCategoryArray.push({ invoicenumber, sizeofbag, numofbags });
                 }
