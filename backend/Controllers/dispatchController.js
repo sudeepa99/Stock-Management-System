@@ -40,15 +40,22 @@ export const dispatchdetails = async (req, res) => {
                     });
                 }
 
-                // Find the specific tea category array and update or add the new entry
+                // Initialize the tea category array if not present
+                if (!record[teacategory]) {
+                    record[teacategory] = [];
+                }
+
+                // Find the specific tea category entry and update or add the new entry
                 const teaCategoryArray = record[teacategory];
-                const existingEntry = teaCategoryArray.find(entry => entry.invoicenumber === invoicenumber);
+                const existingEntry = teaCategoryArray.find(entry => entry.numofbags === numofbags);
+                console.log(existingEntry);
 
                 if (existingEntry) {
-                    console.log(existingEntry);
+                    console.log(`Existing entry: sizeofbag = ${existingEntry.sizeofbag}, numofbags = ${existingEntry.numofbags}`);
                     existingEntry.sizeofbag = sizeofbag;
                     existingEntry.numofbags = numofbags;
                 } else {
+                    console.log(`New entry: invoicenumber = ${invoicenumber}, sizeofbag = ${sizeofbag}, numofbags = ${numofbags}`);
                     teaCategoryArray.push({ invoicenumber, sizeofbag, numofbags });
                 }
             }
