@@ -45,8 +45,8 @@ const Packing1 = () => {
   };
 
   return (
-    <div className="container">
-      <form className='a1' onSubmit={submitHandler}>
+<div>      
+  <form className='a1' onSubmit={submitHandler}>
         <p className='b1'>Date</p>
         <p className='b2'>Please enter the following details to continue the process.</p>
 
