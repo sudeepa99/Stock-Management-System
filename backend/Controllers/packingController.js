@@ -27,7 +27,7 @@ export const getDateDetails = async (req, res) => {
 
         return res.status(200).json({ data: getDate });
     } catch (err) {
-        console.error(err); // Log the error for debugging purposes
+        console.error(err);
         res.status(500).json({ success: false, message: "Server Error" });
     }
 };
@@ -83,30 +83,25 @@ export const updatepackingdetails = async (req, res) => {
     const { teacategory, teacategoryData } = req.body;
   
     try {
-        // Get the current date
+       
         const currentDate = new Date().toISOString().split('T')[0];
   
-        // Find the document with the current date
         const document = await PackingDetailsSchema.findOne({ date: currentDate });
   
         if (!document) {
             return res.status(404).json({ success: false, message: 'Document with the current date not found' });
         }
   
-        // Define all valid tea categories
         const teaCategories = [
             'BOP1A', 'FBOP', 'FBOPF1', 'OPA', 'OP', 'PEKOE', 'PEKOE1',
             'BOP', 'BOPSp', 'BOP1', 'BOPA', 'BOPF', 'FBOP1', 'FBOPF',
             'OP1', 'BP', 'FBOPFSp', 'FFEXSP', 'FFEXSP1'
         ];
   
-        // Check if the provided teacategory is valid
         if (teaCategories.includes(teacategory)) {
-            // Construct the update field dynamically
             const updateField = {};
             updateField[teacategory] = teacategoryData;
   
-            // Update the document with the new tea category data
             const updatedPackingDetails = await PackingDetailsSchema.findByIdAndUpdate(
                 document._id,
                 { $set: updateField },
@@ -142,19 +137,15 @@ export const updatepackingdetails = async (req, res) => {
             return res.status(400).json({ success: false, message: 'Invalid details' });
         }
 
-        // Check if a record already exists for the given date
         let record = await PackingDetailsSchema.findOne({ date });
 
         if (record) {
-            // If record exists, update it with new data
             record.teacategories = teacategories;
             console.log('Updated existing record:', record);
 
-            // Save the updated record
             await record.save();
 
         } else {
-            // If record doesn't exist, create a new one
             record = new PackingDetailsSchema({
                 date,
                 details,
@@ -163,7 +154,6 @@ export const updatepackingdetails = async (req, res) => {
                 teacategories
             });
 
-            // Save the new record
             await record.save();
         }
 
