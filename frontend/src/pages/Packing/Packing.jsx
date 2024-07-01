@@ -33,13 +33,13 @@ const Packing = () => {
         },
         body: JSON.stringify(formData),
       });
-      const { message } = await res.json();
+      const data = await res.json();
       if (!res.ok) {
-        throw new Error(message);
+        throw new Error(data.message);
       }
       setLoading(false);
-      toast.success(message);
-      navigate('/packing1');
+      toast.success(data.message);
+      setGetEndDate(false);
     } catch (err) {
       toast.error(err.message);
       setLoading(false);
@@ -87,6 +87,7 @@ const Packing = () => {
               className="control2"
               value={formData.saleNo}
               onChange={handleInputChange}
+              required
             />
           </div>
           <div className="row">
@@ -96,9 +97,9 @@ const Packing = () => {
                 type="date"
                 name="startDate"
                 className="control"
-                required
                 value={formData.startDate}
                 onChange={handleInputChange}
+                required
               />
             </div>
             <div className="mb-6">
@@ -107,9 +108,9 @@ const Packing = () => {
                 type="date"
                 name="endDate"
                 className="control"
-                required
                 value={formData.endDate}
                 onChange={handleInputChange}
+                required
               />
             </div>
           </div>

@@ -23,7 +23,7 @@ export const getDateDetails = async (req, res) => {
         const formattedDate = saleDate.toISOString().split('T')[0];
         const currentDate = new Date().toISOString().split('T')[0];
 
-        const getDate = formattedDate >= currentDate;
+        const getDate = formattedDate <= currentDate;
 
         return res.status(200).json({ data: getDate });
     } catch (err) {
