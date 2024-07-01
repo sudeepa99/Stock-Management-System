@@ -1,7 +1,11 @@
 import DispatchDetails from "../models/DispatchSchema.js";
+import Packing from "../models/PackingSchema.js";
 
 export const dispatchdetails = async (req, res) => {
+
     const { date, details, updates } = req.body;
+    const packing = await Packing.findOne().sort({ $natural: -1 });
+    const saleNumber = packing.saleNo;
 
     try {
         console.log('Request Body:', req.body);
@@ -20,7 +24,7 @@ export const dispatchdetails = async (req, res) => {
             });
         }
 
-        let record = await DispatchDetails.findOne({ date });
+        let record = await DispatchDetails.findOne({ saleNumber });
 
         const teaCategories = [
             'BOP1A', 'FBOP', 'FBOPF1', 'OPA', 'OP', 'PEKOE', 'PEKOE1',
@@ -160,7 +164,7 @@ export const dispatchdetails = async (req, res) => {
         } else {
             // Create a new record
             const newRecord = {
-                date,
+                saleNumber,
                 details,
             };
 

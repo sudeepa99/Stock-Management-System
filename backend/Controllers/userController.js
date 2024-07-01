@@ -69,3 +69,15 @@ export const getUserProfile = async (req, res) => {
     }
 };
 
+import Packing from "../models/PackingSchema.js";
+
+export const dispatchdetails = async (req, res) => {
+    try {
+        const packing = await Packing.findOne().sort({ $natural: -1 });
+        console.log(packing);
+        res.status(200).json(packing);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'An error occurred while fetching packing details' });
+    }
+};
