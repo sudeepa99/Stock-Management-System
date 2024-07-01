@@ -161,7 +161,6 @@ export const dispatchdetails = async (req, res) => {
                 data: record,
             });
         } else {
-            // Create a new record
             const newRecord = {
                 saleNumber,
                 details,

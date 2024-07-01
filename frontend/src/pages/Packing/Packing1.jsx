@@ -10,7 +10,7 @@ const Packing1 = () => {
     greenleaves: '',
     madetea: '',
     details:'packing',
-    date: new Date().toISOString().substr(0, 10) // Set the default date to the current date
+    date: new Date().toISOString().substr(0, 10) 
 });
 
   
@@ -63,6 +63,7 @@ const Packing1 = () => {
         <div className="mt-7">
           <button disabled={loading && true} type='submit'>
             {loading ? <HashLoader size={35} color="#ffffff" /> : 'Submit'}
+            
           </button>
         </div>
       </form>

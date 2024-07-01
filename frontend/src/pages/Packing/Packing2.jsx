@@ -25,7 +25,6 @@ const Packing2 = () => {
     setLoading(true);
 
     try {
-      // Create the payload in the expected structure
       const payload = {
         teacategory: formData.teacategory,
         teacategoryData: {
@@ -52,7 +51,6 @@ const Packing2 = () => {
       toast.success(data.message);
       navigate('/packing2');
 
-      // Reset the form fields to default values
       setFormData({
         teacategory: '',
         sizeofbag: '',
