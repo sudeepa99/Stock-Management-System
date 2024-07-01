@@ -10,6 +10,28 @@ export const getAllPackingDetails = async (req, res) => {
     }
 };
 
+export const getDateDetails = async (req, res) => {
+    try {
+        const packing = await Packing.findOne().sort({ $natural: -1 });
+        
+        if (!packing) {
+            return res.status(404).json({ success: false, message: "Not Found" });
+        }
+
+        const endDateGet = packing.endDate;
+        const saleDate = new Date(endDateGet);
+        const formattedDate = saleDate.toISOString().split('T')[0];
+        const currentDate = new Date().toISOString().split('T')[0];
+
+        const getDate = formattedDate >= currentDate;
+
+        return res.status(200).json({ data: getDate });
+    } catch (err) {
+        console.error(err); // Log the error for debugging purposes
+        res.status(500).json({ success: false, message: "Server Error" });
+    }
+};
+
 export const saleDetails = async (req, res) => {
     const { saleNo, startDate, endDate, details } = req.body;
     try {

@@ -1,6 +1,5 @@
 import DispatchDetails from "../models/DispatchSchema.js";
 import Packing from "../models/PackingSchema.js";
-
 export const dispatchdetails = async (req, res) => {
 
     const { date, details, updates } = req.body;
