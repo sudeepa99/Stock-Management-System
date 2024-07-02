@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
 import { BASE_URL } from '../../config';
 import { toast } from 'react-toastify';
 import HashLoader from 'react-spinners/HashLoader';
 import './packing.css';
 import Packing1 from "./Packing1.jsx";
+import Packing2 from "./Packing2.jsx";
 
 const Packing = () => {
   const [loading, setLoading] = useState(false);
@@ -16,7 +16,6 @@ const Packing = () => {
     details: 'packing',
   });
 
-  const navigate = useNavigate();
 
   const handleInputChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -125,7 +124,7 @@ const Packing = () => {
           </div>
         </form>
       ) : (
-        <Packing1/>
+        5>8?  <Packing1/> : <Packing2/>
       )}
     </div>
   );
