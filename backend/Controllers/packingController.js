@@ -13,9 +13,9 @@ export const getAllPackingDetails = async (req, res) => {
 export const getDateDetails = async (req, res) => {
     try {
         const packing = await Packing.findOne().sort({ $natural: -1 });
-        
+
         if (!packing) {
-            return res.status(404).json({ success: false, message: "Not Found" });
+            return res.status(200).json({ data: true }); // Default value for getDate is true when no document is found
         }
 
         const endDateGet = packing.endDate;
@@ -31,6 +31,7 @@ export const getDateDetails = async (req, res) => {
         res.status(500).json({ success: false, message: "Server Error" });
     }
 };
+
 
 export const saleDetails = async (req, res) => {
     const { saleNo, startDate, endDate, details } = req.body;
