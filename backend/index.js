@@ -6,6 +6,7 @@ import dotenv from 'dotenv';
 import authRoute from "./Routes/auth.js";
 import packingRoute from './Routes/packing.js';
 import dispatchRoute from './Routes/dispatch.js'
+import  reportsRoute  from "./Routes/report.js";
 import { errorHandler } from './middleware/errorHandler.js'; // Use ES Module import syntax
 
 dotenv.config();
@@ -42,7 +43,7 @@ app.use(cors(corsOptions));
 app.use('/api/v1/auth', authRoute); // domain/api/v1/auth/register
 app.use('/api/v1/packing', packingRoute);
 app.use('/api/v1/dispatch', dispatchRoute);
-
+app.use('/api/v1/report', reportsRoute);
 app.use(errorHandler); // Ensure this is an ES Module import
 
 
