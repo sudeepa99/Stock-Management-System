@@ -12,7 +12,8 @@ export default {
         textColor: "#4E545F",
         cellwhiteColor:"#fff",
         greyColor:"#F0E6E6",
-        brownColor:"#D9D9D9"
+        brownColor:"#D9D9D9",
+        greybgColor: "#1F2327"
       },
 
       boxShadow: {
