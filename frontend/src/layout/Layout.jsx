@@ -1,20 +1,13 @@
-import React from 'react'
+import React from "react";
+import { Outlet } from "react-router-dom";
 
-import Header from '../components/Header/Header';
-import Footer from '../components/Footer/Footer';
-import Routers from '../routes/Routers';
- 
+import Navbar from "../components/Navbar";
 
-const layout = () => {
-  return <>
-      <Header />
-      <main>
-        <Routers />
-        
-      </main>
-      <Footer />
-    </>
-  
-};
+  const AppLayout = () => (
+  <>
+    <Navbar />
+    <Outlet />
+  </>
+);
 
-export default layout;
+export default AppLayout
