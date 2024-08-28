@@ -1,4 +1,5 @@
 import React from 'react'
+import { PrimeReactProvider, PrimeReactContext } from 'primereact/api';
 
 export default function Reports() {
   return (
