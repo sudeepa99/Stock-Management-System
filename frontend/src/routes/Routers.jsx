@@ -1,19 +1,18 @@
-import React from 'react';
+import React from "react";
 import { createBrowserRouter } from "react-router-dom";
-import Login from '../pages/Login/Login';
+import Login from "../pages/Login/Login";
 // import Signup from '../pages/SignUp';
 import Reports from "../pages/Report/Reports";
 import Dashboard from "../pages/Dashbord/Dashboard";
 import Dispatch from "../pages/Dispatch/Dispatch";
-import AppLayout from '../layout/Layout';
-import Packing from '../pages/Packing/Packing';
-import Packing1 from '../pages/Packing/Packing1';
-import Packing2 from '../pages/Packing/Packing2';
+import AppLayout from "../layout/Layout";
+import Packing from "../pages/Packing/Packing";
+import Packing1 from "../pages/Packing/Packing1";
+import Packing2 from "../pages/Packing/Packing2";
 import "../App.css";
 
-
 // Define the router configuration
-  const router = createBrowserRouter([
+const router = createBrowserRouter([
   {
     path: "/",
     element: <Login />,
