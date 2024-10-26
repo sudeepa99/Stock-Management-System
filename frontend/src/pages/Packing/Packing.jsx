@@ -1,8 +1,8 @@
-import { useState, useEffect } from 'react';
-import { BASE_URL } from '../../config';
-import { toast } from 'react-toastify';
-import HashLoader from 'react-spinners/HashLoader';
-import './packing.css';
+import { useState, useEffect } from "react";
+import { BASE_URL } from "../../config";
+import { toast } from "react-toastify";
+import HashLoader from "react-spinners/HashLoader";
+import "./packing.css";
 import Packing1 from "./Packing1.jsx";
 import Packing2 from "./Packing2.jsx";
 
@@ -10,12 +10,11 @@ const Packing = () => {
   const [loading, setLoading] = useState(false);
   const [getEndDate, setGetEndDate] = useState(null);
   const [formData, setFormData] = useState({
-    saleNo: '',
-    startDate: '',
-    endDate: '',
-    details: 'packing',
+    saleNo: "",
+    startDate: "",
+    endDate: "",
+    details: "packing",
   });
-
 
   const handleInputChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -26,9 +25,9 @@ const Packing = () => {
     setLoading(true);
     try {
       const res = await fetch(`${BASE_URL}/packing/saledetails`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(formData),
       });
@@ -49,9 +48,9 @@ const Packing = () => {
     setLoading(true);
     try {
       const res = await fetch(`${BASE_URL}/packing/getDateDetails`, {
-        method: 'GET',
+        method: "GET",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
       });
       const data = await res.json();
@@ -60,7 +59,7 @@ const Packing = () => {
       }
       setGetEndDate(data.data);
       setLoading(false);
-      toast.success('Date fetched successfully');
+      toast.success("Date fetched successfully");
     } catch (err) {
       toast.error(err.message);
       setLoading(false);
@@ -76,7 +75,9 @@ const Packing = () => {
       {getEndDate ? (
         <form className="a1" onSubmit={submitHandler}>
           <p className="b1">Sale Details</p>
-          <p className="b2">Please enter the following details to continue the process.</p>
+          <p className="b2">
+            Please enter the following details to continue the process.
+          </p>
           <div className="mb-5">
             <label className="sale">Sale Number</label>
             <br />
@@ -114,17 +115,15 @@ const Packing = () => {
             </div>
           </div>
           <div className="mt-7">
-            <button
-              disabled={loading}
-              type="submit"
-              className=""
-            >
-              {loading ? <HashLoader size={35} color="#ffffff" /> : 'Submit'}
+            <button disabled={loading} type="submit" className="">
+              {loading ? <HashLoader size={35} color="#ffffff" /> : "Submit"}
             </button>
           </div>
         </form>
+      ) : 8 > 5 ? (
+        <Packing1 />
       ) : (
-        5>8?  <Packing1/> : <Packing2/>
+        <Packing2 />
       )}
     </div>
   );
