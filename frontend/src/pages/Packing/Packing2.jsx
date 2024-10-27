@@ -151,6 +151,23 @@ const Packing2 = () => {
           ))}
         </select>
       </div>
+      <div className="mb-5">
+        <label className="green-leaf">Tea Mark</label>
+        <br />
+        <select
+          name="teamark"
+          value={formData.teamark}
+          onChange={handleInputChange}
+          className="tea_mark"
+        >
+          <option value="">Select the tea category</option>
+          {Object.keys(teaGrades).map((grade) => (
+            <option key={grade} value={grade}>
+              {grade}
+            </option>
+          ))}
+        </select>
+      </div>
 
       <div className="mb-5">
         {error && (
