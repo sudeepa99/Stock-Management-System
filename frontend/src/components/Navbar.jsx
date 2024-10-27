@@ -1,20 +1,20 @@
-import React, { useContext } from 'react'
+import React, { useContext } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { SidebarData } from "./SidebarData";
 import "../App.css";
-import CompanyLogo from "../assets/icons/logo.png";
+import CompanyLogo from "../assets/images/logo.png";
 import LogoutIcon from "../assets/icons/Logout.png";
-import {authContext} from '../context/AuthContext';
-import {useNavigate} from 'react-router-dom';
+import { authContext } from "../context/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 const Navbar = () => {
   const location = useLocation();
-  const {dispatch}= useContext(authContext);
-  const navigate= useNavigate();
-  const handleLogout =()=>{
-    dispatch({type:'LOGOUT'});
+  const { dispatch } = useContext(authContext);
+  const navigate = useNavigate();
+  const handleLogout = () => {
+    dispatch({ type: "LOGOUT" });
     navigate("/");
-  }
+  };
   return (
     <div className="nav-menu active">
       <div className="nav-menu-header">
@@ -26,7 +26,12 @@ const Navbar = () => {
           const isActive = location.pathname === item.path;
           return (
             <li key={index} className={item.cName}>
-              <Link to={item.path} className={`${isActive ? 'active' : ''} ${item.title.toLowerCase()}`}>
+              <Link
+                to={item.path}
+                className={`${
+                  isActive ? "active" : ""
+                } ${item.title.toLowerCase()}`}
+              >
                 {item.icon}
                 <span>{item.title}</span>
               </Link>
@@ -34,7 +39,7 @@ const Navbar = () => {
           );
         })}
       </ul>
-      <button className="logout-button" onClick={handleLogout}  >
+      <button className="logout-button" onClick={handleLogout}>
         <img src={LogoutIcon} alt="Logout" className="nav-icon" />
         <span>Logout</span>
       </button>

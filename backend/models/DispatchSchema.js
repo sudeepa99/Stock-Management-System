@@ -18,10 +18,13 @@ const dispatchteaSchema = new mongoose.Schema({
 });
 
 const dispatchDetailsSchema = new mongoose.Schema({
-  date: {
-    type: Date,
+  saleNumber:{
+    type: Number,
+    min: 0,
+    max: 999,
     required: true,
   },
+
   details: {
     type: String,
     required: true,
@@ -44,6 +47,8 @@ const dispatchDetailsSchema = new mongoose.Schema({
   BP: [dispatchteaSchema],
   FBOPFSp: [dispatchteaSchema],
   FFEXSP: [dispatchteaSchema],
+  FFEXSP1: [dispatchteaSchema],
+
 });
 
 export default mongoose.model("DispatchDetails", dispatchDetailsSchema);
