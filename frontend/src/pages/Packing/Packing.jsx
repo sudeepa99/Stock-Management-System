@@ -9,7 +9,6 @@ import Packing2 from "./Packing2.jsx";
 const Packing = () => {
   const [loading, setLoading] = useState(false);
   const [madeTea, setMadeTea] = useState(null);
-
   const [error, setError] = useState('');
   const [getEndDate, setGetEndDate] = useState(null);
   const [formData, setFormData] = useState({
@@ -18,7 +17,6 @@ const Packing = () => {
     endDate: '',
     details: 'packing',
   });
-
 
   const handleInputChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -49,12 +47,13 @@ const Packing = () => {
       setLoading(false);
       toast.success(data.message);
       setGetEndDate(false);
-      setMadeTea(false)// Conditionally show Packing2 if there's data
+      setMadeTea(false)
     } catch (err) {
       toast.error(err.message);
       setLoading(false);
     }
   };
+
   const getMadeTeaF = async () => {
     setLoading(true);
     try {
@@ -66,18 +65,15 @@ const Packing = () => {
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.message);
-      console.log(1234);
-
-      console.log(data);
-
       setMadeTea(data.data);
-      toast.success('Data fetched successfully');
+      //  toast.success('Data fetched successfully');
     } catch (err) {
-      toast.error(err.message);
+      //  toast.error(err.message);
     } finally {
       setLoading(false);
     }
   };
+
   const getEndDateF = async () => {
     setLoading(true);
     try {
@@ -93,9 +89,9 @@ const Packing = () => {
       }
       setGetEndDate(data.data);
       setLoading(false);
-      toast.success('Date fetched successfully');
+      // toast.success('Date fetched successfully');
     } catch (err) {
-      toast.error(err.message);
+      // toast.error(err.message);
       setLoading(false);
     }
   };

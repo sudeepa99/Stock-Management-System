@@ -81,13 +81,10 @@ const Packing2 = () => {
 
   const submitHandler = async event => {
     event.preventDefault();
-
     if (!validateForm()) {
       return; // Stop form submission if validation fails
     }
-
     setLoading(true);
-
     try {
       const payload = {
         teacategory: formData.teacategory,
@@ -97,7 +94,6 @@ const Packing2 = () => {
           numofbags: formData.numofbags
         }
       };
-
       const res = await fetch(`${BASE_URL}/packing/update`, {
         method: 'PUT',
         headers: {
@@ -105,12 +101,10 @@ const Packing2 = () => {
         },
         body: JSON.stringify(payload)
       });
-
       const data = await res.json();
       if (!res.ok) {
         throw new Error(data.message || 'Something went wrong');
       }
-
       setLoading(false);
       toast.success(data.message);
 

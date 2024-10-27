@@ -7,10 +7,6 @@ import './Dashboard.css';
 const Dashboard = () => {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [formData, setFormData] = useState({
-    startDate: '',
-    endDate: ''
-  });
 
   const getMadeTeaF = async () => {
     setLoading(true);
@@ -23,11 +19,10 @@ const Dashboard = () => {
       });
       const responseData = await res.json();
       if (!res.ok) throw new Error(responseData.message);
-
-      setData(responseData.data); // Update the data state with the fetched data
-      toast.success('Data fetched successfully');
+      setData(responseData.data);
+      // toast.success('Data fetched successfully'); // Move the success toast here
     } catch (err) {
-      toast.error(err.message);
+      // toast.error(err.message);
     } finally {
       setLoading(false);
     }
@@ -58,8 +53,6 @@ const Dashboard = () => {
               <span>{data?.saleDetails.endDate ? new Date(data.saleDetails.endDate).toLocaleDateString() : ''}</span>
             </div>
           </div>
-
-
           <div className="mb-5">
             <label className='green-leaf'>Amount of green leaf received</label>
             <span>{data?.packingDetails && data.packingDetails.greenleaves !== null ? data.packingDetails.greenleaves : "Not add data"}</span>
@@ -68,9 +61,6 @@ const Dashboard = () => {
             <label className='made-tea'>Amount of tea made</label>
             <span>{data?.packingDetails && data.packingDetails.madetea !== null ? data.packingDetails.madetea : "Not add data"}</span>
           </div>
-
-
-
           {/* Ensure BOP1A array has at least one element before accessing */}
           {data?.packingDetails && (
             <table className="table">
@@ -100,13 +90,10 @@ const Dashboard = () => {
               </tbody>
             </table>
           )}
-
-
         </form>
       )}
     </div>
   );
-
 };
 
 export default Dashboard;

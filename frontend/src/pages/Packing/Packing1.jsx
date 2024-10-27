@@ -11,14 +11,15 @@ const Packing1 = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [getMadeTea, setMadeTea] = useState('');
+  const [getTrue, setGetTrue] = useState(true);
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     greenleaves: '',
     madetea: '',
     details: 'packing',
     date: new Date().toISOString().substr(0, 10),
   });
-  const [getTrue, setGetTrue] = useState(true);
-  const navigate = useNavigate();
+
 
   const getMadeTeaF = async () => {
     setLoading(true);
@@ -33,11 +34,10 @@ const Packing1 = () => {
       if (!res.ok) throw new Error(data.message);
 
       setMadeTea(data.data);
-      toast.success('Data fetched successfully');
-      // Set getTrue to false if getMadeTea has data
+      //  toast.success('Data fetched successfully');
       setGetTrue(!data.data); // Assumes `data.data` is non-empty if there's data
     } catch (err) {
-      toast.error(err.message);
+      // toast.error(err.message);
     } finally {
       setLoading(false);
     }

@@ -1,112 +1,93 @@
-import User from '../models/UserSchema.js'
-import Admin from '../models/AdminSchema.js'
-import jwt from 'jsonwebtoken'
-import bcrypt from 'bcrypt'
+import User from '../models/UserSchema.js';
+import Admin from '../models/AdminSchema.js';
+import jwt from 'jsonwebtoken';
+import bcrypt from 'bcrypt';
 
-const generateToken = user=>{
-    return jwt.sign({id:user._id, role:user.role}, process.env.JWT_SECRET_key,{
-        expiresIn: '15d'
-    })
-}
+// Generate JWT token
+const generateToken = (user) => {
+    return jwt.sign(
+        { id: user._id, role: user.role },
+        process.env.JWT_SECRET_KEY, // Changed to JWT_SECRET_KEY for consistency
+        { expiresIn: '15d' }
+    );
+};
 
-export const register = async(req,res)=>{
+// User registration
+export const register = async (req, res) => {
+    const { email, password, name, role } = req.body;
 
-    const {email,password,name,role} = req.body
+    try {
+        let user = null;
 
-    try{
-
-        let user=null
-
-        if(role== 'viewer'){
-            user=await User.findOne({email})
-        }
-        else if(role=='admin'){
-            user = await Admin.findOne({email})
-        }
-
-        //check if user exist
-        if(user){
-            return res.status(400).json({message:'User already exist'})
+        // Check user existence based on role
+        if (role === 'viewer') {
+            user = await User.findOne({ email });
+        } else if (role === 'admin') {
+            user = await Admin.findOne({ email });
         }
 
-
-        //hash password
-        const salt = await bcrypt.genSalt(10)
-        const hashPassword = await bcrypt.hash(password,salt)
-
-        if(role=='viewer'){
-            user = new User({
-                name,
-                email,
-                password:hashPassword,
-                role
-            })
+        // Check if user already exists
+        if (user) {
+            return res.status(400).json({ message: 'User already exists' });
         }
 
-        if(role=='admin'){
-            user = new Admin({
-                name,
-                email,
-                password:hashPassword,
-                role
-            })
-        }
+        // Hash the password
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(password, salt);
+
+        // Create new user based on role
+        user = role === 'viewer' ?
+            new User({ name, email, password: hashedPassword, role }) :
+            new Admin({ name, email, password: hashedPassword, role });
 
         await user.save();
 
-        res.status(200).json({success:true,message: 'User successfully created'});
+        res.status(201).json({ success: true, message: 'User successfully created' });
 
-
-
-    }catch(err){
-        res.status(500).json({success:false,message: 'Internal server error, Try again'});
+    } catch (error) {
+        console.error(error); // Log the error for debugging
+        res.status(500).json({ success: false, message: 'Internal server error, please try again' });
     }
 };
 
-export const login = async(req,res) => {
-    const {email,password} = req.body
+// User login
+export const login = async (req, res) => {
+    const { email, password } = req.body;
 
-    try{
-        let user = null
-        const viewer = await User.findOne({email})
-        const admin = await Admin.findOne({email})
+    try {
+        // Find user in both collections
+        const viewer = await User.findOne({ email });
+        const admin = await Admin.findOne({ email });
+        const user = viewer || admin; // Set user if found
 
-        if(viewer){
-            user=viewer
-        }
-        if(admin){
-            user=admin
-        }
-
-        //checks if user exist or not
-        if(!user){
-            return res.status(404).json({ message: "User not found"});
+        // Check if user exists
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
         }
 
-        //compare password
-        const isPasswordMatch = await bcrypt.compare(req.body.password,user.password)
+        // Compare passwords
+        const isPasswordMatch = await bcrypt.compare(password, user.password);
 
-        if(!isPasswordMatch){
-            return res.status(400).json({ status:false,message: "Invalid credentials"})
+        if (!isPasswordMatch) {
+            return res.status(400).json({ status: false, message: 'Invalid credentials' });
         }
 
-        //get toke
+        // Generate JWT token
         const token = generateToken(user);
 
-        const { password,role,appointments, ...rest} = user._doc;
+        // Destructure the user object to exclude sensitive information
+        const { password: _, role, appointments, ...rest } = user._doc;
 
-        res
-        .status(200)
-        .json({
-            status:true,
-            message: "Successfully login",
+        res.status(200).json({
+            status: true,
+            message: 'Successfully logged in',
             token,
-            data: { ...rest},
+            data: { ...rest },
             role,
         });
 
-    }catch(err){
-        res.status(500).json({ status: false, message: "Failed to login"});
-    }};
-
-   
+    } catch (error) {
+        console.error(error); // Log the error for debugging
+        res.status(500).json({ status: false, message: 'Failed to log in' });
+    }
+};
