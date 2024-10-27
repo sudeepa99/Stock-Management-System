@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { BASE_URL } from '../../config';
+import { BASE_URL } from '../../config.js';
 import { toast } from 'react-toastify';
 import HashLoader from 'react-spinners/HashLoader';
 import "./packing.css";
@@ -13,15 +12,80 @@ const Packing2 = () => {
     details: 'packing',
     numofbags: ''
   });
+  const [error, setError] = useState('');
+  const [minSize, setMinSize] = useState(null);
+  const [maxSize, setMaxSize] = useState(null);
 
-  const navigate = useNavigate();
+  const teaGrades = {
+    BOP1A: { min: 25, max: 35 },
+    FBOP: { min: 32, max: 45 },
+    FBOPF1: { min: 36, max: 52 },
+    OPA: { min: 20, max: 30 },
+    OP: { min: 22, max: 32 },
+    PEKOE: { min: 28, max: 45 },
+    PEKOE1: { min: 32, max: 47 },
+    BOP: { min: 38, max: 53 },
+    "BOP Sp": { min: 38, max: 52 },
+    BOP1: { min: 30, max: 40 },
+    BOPA: { min: 30, max: 45 },
+    BOPF: { min: 40, max: 56 },
+    FBOP1: { min: 30, max: 42 },
+    FBOPF: { min: 30, max: 50 },
+    OP1: { min: 26, max: 36 },
+    BP: { min: 35, max: 60 },
+    "FBOPF Sp": { min: 30, max: 55 },
+    "FF EX SP": { min: 20, max: 52 },
+  };
 
   const handleInputChange = e => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+
+    // Clear error if the field is valid, otherwise set error
+    if (name === 'teacategory') {
+      const selectedTeaGrade = teaGrades[value];
+      if (selectedTeaGrade) {
+        setMinSize(selectedTeaGrade.min);
+        setMaxSize(selectedTeaGrade.max);
+        setError(''); // Clear error on valid category selection
+      } else {
+        setMinSize(null);
+        setMaxSize(null);
+      }
+    } else if (name === 'sizeofbag') {
+      if (value && (value < minSize || value > maxSize)) {
+        setError(`Please enter a valid bag size between ${minSize} and ${maxSize} kg.`);
+      } else {
+        setError(''); // Clear error if the input is within range
+      }
+    }
+  };
+
+  const validateForm = () => {
+    const { teacategory, sizeofbag, numofbags } = formData;
+
+    if (!teacategory) {
+      setError('Please select a tea category.');
+      return false;
+    }
+    if (!sizeofbag || sizeofbag < minSize || sizeofbag > maxSize) {
+      setError(`Please enter a valid bag size between ${minSize} and ${maxSize} kg.`);
+      return false;
+    }
+    if (!numofbags) {
+      setError('Please select the number of bags.');
+      return false;
+    }
+    return true;
   };
 
   const submitHandler = async event => {
     event.preventDefault();
+
+    if (!validateForm()) {
+      return; // Stop form submission if validation fails
+    }
+
     setLoading(true);
 
     try {
@@ -49,7 +113,6 @@ const Packing2 = () => {
 
       setLoading(false);
       toast.success(data.message);
-      navigate('/packing2');
 
       setFormData({
         teacategory: '',
@@ -57,6 +120,8 @@ const Packing2 = () => {
         details: 'packing',
         numofbags: ''
       });
+      setMinSize(null);
+      setMaxSize(null);
     } catch (err) {
       toast.error(err.message);
       setLoading(false);
@@ -64,68 +129,64 @@ const Packing2 = () => {
   };
 
   return (
-      <form className='a1' onSubmit={submitHandler}>
-        <p className='b1'>Date</p>
-        <p className='b2'>Please enter the following details to continue the process.</p>
+    <form className='a1' onSubmit={submitHandler}>
+      <p className='b1'>Date</p>
+      <p className='b2'>Please enter the following details to continue the process.</p>
+      <div className="mb-5">
+        <label className='green-leaf'>Tea Category</label>
+        <br />
+        <select
+          name='teacategory'
+          value={formData.teacategory}
+          onChange={handleInputChange}
+          className='tea_category'>
+          <option value="">Select the tea category</option>
+          {Object.keys(teaGrades).map(grade => (
+            <option key={grade} value={grade}>{grade}</option>
+          ))}
+        </select>
+      </div>
 
-        <div className="mb-5">
-          <label className='green-leaf'>Tea Category</label>
-          <br />
-          <select
-            name='teacategory'
-            value={formData.teacategory}
-            onChange={handleInputChange}
-            className='tea_category'>
-            <option value="">Select the tea category</option>
-            <option value="BOP1A">BOP1A</option>
-            <option value="FBOP">FBOP</option>
-            <option value="FBOPF1">FBOPF1</option>
-            <option value="OPA">OPA</option>
-            <option value="OP">OP</option>
-            <option value="PEKOE">PEKOE</option>
-            <option value="PEKOE1">PEKOE1</option>
-            <option value="BOP">BOP</option>
-            <option value="BOPSp">BOP Sp</option>
-            <option value="BOP1">BOP1</option>
-            <option value="BOPA">BOPA</option>
-            <option value="BOPF">BOPF</option>
-            <option value="FBOP1">FBOP1</option>
-            <option value="FBOPF">FBOPF</option>
-            <option value="OP1">OP1</option>
-            <option value="BP">BP</option>
-            <option value="FBOPFSp">FBOPF Sp</option>
-            <option value="FFEXSP">FF EX SP</option>
-          </select>
-        </div>
-    
-        <div className="mb-5">
-          <label className='made-tea'>Size Of Bag</label>
-          <br />
-          <input type='number' name='sizeofbag' placeholder='kg' className='control2' value={formData.sizeofbag} onChange={handleInputChange} />
-        </div>
-        <div className="mb-5">
-          <label className='made-tea'>Num Of Bag</label>
-          <br />
-          <select
-            name='numofbags'
-            value={formData.numofbags}
-            onChange={handleInputChange}
-            className='bags_no'
-          >
-            <option value="">Select number of bags</option>
-            <option value="10B">10B</option>
-            <option value="15B">15B</option>
-            <option value="20B">20B</option>
-            <option value="30B">30B</option>
-            <option value="40B">40B</option>
-          </select>
-        </div>
-        <div className="mt-7">
-          <button disabled={loading} type='submit'>
-            {loading ? <HashLoader size={35} color="#ffffff" /> : 'Submit'}
-          </button>
-        </div>
-      </form>
+      <div className="mb-5">
+        {error && <p className="error-msg" style={{ color: 'red' }}>{error}</p>} {/* Display error message here */}
+        <label className='made-tea'>Size Of Bag</label>
+        <br />
+        <input
+          type='number'
+          name='sizeofbag'
+          placeholder='kg'
+          className='control2'
+          value={formData.sizeofbag}
+          min={minSize || ""}
+          max={maxSize || ""}
+          onChange={handleInputChange}
+        />
+      </div>
+
+      <div className="mb-5">
+        <label className='made-tea'>Num Of Bag</label>
+        <br />
+        <select
+          name='numofbags'
+          value={formData.numofbags}
+          onChange={handleInputChange}
+          className='bags_no'
+        >
+          <option value="">Select number of bags</option>
+          <option value="10B">10B</option>
+          <option value="15B">15B</option>
+          <option value="20B">20B</option>
+          <option value="30B">30B</option>
+          <option value="40B">40B</option>
+        </select>
+      </div>
+
+      <div className="mt-7">
+        <button disabled={loading} type='submit'>
+          {loading ? <HashLoader size={35} color="#ffffff" /> : 'Submit'}
+        </button>
+      </div>
+    </form>
   );
 }
 

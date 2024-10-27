@@ -8,6 +8,9 @@ import Packing2 from "./Packing2.jsx";
 
 const Packing = () => {
   const [loading, setLoading] = useState(false);
+  const [madeTea, setMadeTea] = useState(null);
+
+  const [error, setError] = useState('');
   const [getEndDate, setGetEndDate] = useState(null);
   const [formData, setFormData] = useState({
     saleNo: '',
@@ -19,6 +22,13 @@ const Packing = () => {
 
   const handleInputChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+    if (name === 'startDate') {
+      if (Number(value) > Number(formData.endDate)) {
+        setError('Start date cannot exceed the end date.');
+      } else {
+        setError(''); // Clear error if condition is not met
+      }
+    }
   };
 
   const submitHandler = async (event) => {
@@ -39,12 +49,35 @@ const Packing = () => {
       setLoading(false);
       toast.success(data.message);
       setGetEndDate(false);
+      setMadeTea(false)// Conditionally show Packing2 if there's data
     } catch (err) {
       toast.error(err.message);
       setLoading(false);
     }
   };
+  const getMadeTeaF = async () => {
+    setLoading(true);
+    try {
+      const res = await fetch(`${BASE_URL}/packing/getMade`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message);
+      console.log(1234);
 
+      console.log(data);
+
+      setMadeTea(data.data);
+      toast.success('Data fetched successfully');
+    } catch (err) {
+      toast.error(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
   const getEndDateF = async () => {
     setLoading(true);
     try {
@@ -69,6 +102,8 @@ const Packing = () => {
 
   useEffect(() => {
     getEndDateF();
+    getMadeTeaF();
+
   }, []);
 
   return (
@@ -81,7 +116,7 @@ const Packing = () => {
             <label className="sale">Sale Number</label>
             <br />
             <input
-              type="number"
+              type="text"
               name="saleNo"
               className="control2"
               value={formData.saleNo}
@@ -99,6 +134,7 @@ const Packing = () => {
                 value={formData.startDate}
                 onChange={handleInputChange}
                 required
+                min={new Date().toISOString().split("T")[0]} // Disable dates before today
               />
             </div>
             <div className="mb-6">
@@ -110,7 +146,14 @@ const Packing = () => {
                 value={formData.endDate}
                 onChange={handleInputChange}
                 required
+                min={formData.startDate || new Date().toISOString().split("T")[0]} // Disable dates before start date or today
               />
+              <span className="error-message">
+                {formData.endDate < formData.startDate && (
+                  <span style={{ color: 'red' }}>
+                    End date cannot be earlier than start date.
+                  </span>
+                )}  </span>
             </div>
           </div>
           <div className="mt-7">
@@ -123,8 +166,8 @@ const Packing = () => {
             </button>
           </div>
         </form>
-      ) : (
-        5>8?  <Packing1/> : <Packing2/>
+      ) : (madeTea ?
+        <Packing2 /> : <Packing1 />
       )}
     </div>
   );
