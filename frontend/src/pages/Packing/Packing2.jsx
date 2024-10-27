@@ -1,20 +1,22 @@
-import React, { useState } from 'react';
-import { BASE_URL } from '../../config.js';
-import { toast } from 'react-toastify';
-import HashLoader from 'react-spinners/HashLoader';
+import React, { useState } from "react";
+import { BASE_URL } from "../../config.js";
+import { toast } from "react-toastify";
+import HashLoader from "react-spinners/HashLoader";
 import "./packing.css";
 
 const Packing2 = () => {
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
-    teacategory: '',
-    sizeofbag: '',
-    details: 'packing',
-    numofbags: ''
+    teacategory: "",
+    sizeofbag: "",
+    details: "packing",
+    numofbags: "",
   });
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
   const [minSize, setMinSize] = useState(null);
   const [maxSize, setMaxSize] = useState(null);
+
+  const today = new Date().toLocaleDateString();
 
   const teaGrades = {
     BOP1A: { min: 25, max: 35 },
@@ -37,26 +39,28 @@ const Packing2 = () => {
     "FF EX SP": { min: 20, max: 52 },
   };
 
-  const handleInputChange = e => {
+  const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
 
     // Clear error if the field is valid, otherwise set error
-    if (name === 'teacategory') {
+    if (name === "teacategory") {
       const selectedTeaGrade = teaGrades[value];
       if (selectedTeaGrade) {
         setMinSize(selectedTeaGrade.min);
         setMaxSize(selectedTeaGrade.max);
-        setError(''); // Clear error on valid category selection
+        setError(""); // Clear error on valid category selection
       } else {
         setMinSize(null);
         setMaxSize(null);
       }
-    } else if (name === 'sizeofbag') {
+    } else if (name === "sizeofbag") {
       if (value && (value < minSize || value > maxSize)) {
-        setError(`Please enter a valid bag size between ${minSize} and ${maxSize} kg.`);
+        setError(
+          `Please enter a valid bag size between ${minSize} and ${maxSize} kg.`
+        );
       } else {
-        setError(''); // Clear error if the input is within range
+        setError(""); // Clear error if the input is within range
       }
     }
   };
@@ -65,21 +69,23 @@ const Packing2 = () => {
     const { teacategory, sizeofbag, numofbags } = formData;
 
     if (!teacategory) {
-      setError('Please select a tea category.');
+      setError("Please select a tea category.");
       return false;
     }
     if (!sizeofbag || sizeofbag < minSize || sizeofbag > maxSize) {
-      setError(`Please enter a valid bag size between ${minSize} and ${maxSize} kg.`);
+      setError(
+        `Please enter a valid bag size between ${minSize} and ${maxSize} kg.`
+      );
       return false;
     }
     if (!numofbags) {
-      setError('Please select the number of bags.');
+      setError("Please select the number of bags.");
       return false;
     }
     return true;
   };
 
-  const submitHandler = async event => {
+  const submitHandler = async (event) => {
     event.preventDefault();
     if (!validateForm()) {
       return; // Stop form submission if validation fails
@@ -91,28 +97,28 @@ const Packing2 = () => {
         teacategoryData: {
           teacategory: formData.teacategory,
           sizeofbag: parseInt(formData.sizeofbag, 10),
-          numofbags: formData.numofbags
-        }
+          numofbags: formData.numofbags,
+        },
       };
       const res = await fetch(`${BASE_URL}/packing/update`, {
-        method: 'PUT',
+        method: "PUT",
         headers: {
-          'Content-Type': 'application/json'
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify(payload)
+        body: JSON.stringify(payload),
       });
       const data = await res.json();
       if (!res.ok) {
-        throw new Error(data.message || 'Something went wrong');
+        throw new Error(data.message || "Something went wrong");
       }
       setLoading(false);
       toast.success(data.message);
 
       setFormData({
-        teacategory: '',
-        sizeofbag: '',
-        details: 'packing',
-        numofbags: ''
+        teacategory: "",
+        sizeofbag: "",
+        details: "packing",
+        numofbags: "",
       });
       setMinSize(null);
       setMaxSize(null);
@@ -123,33 +129,43 @@ const Packing2 = () => {
   };
 
   return (
-    <form className='a1' onSubmit={submitHandler}>
-      <p className='b1'>Date</p>
-      <p className='b2'>Please enter the following details to continue the process.</p>
+    <form className="a1" onSubmit={submitHandler}>
+      <p className="b1">{today}</p>
+      <p className="b2">
+        Please enter the following details to continue the process.
+      </p>
       <div className="mb-5">
-        <label className='green-leaf'>Tea Category</label>
+        <label className="green-leaf">Tea Category</label>
         <br />
         <select
-          name='teacategory'
+          name="teacategory"
           value={formData.teacategory}
           onChange={handleInputChange}
-          className='tea_category'>
+          className="tea_category"
+        >
           <option value="">Select the tea category</option>
-          {Object.keys(teaGrades).map(grade => (
-            <option key={grade} value={grade}>{grade}</option>
+          {Object.keys(teaGrades).map((grade) => (
+            <option key={grade} value={grade}>
+              {grade}
+            </option>
           ))}
         </select>
       </div>
 
       <div className="mb-5">
-        {error && <p className="error-msg" style={{ color: 'red' }}>{error}</p>} {/* Display error message here */}
-        <label className='made-tea'>Size Of Bag</label>
+        {error && (
+          <p className="error-msg" style={{ color: "red" }}>
+            {error}
+          </p>
+        )}{" "}
+        {/* Display error message here */}
+        <label className="made-tea">Size Of Bag</label>
         <br />
         <input
-          type='number'
-          name='sizeofbag'
-          placeholder='kg'
-          className='control2'
+          type="number"
+          name="sizeofbag"
+          placeholder="kg"
+          className="control2"
           value={formData.sizeofbag}
           min={minSize || ""}
           max={maxSize || ""}
@@ -158,13 +174,13 @@ const Packing2 = () => {
       </div>
 
       <div className="mb-5">
-        <label className='made-tea'>Num Of Bag</label>
+        <label className="made-tea">Num Of Bag</label>
         <br />
         <select
-          name='numofbags'
+          name="numofbags"
           value={formData.numofbags}
           onChange={handleInputChange}
-          className='bags_no'
+          className="bags_no"
         >
           <option value="">Select number of bags</option>
           <option value="10B">10B</option>
@@ -175,13 +191,13 @@ const Packing2 = () => {
         </select>
       </div>
 
-      <div className="mt-7">
-        <button disabled={loading} type='submit'>
-          {loading ? <HashLoader size={35} color="#ffffff" /> : 'Submit'}
+      <div className="bg-[#54ed50] w-[150px] text-center rounded-[5px] text-[23px] desktop:ml-[43%] mt-3 laptop:ml-[41%] ">
+        <button disabled={loading} type="submit">
+          {loading ? <HashLoader size={35} color="#ffffff" /> : "Submit"}
         </button>
       </div>
     </form>
   );
-}
+};
 
 export default Packing2;

@@ -10,9 +10,13 @@ export default {
         irisBlueColor: "#01B5C5",
         headingColor: "#181A1E",
         textColor: "#4E545F",
-        cellwhiteColor:"#fff",
-        greyColor:"#F0E6E6",
-        brownColor:"#D9D9D9"
+        cellwhiteColor: "#fff",
+        greyColor: "#F0E6E6",
+        brownColor: "#D9D9D9",
+      },
+      screens: {
+        laptop: "1360px",
+        desktop: "1800px",
       },
 
       boxShadow: {
