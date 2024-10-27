@@ -93,7 +93,7 @@
   display: flex;
   text-align: start;
 }
-.mt-7 {
+/* .mt-7 {
   background-color: #54ed50;
   width: 150px;
   text-align: center;
@@ -101,7 +101,7 @@
   padding: 2px;
   font-size: 23px;
   justify-content: center;
-}
+} */
 .mt-8 {
   background-color: #54ed50;
   width: 150px;

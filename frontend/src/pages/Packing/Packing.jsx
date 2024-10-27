@@ -78,6 +78,7 @@ const Packing = () => {
           <p className="b2">
             Please enter the following details to continue the process.
           </p>
+
           <div className="mb-5">
             <label className="sale">Sale Number</label>
             <br />
@@ -114,7 +115,7 @@ const Packing = () => {
               />
             </div>
           </div>
-          <div className="mt-7">
+          <div className="bg-[#54ed50] w-[150px] text-center rounded-[5px] text-[23px] desktop:ml-[43%] mt-3 laptop:ml-[41%]  ">
             <button disabled={loading} type="submit" className="">
               {loading ? <HashLoader size={35} color="#ffffff" /> : "Submit"}
             </button>

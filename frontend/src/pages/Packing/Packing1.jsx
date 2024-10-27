@@ -75,7 +75,7 @@ const Packing1 = () => {
               onChange={handleInputChange}
             />
           </div>
-          <div className="mt-7">
+          <div className="bg-[#54ed50] w-[150px] text-center rounded-[5px] text-[23px] desktop:ml-[44%] mt-3 laptop:ml-[42%] ">
             <button disabled={loading && true} type="submit">
               {loading ? <HashLoader size={35} color="#ffffff" /> : "Submit"}
             </button>
