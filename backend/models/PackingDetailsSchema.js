@@ -1,6 +1,15 @@
 import mongoose from "mongoose";
 
 const teaSchema = new mongoose.Schema({
+  teaMark: {
+    type: String,
+    required: true,
+
+  },
+  invoiceNo: {
+    type: String,
+    required: true,
+  },
   teacategory: {
     type: String,
     required: true,

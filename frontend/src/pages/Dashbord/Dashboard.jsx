@@ -20,6 +20,8 @@ const Dashboard = () => {
       const responseData = await res.json();
       if (!res.ok) throw new Error(responseData.message);
       setData(responseData.data);
+      console.log(responseData);
+
       // toast.success('Data fetched successfully'); // Move the success toast here
     } catch (err) {
       // toast.error(err.message);
@@ -71,7 +73,7 @@ const Dashboard = () => {
                 </label>
                 <span className="mt-3">
                   {data?.packingDetails &&
-                  data.packingDetails.greenleaves !== null
+                    data.packingDetails.greenleaves !== null
                     ? data.packingDetails.greenleaves
                     : "Not add data"}
                 </span>
@@ -95,10 +97,16 @@ const Dashboard = () => {
               <thead>
                 <tr className="bg-transparent">
                   <th className="px-4 py-2 border text-[#50EDED] border-gray-300">
+                    Invoice No
+                  </th>
+                  <th className="px-4 py-2 border text-[#50EDED] border-gray-300">
+                    Tea Mark
+                  </th>
+                  <th className="px-4 py-2 border text-[#50EDED] border-gray-300">
                     Tea Category
                   </th>
                   <th className="px-4 py-2 text-[#50EDED] border border-gray-300">
-                    Size Of Bag
+                    Waight of Bag
                   </th>
                   <th className="px-4 py-2 text-[#50EDED] border border-gray-300">
                     Num Of Bags
@@ -115,6 +123,12 @@ const Dashboard = () => {
                   ) {
                     return categoryDetails.map((item) => (
                       <tr key={item._id} className="">
+                        <td className="px-4 py-2 border border-gray-300">
+                          {item.invoiceNo}
+                        </td>
+                        <td className="px-4 py-2 border border-gray-300">
+                          {item.teaMark}
+                        </td>
                         <td className="px-4 py-2 border border-gray-300">
                           {item.teacategory}
                         </td>

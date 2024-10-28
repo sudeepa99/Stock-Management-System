@@ -36,7 +36,6 @@ export const getMadeTea = async (req, res) => {
         const today = new Date().toISOString().split('T')[0]; // Define today’s date in YYYY-MM-DD format
 
         const packing = await PackingDetailsSchema.findOne({ date: today }); // Adjust field as needed
-        console.log(packing);
 
         if (!packing || !packing.madetea) {
             return res.status(204).json({ data: false });
@@ -53,14 +52,12 @@ export const getSaleDetails = async (req, res) => {
     try {
         // Fetch the latest sale details
         const saleDetails = await Packing.findOne().sort({ $natural: -1 });
-        console.log(saleDetails);
 
         // Get today's date in YYYY-MM-DD format
         const today = new Date().toISOString().split('T')[0];
 
         // Fetch packing details for today
         const packingDetails = await PackingDetailsSchema.findOne({ date: today });
-        console.log(packingDetails);
 
         // Combine saleDetails and packingDetails if both are available
         const allDetail = {
@@ -86,7 +83,6 @@ export const getPackingDetails = async (req, res) => {
         const today = new Date().toISOString().split('T')[0]; // Define today’s date in YYYY-MM-DD format
 
         const packingDetails = await PackingDetailsSchema.findOne({ date: today });
-        console.log(packingDetails);
 
         if (!packingDetails) {
             return res.status(404).json({ success: false, message: "No packing details found for today." });
@@ -107,7 +103,6 @@ export const saleDetails = async (req, res) => {
     try {
         let packing_ = null;
 
-        console.log('Request Body:', req.body);
 
         if (details === 'packing') {
             packing_ = await Packing.findOne({ saleNo });
@@ -130,15 +125,12 @@ export const saleDetails = async (req, res) => {
         if (packing_) {
             if (startDate < endDate) {
                 await packing_.save();
-                console.log(startDate, endDate);
                 return res.status(200).json({ success: true, message: 'Packing successfully created' });
             }
             else {
-                console.log('Invalid details or unable to create packing:', { saleNo, startDate, endDate, details });
                 return res.status(400).json({ success: false, message: 'Invalid details or unable to create packing' });
             }
         } else {
-            console.log('Invalid details or unable to create packing:', { saleNo, startDate, endDate, details });
             return res.status(400).json({ success: false, message: 'Invalid details or unable to create packing' });
         }
 
@@ -154,7 +146,6 @@ export const updatepackingdetails = async (req, res) => {
     const { teacategory, teacategoryData } = req.body;
 
     try {
-
         const currentDate = new Date().toISOString().split('T')[0];
 
         const document = await PackingDetailsSchema.findOne({ date: currentDate });
@@ -171,13 +162,21 @@ export const updatepackingdetails = async (req, res) => {
 
         if (teaCategories.includes(teacategory)) {
             const updateField = {};
+            teacategoryData.invoiceNo = teacategoryData.teacategory + 1;
             updateField[teacategory] = teacategoryData;
+
+            // Generate the next invoice number
+            // const newInvoiceNo = await getNextInvoiceNo();
+            // Add the invoice number to the update field
+            console.log(teacategoryData.invoiceNo);
 
             const updatedPackingDetails = await PackingDetailsSchema.findByIdAndUpdate(
                 document._id,
                 { $set: updateField },
                 { new: true }
             );
+            console.log(updatedPackingDetails);
+
 
             return res.status(200).json({
                 success: true,
@@ -204,7 +203,6 @@ export const packingdetails = async (req, res) => {
     try {
         // Validate request details
         if (details !== 'packing') {
-            console.log('Invalid details:', details);
             return res.status(400).json({ success: false, message: 'Invalid details' });
         }
 
@@ -212,7 +210,6 @@ export const packingdetails = async (req, res) => {
 
         if (record) {
             record.teacategories = teacategories;
-            console.log('Updated existing record:', record);
 
             await record.save();
 

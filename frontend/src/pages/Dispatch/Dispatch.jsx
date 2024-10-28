@@ -147,7 +147,7 @@ const Dispatch = () => {
           </select>
         </div>
         <div className="mb-5">
-          <label className="made-tea">Size Of Bag</label>
+          <label className="made-tea">Waight of Bag</label>
           <br />
           <input
             type="number"

@@ -11,13 +11,18 @@ const Packing2 = () => {
     sizeofbag: "",
     details: "packing",
     numofbags: "",
+    teaMark: "",
+    invoiceNo: "",
   });
   const [error, setError] = useState("");
   const [minSize, setMinSize] = useState(null);
   const [maxSize, setMaxSize] = useState(null);
 
   const today = new Date().toLocaleDateString();
-
+  const teaMarks = {
+    NeluwmWattha: "Neluwm Wattha",
+    Cecilian: "Cecilian",
+  };
   const teaGrades = {
     BOP1A: { min: 25, max: 35 },
     FBOP: { min: 32, max: 45 },
@@ -98,6 +103,8 @@ const Packing2 = () => {
           teacategory: formData.teacategory,
           sizeofbag: parseInt(formData.sizeofbag, 10),
           numofbags: formData.numofbags,
+          teaMark: formData.teaMark,
+          invoiceNo: formData.invoiceNo,
         },
       };
       const res = await fetch(`${BASE_URL}/packing/update`, {
@@ -119,6 +126,8 @@ const Packing2 = () => {
         sizeofbag: "",
         details: "packing",
         numofbags: "",
+        teaMark: "",
+        invoiceNo: "",
       });
       setMinSize(null);
       setMaxSize(null);
@@ -134,6 +143,23 @@ const Packing2 = () => {
       <p className="b2">
         Please enter the following details to continue the process.
       </p>
+      <div className="mb-5">
+        <label className="green-leaf">Tea Mark</label>
+        <br />
+        <select
+          name="teaMark"
+          value={formData.teaMark}
+          onChange={handleInputChange}
+          className="tea_category"
+        >
+          <option value="">Select the tea category</option>
+          {Object.keys(teaMarks).map((grade) => (
+            <option key={grade} value={grade}>
+              {grade}
+            </option>
+          ))}
+        </select>
+      </div>
       <div className="mb-5">
         <label className="green-leaf">Tea Category</label>
         <br />
@@ -151,23 +177,6 @@ const Packing2 = () => {
           ))}
         </select>
       </div>
-      <div className="mb-5">
-        <label className="green-leaf">Tea Mark</label>
-        <br />
-        <select
-          name="teamark"
-          value={formData.teamark}
-          onChange={handleInputChange}
-          className="tea_mark"
-        >
-          <option value="">Select the tea category</option>
-          {Object.keys(teaGrades).map((grade) => (
-            <option key={grade} value={grade}>
-              {grade}
-            </option>
-          ))}
-        </select>
-      </div>
 
       <div className="mb-5">
         {error && (
@@ -176,7 +185,7 @@ const Packing2 = () => {
           </p>
         )}{" "}
         {/* Display error message here */}
-        <label className="made-tea">Size Of Bag</label>
+        <label className="made-tea">Waight of Bag</label>
         <br />
         <input
           type="number"
