@@ -8,7 +8,6 @@ const dispatchteaSchema = new mongoose.Schema({
   sizeofbag: {
     type: Number,
     min: 0,
-    max: 999,
     required: true,
   },
   numofbags: {
@@ -18,10 +17,9 @@ const dispatchteaSchema = new mongoose.Schema({
 });
 
 const dispatchDetailsSchema = new mongoose.Schema({
-  saleNumber:{
+  saleNumber: {
     type: Number,
     min: 0,
-    max: 999,
     required: true,
   },
 

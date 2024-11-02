@@ -33,7 +33,7 @@ const Packing = () => {
     event.preventDefault();
     setLoading(true);
     try {
-      const res = await fetch(`${BASE_URL}/packing/saledetails`, {
+      const res = await fetch(`${BASE_URL}/packing/sale`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -57,7 +57,7 @@ const Packing = () => {
   const getMadeTeaF = async () => {
     setLoading(true);
     try {
-      const res = await fetch(`${BASE_URL}/packing/getMade`, {
+      const res = await fetch(`${BASE_URL}/packing/made-tea`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -77,7 +77,7 @@ const Packing = () => {
   const getEndDateF = async () => {
     setLoading(true);
     try {
-      const res = await fetch(`${BASE_URL}/packing/getDateDetails`, {
+      const res = await fetch(`${BASE_URL}/packing/date`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",

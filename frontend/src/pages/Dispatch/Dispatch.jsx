@@ -63,7 +63,7 @@ const Dispatch = () => {
         updates: [update], // wrap update object in an array
       };
 
-      const res = await fetch(`${BASE_URL}/dispatch/dispatchdetails`, {
+      const res = await fetch(`${BASE_URL}/dispatch/details`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

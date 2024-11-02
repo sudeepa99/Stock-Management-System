@@ -32,7 +32,7 @@ const Packing2 = () => {
     PEKOE: { min: 28, max: 45 },
     PEKOE1: { min: 32, max: 47 },
     BOP: { min: 38, max: 53 },
-    "BOP Sp": { min: 38, max: 52 },
+    BOPSp: { min: 38, max: 52 },
     BOP1: { min: 30, max: 40 },
     BOPA: { min: 30, max: 45 },
     BOPF: { min: 40, max: 56 },
@@ -40,8 +40,8 @@ const Packing2 = () => {
     FBOPF: { min: 30, max: 50 },
     OP1: { min: 26, max: 36 },
     BP: { min: 35, max: 60 },
-    "FBOPF Sp": { min: 30, max: 55 },
-    "FF EX SP": { min: 20, max: 52 },
+    FBOPFSp: { min: 30, max: 55 },
+    FFEXSP: { min: 20, max: 52 },
   };
 
   const handleInputChange = (e) => {

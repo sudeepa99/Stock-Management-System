@@ -11,7 +11,7 @@ const Dashboard = () => {
   const getMadeTeaF = async () => {
     setLoading(true);
     try {
-      const res = await fetch(`${BASE_URL}/packing/saleDetail`, {
+      const res = await fetch(`${BASE_URL}/packing/sale`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",

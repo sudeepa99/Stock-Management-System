@@ -25,7 +25,7 @@ const Packing1 = () => {
   const getMadeTeaF = async () => {
     setLoading(true);
     try {
-      const res = await fetch(`${BASE_URL}/packing/getMade`, {
+      const res = await fetch(`${BASE_URL}/packing/made-tea`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -63,7 +63,7 @@ const Packing1 = () => {
     event.preventDefault();
     setLoading(true);
     try {
-      const res = await fetch(`${BASE_URL}/packing/packingdetails`, {
+      const res = await fetch(`${BASE_URL}/packing/details`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

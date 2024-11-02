@@ -4,6 +4,8 @@ import PackingDetailsSchema from '../models/PackingDetailsSchema.js';
 export const getAllPackingDetails = async (req, res) => {
     try {
         const packingD = await PackingDetailsSchema.find({}).select('-password');
+        console.log(packingD);
+
         res.status(200).json({ success: true, message: "Packing  found", data: packingD });
     } catch (err) {
         res.status(404).json({ success: false, message: "Not Found" });
@@ -31,6 +33,7 @@ export const getDateDetails = async (req, res) => {
         res.status(500).json({ success: false, message: "Server Error" });
     }
 };
+
 export const getMadeTea = async (req, res) => {
     try {
         const today = new Date().toISOString().split('T')[0]; // Define today’s date in YYYY-MM-DD format
@@ -142,7 +145,7 @@ export const saleDetails = async (req, res) => {
     }
 };
 
-export const updatepackingdetails = async (req, res) => {
+export const updatePackingDetails = async (req, res) => {
     const { teacategory, teacategoryData } = req.body;
 
     try {
@@ -197,20 +200,17 @@ export const updatepackingdetails = async (req, res) => {
     }
 };
 
-export const packingdetails = async (req, res) => {
-    const { date, greenleaves, madetea, details, teacategories } = req.body;
-
+export const packingDetails = async (req, res) => {
+    const { date, saleNumber, greenleaves, madetea, details, teacategories } = req.body;
+    const packing = await Packing.findOne().sort({ $natural: -1 });
     try {
         // Validate request details
         if (details !== 'packing') {
             return res.status(400).json({ success: false, message: 'Invalid details' });
         }
-
         let record = await PackingDetailsSchema.findOne({ date });
-
         if (record) {
             record.teacategories = teacategories;
-
             await record.save();
 
         } else {
@@ -219,7 +219,8 @@ export const packingdetails = async (req, res) => {
                 details,
                 greenleaves,
                 madetea,
-                teacategories
+                teacategories,
+                saleNumber: packing.saleNo,
             });
 
             await record.save();

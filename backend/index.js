@@ -1,53 +1,65 @@
 import express from "express";
-import cookieparser from "cookie-parser";
-import cors from 'cors';
+import cookieParser from "cookie-parser";
+import cors from "cors";
 import mongoose from "mongoose";
-import dotenv from 'dotenv';
-import authRoute from "./Routes/auth.js";
-import packingRoute from './Routes/packing.js';
-import dispatchRoute from './Routes/dispatch.js'
-import  reportsRoute  from "./Routes/report.js";
-import { errorHandler } from './middleware/errorHandler.js'; // Use ES Module import syntax
+import dotenv from "dotenv";
 
+// Route imports
+import authRoute from "./Routes/auth.js";
+import packingRoute from "./Routes/packing.js";
+import dispatchRoute from "./Routes/dispatch.js";
+import reportsRoute from "./Routes/report.js";
+
+// Middleware imports
+import { errorHandler } from "./middleware/errorHandler.js";
+
+// Load environment variables
 dotenv.config();
 
+// Initialize Express app
 const app = express();
 const port = process.env.PORT || 8000;
 
+// Configure CORS
 const corsOptions = {
-    origin: true,
+    origin: process.env.CLIENT_URL || '*', // Customize the origin for security
+    credentials: true, // Allow credentials (cookies, authorization headers)
 };
 
-app.get('/', (req, res) => {
-    res.send('API is working');
+// Define a simple root route for health checks
+app.get("/", (req, res) => {
+    res.status(200).send("API is working");
 });
 
-// Database connection
-mongoose.set('strictQuery', false);
+// Database connection setup
 const connectDB = async () => {
     try {
-        await mongoose.connect(process.env.Mongo_URL, {
-            useNewUrlParser: true,
-            useUnifiedTopology: true,
+        await mongoose.connect(process.env.MONGO_URL, {
         });
-        console.log('MongoDB database is connected');
+        console.log("MongoDB connected successfully");
     } catch (err) {
-        console.error('MongoDB database connection failed:', err); // Log the error for debugging
+        console.error("MongoDB connection failed:", err.message);
+        // Optional retry mechanism
+        setTimeout(connectDB, 5000);
     }
 };
 
-// Middleware
+// Middlewares
 app.use(express.json());
-app.use(cookieparser());
+app.use(cookieParser());
 app.use(cors(corsOptions));
-app.use('/api/v1/auth', authRoute); // domain/api/v1/auth/register
-app.use('/api/v1/packing', packingRoute);
-app.use('/api/v1/dispatch', dispatchRoute);
-app.use('/api/v1/report', reportsRoute);
-app.use(errorHandler); // Ensure this is an ES Module import
 
+// Routes
+app.use("/api/v1/auth", authRoute); // e.g., POST /api/v1/auth/register
+app.use("/api/v1/packing", packingRoute);
+app.use("/api/v1/dispatch", dispatchRoute);
+app.use("/api/v1/report", reportsRoute);
 
-app.listen(port, () => {
-    connectDB();
-    console.log("Server is running on port " + port);
+// Custom error handler (should be the last middleware)
+app.use(errorHandler);
+
+// Start the server
+app.listen(port, async () => {
+    await connectDB();
+    console.log(`Server is running on port ${port}`);
 });

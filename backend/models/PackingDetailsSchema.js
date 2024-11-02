@@ -18,7 +18,6 @@ const teaSchema = new mongoose.Schema({
   sizeofbag: {
     type: Number,
     min: 0,
-    max: 999,
     required: true,
 
   },
@@ -44,9 +43,15 @@ const packingDetailsSchema = new mongoose.Schema({
     min: 0,
 
   },
+  saleNumber: {
+    type: Number,
+    min: 0,
+    required: true,
+  },
   details: {
     type: String,
   },
+
   BOP1A: [teaSchema],
   FBOP: [teaSchema],
   FBOPF1: [teaSchema],

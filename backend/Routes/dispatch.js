@@ -1,10 +1,13 @@
 import express from "express";
-import {dispatchdetails} from "../Controllers/dispatchController.js";
-
+import { dispatchDetails } from "../Controllers/dispatchController.js";
 
 const router = express.Router();
 
-router.post("/dispatchdetails",dispatchdetails);
+/**
+ * Route to add new dispatch details
+ * @route POST /api/dispatch/details
+ * @desc Adds dispatch information to the database
+ */
+router.post("/details", dispatchDetails);
 
 export default router;
-
