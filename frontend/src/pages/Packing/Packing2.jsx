@@ -202,19 +202,14 @@ const Packing2 = () => {
       <div className="mb-5">
         <label className="made-tea">Num Of Bag</label>
         <br />
-        <select
+        <input
+          type="number"
           name="numofbags"
+          placeholder="0"
+          className="control2"
           value={formData.numofbags}
           onChange={handleInputChange}
-          className="bags_no"
-        >
-          <option value="">Select number of bags</option>
-          <option value="10B">10B</option>
-          <option value="15B">15B</option>
-          <option value="20B">20B</option>
-          <option value="30B">30B</option>
-          <option value="40B">40B</option>
-        </select>
+        />
       </div>
 
       <div className="bg-[#54ed50] w-[150px] text-center rounded-[5px] text-[23px] desktop:ml-[43%] mt-3 laptop:ml-[41%] ">

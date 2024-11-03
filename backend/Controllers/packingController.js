@@ -4,8 +4,6 @@ import PackingDetailsSchema from '../models/PackingDetailsSchema.js';
 export const getAllPackingDetails = async (req, res) => {
     try {
         const packingD = await PackingDetailsSchema.find({}).select('-password');
-        console.log(packingD);
-
         res.status(200).json({ success: true, message: "Packing  found", data: packingD });
     } catch (err) {
         res.status(404).json({ success: false, message: "Not Found" });
@@ -150,6 +148,8 @@ export const updatePackingDetails = async (req, res) => {
 
     try {
         const currentDate = new Date().toISOString().split('T')[0];
+        console.log(currentDate);
+
 
         const document = await PackingDetailsSchema.findOne({ date: currentDate });
 
@@ -164,22 +164,35 @@ export const updatePackingDetails = async (req, res) => {
         ];
 
         if (teaCategories.includes(teacategory)) {
-            const updateField = {};
-            teacategoryData.invoiceNo = teacategoryData.teacategory + 1;
-            updateField[teacategory] = teacategoryData;
 
-            // Generate the next invoice number
-            // const newInvoiceNo = await getNextInvoiceNo();
-            // Add the invoice number to the update field
-            console.log(teacategoryData.invoiceNo);
+            // Find the latest packing details document
+            const latestPacking = await PackingDetailsSchema.findOne().sort({ $natural: -1 });
 
-            const updatedPackingDetails = await PackingDetailsSchema.findByIdAndUpdate(
-                document._id,
-                { $set: updateField },
+            // Generate a unique invoice number for the new entry
+            let newInvoiceNo;
+            if (latestPacking && latestPacking[teacategory]) {
+                const existingInvoices = latestPacking[teacategory].map(subdocument => parseInt(subdocument.invoiceNo.split('-')[1])); // Extracting the numeric part after the dash
+                const maxInvoiceNumber = Math.max(...existingInvoices, 0); // Get the highest existing invoice number
+                newInvoiceNo = `${teacategory}-${(maxInvoiceNumber + 1000).toString().padStart(3, '0')}`; // Format as teacategory-XXX
+            } else {
+                newInvoiceNo = `${teacategory}-001`; // Start with 001 if no previous invoices exist
+            }
+
+
+            // Create the new tea category data item with the unique invoice number
+            const newItem = {
+                ...teacategoryData,
+                invoiceNo: newInvoiceNo
+            };
+
+            // Update the packing details document by pushing the new item into the specified category array
+            const updatedPackingDetails = await PackingDetailsSchema.findOneAndUpdate(
+                { _id: document._id },
+                { $push: { [teacategory]: newItem } }, // Use $push to add to the array
                 { new: true }
             );
-            console.log(updatedPackingDetails);
 
+            console.log(updatedPackingDetails); // Optionally log the updated details
 
             return res.status(200).json({
                 success: true,
@@ -199,6 +212,7 @@ export const updatePackingDetails = async (req, res) => {
         });
     }
 };
+
 
 export const packingDetails = async (req, res) => {
     const { date, saleNumber, greenleaves, madetea, details, teacategories } = req.body;
