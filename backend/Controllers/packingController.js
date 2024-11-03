@@ -173,7 +173,7 @@ export const updatePackingDetails = async (req, res) => {
             if (latestPacking && latestPacking[teacategory]) {
                 const existingInvoices = latestPacking[teacategory].map(subdocument => parseInt(subdocument.invoiceNo.split('-')[1])); // Extracting the numeric part after the dash
                 const maxInvoiceNumber = Math.max(...existingInvoices, 0); // Get the highest existing invoice number
-                newInvoiceNo = `${teacategory}-${(maxInvoiceNumber + 1000).toString().padStart(3, '0')}`; // Format as teacategory-XXX
+                newInvoiceNo = `${teacategory}-${(maxInvoiceNumber + 1).toString().padStart(3, '0')}`; // Format as teacategory-XXX
             } else {
                 newInvoiceNo = `${teacategory}-001`; // Start with 001 if no previous invoices exist
             }
