@@ -1,5 +1,193 @@
 import DispatchDetails from "../models/DispatchSchema.js";
 import Packing from "../models/PackingSchema.js";
+import PackingDetailsSchema from '../models/PackingDetailsSchema.js';
+
+export const findByInvoiceNo = async (req, res) => {
+    const { invoicenumber } = req.body;
+
+    try {
+        const record = await PackingDetailsSchema.aggregate([
+            {
+                $match: {
+                    $or: [
+                        { "BOP1A.invoiceNo": invoicenumber },
+                        { "FBOP.invoiceNo": invoicenumber },
+                        { "FBOPF1.invoiceNo": invoicenumber },
+                        { "OPA.invoiceNo": invoicenumber },
+                        { "OP.invoiceNo": invoicenumber },
+                        { "PEKOE.invoiceNo": invoicenumber },
+                        { "PEKOE1.invoiceNo": invoicenumber },
+                        { "BOP.invoiceNo": invoicenumber },
+                        { "BOPSp.invoiceNo": invoicenumber },
+                        { "BOP1.invoiceNo": invoicenumber },
+                        { "BOPA.invoiceNo": invoicenumber },
+                        { "BOPF.invoiceNo": invoicenumber },
+                        { "FBOP1.invoiceNo": invoicenumber },
+                        { "FBOPF.invoiceNo": invoicenumber },
+                        { "OP1.invoiceNo": invoicenumber },
+                        { "BP.invoiceNo": invoicenumber },
+                        { "FBOPFSp.invoiceNo": invoicenumber },
+                        { "FFEXSP.invoiceNo": invoicenumber },
+                        { "FFEXSP1.invoiceNo": invoicenumber }
+                    ]
+                }
+            },
+            {
+                $project: {
+                    greenleaves: 1,
+                    madetea: 1,
+                    saleNumber: 1,
+                    details: 1,
+                    BOP1A: {
+                        $filter: {
+                            input: "$BOP1A",
+                            as: "item",
+                            cond: { $eq: ["$$item.invoiceNo", invoicenumber] }
+                        }
+                    },
+                    FBOP: {
+                        $filter: {
+                            input: "$FBOP",
+                            as: "item",
+                            cond: { $eq: ["$$item.invoiceNo", invoicenumber] }
+                        }
+                    },
+                    FBOPF1: {
+                        $filter: {
+                            input: "$FBOPF1",
+                            as: "item",
+                            cond: { $eq: ["$$item.invoiceNo", invoicenumber] }
+                        }
+                    },
+                    OPA: {
+                        $filter: {
+                            input: "$OPA",
+                            as: "item",
+                            cond: { $eq: ["$$item.invoiceNo", invoicenumber] }
+                        }
+                    },
+                    OP: {
+                        $filter: {
+                            input: "$OP",
+                            as: "item",
+                            cond: { $eq: ["$$item.invoiceNo", invoicenumber] }
+                        }
+                    },
+                    PEKOE: {
+                        $filter: {
+                            input: "$PEKOE",
+                            as: "item",
+                            cond: { $eq: ["$$item.invoiceNo", invoicenumber] }
+                        }
+                    },
+                    PEKOE1: {
+                        $filter: {
+                            input: "$PEKOE1",
+                            as: "item",
+                            cond: { $eq: ["$$item.invoiceNo", invoicenumber] }
+                        }
+                    },
+                    BOP: {
+                        $filter: {
+                            input: "$BOP",
+                            as: "item",
+                            cond: { $eq: ["$$item.invoiceNo", invoicenumber] }
+                        }
+                    },
+                    BOPSp: {
+                        $filter: {
+                            input: "$BOPSp",
+                            as: "item",
+                            cond: { $eq: ["$$item.invoiceNo", invoicenumber] }
+                        }
+                    },
+                    BOP1: {
+                        $filter: {
+                            input: "$BOP1",
+                            as: "item",
+                            cond: { $eq: ["$$item.invoiceNo", invoicenumber] }
+                        }
+                    },
+                    BOPA: {
+                        $filter: {
+                            input: "$BOPA",
+                            as: "item",
+                            cond: { $eq: ["$$item.invoiceNo", invoicenumber] }
+                        }
+                    },
+                    BOPF: {
+                        $filter: {
+                            input: "$BOPF",
+                            as: "item",
+                            cond: { $eq: ["$$item.invoiceNo", invoicenumber] }
+                        }
+                    },
+                    FBOP1: {
+                        $filter: {
+                            input: "$FBOP1",
+                            as: "item",
+                            cond: { $eq: ["$$item.invoiceNo", invoicenumber] }
+                        }
+                    },
+                    FBOPF: {
+                        $filter: {
+                            input: "$FBOPF",
+                            as: "item",
+                            cond: { $eq: ["$$item.invoiceNo", invoicenumber] }
+                        }
+                    },
+                    OP1: {
+                        $filter: {
+                            input: "$OP1",
+                            as: "item",
+                            cond: { $eq: ["$$item.invoiceNo", invoicenumber] }
+                        }
+                    },
+                    BP: {
+                        $filter: {
+                            input: "$BP",
+                            as: "item",
+                            cond: { $eq: ["$$item.invoiceNo", invoicenumber] }
+                        }
+                    },
+                    FBOPFSp: {
+                        $filter: {
+                            input: "$FBOPFSp",
+                            as: "item",
+                            cond: { $eq: ["$$item.invoiceNo", invoicenumber] }
+                        }
+                    },
+                    FFEXSP: {
+                        $filter: {
+                            input: "$FFEXSP",
+                            as: "item",
+                            cond: { $eq: ["$$item.invoiceNo", invoicenumber] }
+                        }
+                    },
+                    FFEXSP1: {
+                        $filter: {
+                            input: "$FFEXSP1",
+                            as: "item",
+                            cond: { $eq: ["$$item.invoiceNo", invoicenumber] }
+                        }
+                    }
+                }
+            }
+        ]);
+
+        if (record.length === 0) {
+            return res.status(404).json({ message: 'Invoice not found' });
+        }
+
+        res.json(record[0]);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'An error occurred while fetching packing details' });
+    }
+};
+
+
+
 export const dispatchDetails = async (req, res) => {
 
     const { date, details, updates } = req.body;

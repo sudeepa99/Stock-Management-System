@@ -1,5 +1,5 @@
 import express from "express";
-import { dispatchDetails } from "../Controllers/dispatchController.js";
+import { dispatchDetails, findByInvoiceNo } from "../Controllers/dispatchController.js";
 
 const router = express.Router();
 
@@ -9,5 +9,5 @@ const router = express.Router();
  * @desc Adds dispatch information to the database
  */
 router.post("/details", dispatchDetails);
-
+router.get("/invoice", findByInvoiceNo);
 export default router;
