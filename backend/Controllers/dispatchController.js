@@ -1,9 +1,10 @@
 import DispatchDetails from "../models/DispatchSchema.js";
-import Packing from "../models/PackingSchema.js";
+import Packing from "../models/SaleSchema.js";
 import PackingDetailsSchema from '../models/PackingDetailsSchema.js';
+import TeaCategoriesConst from '../Constants/TeaCategoryConst.js';
 
 export const findByInvoiceNo = async (req, res) => {
-    const { invoicenumber } = req.body;
+    const { invoicenumber } = req.params;
 
     try {
         const record = await PackingDetailsSchema.aggregate([
@@ -37,25 +38,25 @@ export const findByInvoiceNo = async (req, res) => {
                     result: {
                         $switch: {
                             branches: [
-                                { case: { $in: [invoicenumber, "$BOP1A.invoiceNo"] }, then: { BOP1A: { $filter: { input: "$BOP1A", as: "item", cond: { $eq: ["$$item.invoiceNo", invoicenumber] } } } } },
-                                { case: { $in: [invoicenumber, "$FBOP.invoiceNo"] }, then: { FBOP: { $filter: { input: "$FBOP", as: "item", cond: { $eq: ["$$item.invoiceNo", invoicenumber] } } } } },
-                                { case: { $in: [invoicenumber, "$FBOPF1.invoiceNo"] }, then: { FBOPF1: { $filter: { input: "$FBOPF1", as: "item", cond: { $eq: ["$$item.invoiceNo", invoicenumber] } } } } },
-                                { case: { $in: [invoicenumber, "$OPA.invoiceNo"] }, then: { OPA: { $filter: { input: "$OPA", as: "item", cond: { $eq: ["$$item.invoiceNo", invoicenumber] } } } } },
-                                { case: { $in: [invoicenumber, "$OP.invoiceNo"] }, then: { OP: { $filter: { input: "$OP", as: "item", cond: { $eq: ["$$item.invoiceNo", invoicenumber] } } } } },
-                                { case: { $in: [invoicenumber, "$PEKOE.invoiceNo"] }, then: { PEKOE: { $filter: { input: "$PEKOE", as: "item", cond: { $eq: ["$$item.invoiceNo", invoicenumber] } } } } },
-                                { case: { $in: [invoicenumber, "$PEKOE1.invoiceNo"] }, then: { PEKOE1: { $filter: { input: "$PEKOE1", as: "item", cond: { $eq: ["$$item.invoiceNo", invoicenumber] } } } } },
-                                { case: { $in: [invoicenumber, "$BOP.invoiceNo"] }, then: { BOP: { $filter: { input: "$BOP", as: "item", cond: { $eq: ["$$item.invoiceNo", invoicenumber] } } } } },
-                                { case: { $in: [invoicenumber, "$BOPSp.invoiceNo"] }, then: { BOPSp: { $filter: { input: "$BOPSp", as: "item", cond: { $eq: ["$$item.invoiceNo", invoicenumber] } } } } },
-                                { case: { $in: [invoicenumber, "$BOP1.invoiceNo"] }, then: { BOP1: { $filter: { input: "$BOP1", as: "item", cond: { $eq: ["$$item.invoiceNo", invoicenumber] } } } } },
-                                { case: { $in: [invoicenumber, "$BOPA.invoiceNo"] }, then: { BOPA: { $filter: { input: "$BOPA", as: "item", cond: { $eq: ["$$item.invoiceNo", invoicenumber] } } } } },
-                                { case: { $in: [invoicenumber, "$BOPF.invoiceNo"] }, then: { BOPF: { $filter: { input: "$BOPF", as: "item", cond: { $eq: ["$$item.invoiceNo", invoicenumber] } } } } },
-                                { case: { $in: [invoicenumber, "$FBOP1.invoiceNo"] }, then: { FBOP1: { $filter: { input: "$FBOP1", as: "item", cond: { $eq: ["$$item.invoiceNo", invoicenumber] } } } } },
-                                { case: { $in: [invoicenumber, "$FBOPF.invoiceNo"] }, then: { FBOPF: { $filter: { input: "$FBOPF", as: "item", cond: { $eq: ["$$item.invoiceNo", invoicenumber] } } } } },
-                                { case: { $in: [invoicenumber, "$OP1.invoiceNo"] }, then: { OP1: { $filter: { input: "$OP1", as: "item", cond: { $eq: ["$$item.invoiceNo", invoicenumber] } } } } },
-                                { case: { $in: [invoicenumber, "$BP.invoiceNo"] }, then: { BP: { $filter: { input: "$BP", as: "item", cond: { $eq: ["$$item.invoiceNo", invoicenumber] } } } } },
-                                { case: { $in: [invoicenumber, "$FBOPFSp.invoiceNo"] }, then: { FBOPFSp: { $filter: { input: "$FBOPFSp", as: "item", cond: { $eq: ["$$item.invoiceNo", invoicenumber] } } } } },
-                                { case: { $in: [invoicenumber, "$FFEXSP.invoiceNo"] }, then: { FFEXSP: { $filter: { input: "$FFEXSP", as: "item", cond: { $eq: ["$$item.invoiceNo", invoicenumber] } } } } },
-                                { case: { $in: [invoicenumber, "$FFEXSP1.invoiceNo"] }, then: { FFEXSP1: { $filter: { input: "$FFEXSP1", as: "item", cond: { $eq: ["$$item.invoiceNo", invoicenumber] } } } } }
+                                { case: { $in: [invoicenumber, "$BOP1A.invoiceNo"] }, then: { $arrayElemAt: [{ $filter: { input: "$BOP1A", as: "item", cond: { $eq: ["$$item.invoiceNo", invoicenumber] } } }, 0] } },
+                                { case: { $in: [invoicenumber, "$FBOP.invoiceNo"] }, then: { $arrayElemAt: [{ $filter: { input: "$FBOP", as: "item", cond: { $eq: ["$$item.invoiceNo", invoicenumber] } } }, 0] } },
+                                { case: { $in: [invoicenumber, "$FBOPF1.invoiceNo"] }, then: { $arrayElemAt: [{ $filter: { input: "$FBOPF1", as: "item", cond: { $eq: ["$$item.invoiceNo", invoicenumber] } } }, 0] } },
+                                { case: { $in: [invoicenumber, "$OPA.invoiceNo"] }, then: { $arrayElemAt: [{ $filter: { input: "$OPA", as: "item", cond: { $eq: ["$$item.invoiceNo", invoicenumber] } } }, 0] } },
+                                { case: { $in: [invoicenumber, "$OP.invoiceNo"] }, then: { $arrayElemAt: [{ $filter: { input: "$OP", as: "item", cond: { $eq: ["$$item.invoiceNo", invoicenumber] } } }, 0] } },
+                                { case: { $in: [invoicenumber, "$PEKOE.invoiceNo"] }, then: { $arrayElemAt: [{ $filter: { input: "$PEKOE", as: "item", cond: { $eq: ["$$item.invoiceNo", invoicenumber] } } }, 0] } },
+                                { case: { $in: [invoicenumber, "$PEKOE1.invoiceNo"] }, then: { $arrayElemAt: [{ $filter: { input: "$PEKOE1", as: "item", cond: { $eq: ["$$item.invoiceNo", invoicenumber] } } }, 0] } },
+                                { case: { $in: [invoicenumber, "$BOP.invoiceNo"] }, then: { $arrayElemAt: [{ $filter: { input: "$BOP", as: "item", cond: { $eq: ["$$item.invoiceNo", invoicenumber] } } }, 0] } },
+                                { case: { $in: [invoicenumber, "$BOPSp.invoiceNo"] }, then: { $arrayElemAt: [{ $filter: { input: "$BOPSp", as: "item", cond: { $eq: ["$$item.invoiceNo", invoicenumber] } } }, 0] } },
+                                { case: { $in: [invoicenumber, "$BOP1.invoiceNo"] }, then: { $arrayElemAt: [{ $filter: { input: "$BOP1", as: "item", cond: { $eq: ["$$item.invoiceNo", invoicenumber] } } }, 0] } },
+                                { case: { $in: [invoicenumber, "$BOPA.invoiceNo"] }, then: { $arrayElemAt: [{ $filter: { input: "$BOPA", as: "item", cond: { $eq: ["$$item.invoiceNo", invoicenumber] } } }, 0] } },
+                                { case: { $in: [invoicenumber, "$BOPF.invoiceNo"] }, then: { $arrayElemAt: [{ $filter: { input: "$BOPF", as: "item", cond: { $eq: ["$$item.invoiceNo", invoicenumber] } } }, 0] } },
+                                { case: { $in: [invoicenumber, "$FBOP1.invoiceNo"] }, then: { $arrayElemAt: [{ $filter: { input: "$FBOP1", as: "item", cond: { $eq: ["$$item.invoiceNo", invoicenumber] } } }, 0] } },
+                                { case: { $in: [invoicenumber, "$FBOPF.invoiceNo"] }, then: { $arrayElemAt: [{ $filter: { input: "$FBOPF", as: "item", cond: { $eq: ["$$item.invoiceNo", invoicenumber] } } }, 0] } },
+                                { case: { $in: [invoicenumber, "$OP1.invoiceNo"] }, then: { $arrayElemAt: [{ $filter: { input: "$OP1", as: "item", cond: { $eq: ["$$item.invoiceNo", invoicenumber] } } }, 0] } },
+                                { case: { $in: [invoicenumber, "$BP.invoiceNo"] }, then: { $arrayElemAt: [{ $filter: { input: "$BP", as: "item", cond: { $eq: ["$$item.invoiceNo", invoicenumber] } } }, 0] } },
+                                { case: { $in: [invoicenumber, "$FBOPFSp.invoiceNo"] }, then: { $arrayElemAt: [{ $filter: { input: "$FBOPFSp", as: "item", cond: { $eq: ["$$item.invoiceNo", invoicenumber] } } }, 0] } },
+                                { case: { $in: [invoicenumber, "$FFEXSP.invoiceNo"] }, then: { $arrayElemAt: [{ $filter: { input: "$FFEXSP", as: "item", cond: { $eq: ["$$item.invoiceNo", invoicenumber] } } }, 0] } },
+                                { case: { $in: [invoicenumber, "$FFEXSP1.invoiceNo"] }, then: { $arrayElemAt: [{ $filter: { input: "$FFEXSP1", as: "item", cond: { $eq: ["$$item.invoiceNo", invoicenumber] } } }, 0] } }
                             ],
                             default: null
                         }
@@ -75,16 +76,11 @@ export const findByInvoiceNo = async (req, res) => {
     }
 };
 
-
 export const dispatchDetails = async (req, res) => {
-
-    const { date, details, updates } = req.body;
+    const { details, updates } = req.body;
     const packing = await Packing.findOne().sort({ $natural: -1 });
     const saleNumber = packing.saleNo;
-
     try {
-        console.log('Request Body:', req.body);
-
         if (details !== 'packing') {
             return res.status(400).json({
                 success: false,
@@ -101,15 +97,61 @@ export const dispatchDetails = async (req, res) => {
 
         let record = await DispatchDetails.findOne({ saleNumber });
 
-        const teaCategories = [
-            'BOP1A', 'FBOP', 'FBOPF1', 'OPA', 'OP', 'PEKOE', 'PEKOE1',
-            'BOP', 'BOPSp', 'BOP1', 'BOPA', 'BOPF', 'FBOP1', 'FBOPF',
-            'OP1', 'BP', 'FBOPFSp', 'FFEXSP', 'FFEXSP1'
-        ];
+        const teaCategories = TeaCategoriesConst;
         if (record) {
             for (const update of updates) {
 
                 const { teacategory, invoicenumber, sizeofbag, numofbags } = update;
+                let packingDetails = await PackingDetailsSchema.findOne({ saleNumber });
+
+                if (!packingDetails) {
+                    throw new Error('Packing details not found for the given sale number');
+                }
+                let packingBag = 0;
+                if (numofbags == "10B") {
+                    packingBag = 10;
+                }
+                else if (numofbags == "15B") {
+                    packingBag = 15;
+                } else if (numofbags == "20B") {
+                    packingBag = 20;
+                } else if (numofbags == "30B") {
+                    packingBag = 30;
+                } else if (numofbags == "40B") {
+                    packingBag = 40;
+                }
+
+                // Find the correct category and invoice to update
+                let updated = false;
+                for (const category of Object.keys(packingDetails.toObject())) {
+                    if (Array.isArray(packingDetails[category])) {
+                        for (let item of packingDetails[category]) {
+                            if (item.invoiceNo === invoicenumber) {
+                                const updatedNumOfBags = item.numofbags - packingBag;
+                                if (updatedNumOfBags < 0) {
+                                    return res.status(400).json({
+                                        success: false,
+                                        message: `Insufficient bags for invoice ${invoicenumber}`,
+                                    });
+                                }
+                                item.numofbags = updatedNumOfBags;
+                                updated = true;
+                                break;
+                            }
+                        }
+                    }
+                    if (updated) break;
+                }
+
+                if (!updated) {
+                    return res.status(400).json({
+                        success: false,
+                        message: `Invoice number not found in any category`,
+                    });
+                }
+
+                // Save the updated document
+                await packingDetails.save();
 
                 if (!teaCategories.includes(teacategory)) {
                     return res.status(400).json({
@@ -127,89 +169,65 @@ export const dispatchDetails = async (req, res) => {
                     const sizeofbagValues = sameSizeofBagEntries.map(entry => entry.sizeofbag);
                     if (teacategory === 'BOP1A' || teacategory === 'FBOP' || teacategory === 'FBOPF' || teacategory === 'OPA' || teacategory === 'OP' || teacategory === 'PEKOE' || teacategory === 'PEKOE') {
                         if ((numofbags === "10B" && sizeofbagValues.length < 3) && (numofbags === "20B" && sizeofbagValues.length < 2)) {
-                            console.log("10B * 2 20 B");
-                            console.log("Gread! You have updated");
                             teaCategoryArray.push({ invoicenumber, sizeofbag, numofbags });
                         }
                         else if ((numofbags === "10B" && sizeofbagValues.length < 2) && (numofbags === "20B" && sizeofbagValues.length < 1)) {
-                            console.log("10B * 1 20 B * 2");
-                            console.log("Gread! You have updated");
                             teaCategoryArray.push({ invoicenumber, sizeofbag, numofbags });
                         }
                         else if ((numofbags === "10B" && sizeofbagValues.length < 4) && (numofbags === "20B" && sizeofbagValues.length == 0)) {
-                            console.log("10B * 3");
-                            console.log("Gread! You have updated");
                             teaCategoryArray.push({ invoicenumber, sizeofbag, numofbags });
                         }
                         else if ((numofbags === "10B" && sizeofbagValues.length == 0) && (numofbags === "20B" && sizeofbagValues.length < 4)) {
-                            console.log("10B * 3");
-                            console.log("Gread! You have updated");
                             teaCategoryArray.push({ invoicenumber, sizeofbag, numofbags });
                         }
                         else {
                             return res.status(400).json({
                                 success: false,
-                                message: 'You cannot add more than',
+                                message: 'For the selected tea category, you cannot add more bags in this size. Please check the size and number of bags allowed for this category and try again.',
                             });
                         }
                     }
                     else if (teacategory === 'BOP' || teacategory === 'BOPSp' || teacategory === 'BOPF' || teacategory === 'FBOP1' || teacategory === 'FBOPF' || teacategory === 'OP1') {
                         //10 , 20
                         if ((numofbags === "10B" && sizeofbagValues.length < 2) && (numofbags === "15B" && sizeofbagValues.length == 0)) {
-                            console.log("10B * 1 15b 0");
-                            console.log("Gread! You have updated");
                             teaCategoryArray.push({ invoicenumber, sizeofbag, numofbags });
                         }
                         else if ((numofbags === "10B" && sizeofbagValues.length == 0) && (numofbags === "15B" && sizeofbagValues.length < 2)) {
-                            console.log("10B * 0 15B * 1");
-                            console.log("Gread! You have updated");
                             teaCategoryArray.push({ invoicenumber, sizeofbag, numofbags });
                         }
                         // 20 30
                         if ((numofbags === "20B" && sizeofbagValues.length < 3) && (numofbags === "30B" && sizeofbagValues.length == 0)) {
-                            console.log("20 * 2");
-                            console.log("Gread! You have updated");
                             teaCategoryArray.push({ invoicenumber, sizeofbag, numofbags });
                         }
                         else if ((numofbags === "20B" && sizeofbagValues.length == 0) && (numofbags === "30B" && sizeofbagValues.length < 3)) {
-                            console.log("30 * 2");
-                            console.log("Gread! You have updated");
                             teaCategoryArray.push({ invoicenumber, sizeofbag, numofbags });
                         }
                         else if ((numofbags === "20B" && sizeofbagValues.length < 2) && (numofbags === "30B" && sizeofbagValues.length < 2)) {
-                            console.log("Gread! You have updated");
-                            console.log("20 , 30");
                             teaCategoryArray.push({ invoicenumber, sizeofbag, numofbags });
                         }
                         else {
                             return res.status(400).json({
                                 success: false,
-                                message: 'You cannot add more than',
+                                message: 'For the selected tea category, you cannot add more bags in this size. Please check the size and number of bags allowed for this category and try again.',
                             });
                         }
                     }
                     else if (teacategory === 'BP') {
                         // 10 15
                         if ((numofbags === "10B" && sizeofbagValues.length < 2) && (numofbags === "15B" && sizeofbagValues.length == 0)) {
-                            console.log("10B * 1 15b 0");
-                            console.log("Gread! You have updated");
                             teaCategoryArray.push({ invoicenumber, sizeofbag, numofbags });
                         }
                         else if ((numofbags === "10B" && sizeofbagValues.length == 0) && (numofbags === "15B" && sizeofbagValues.length < 2)) {
-                            console.log("10B * 0 15B * 1");
-                            console.log("Gread! You have updated");
                             teaCategoryArray.push({ invoicenumber, sizeofbag, numofbags });
                         }
                         //20
                         else if ((numofbags === "20B" && sizeofbagValues.length < 3)) {
-                            console.log("20 2");
-                            console.log("Gread! You have updated");
                             teaCategoryArray.push({ invoicenumber, sizeofbag, numofbags });
                         }
                         else {
                             return res.status(400).json({
                                 success: false,
-                                message: 'You cannot add more than',
+                                message: 'For the selected tea category, you cannot add more bags in this size. Please check the size and number of bags allowed for this category and try again.',
                             });
                         }
                     }
@@ -220,13 +238,9 @@ export const dispatchDetails = async (req, res) => {
                                 (numofbags === "20B" && sizeofbagValues.includes("20B")) ||
                                 (numofbags === "30B" && sizeofbagValues.includes("30B")) ||
                                 (numofbags === "10B Below" && sizeofbagValues.includes("10B Below"))) {
-                                console.log("You have exceeded the limit. You cannot add this bag type again.");
                             } else {
                                 sizeofbagValues.push(numofbags);
-                                console.log("Bag added successfully.");
                             }
-                        } else {
-                            console.log("You have reached the maximum number of bags.");
                         }
                     }
                     else {
@@ -236,8 +250,6 @@ export const dispatchDetails = async (req, res) => {
                         });
                     }
 
-                } else {
-                    console.log("You have reached the maximum number of bags.");
                 }
             }
 
@@ -283,7 +295,6 @@ export const dispatchDetails = async (req, res) => {
         }
 
     } catch (err) {
-        console.error('Error:', err);
         return res.status(500).json({ success: false, err: err.message });
     }
 };

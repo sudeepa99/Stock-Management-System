@@ -66,9 +66,7 @@ const Packing = () => {
       const data = await res.json();
       if (!res.ok) throw new Error(data.message);
       setMadeTea(data.data);
-      //  toast.success('Data fetched successfully');
     } catch (err) {
-      //  toast.error(err.message);
     } finally {
       setLoading(false);
     }
@@ -89,9 +87,7 @@ const Packing = () => {
       }
       setGetEndDate(data.data);
       setLoading(false);
-      // toast.success('Date fetched successfully');
     } catch (err) {
-      // toast.error(err.message);
       setLoading(false);
     }
   };
@@ -131,7 +127,7 @@ const Packing = () => {
                 value={formData.startDate}
                 onChange={handleInputChange}
                 required
-                min={new Date().toISOString().split("T")[0]} // Disable dates before today
+                min={new Date().toISOString().split("T")[0]}
               />
             </div>
             <div className="mb-6">
@@ -145,7 +141,7 @@ const Packing = () => {
                 required
                 min={
                   formData.startDate || new Date().toISOString().split("T")[0]
-                } // Disable dates before start date or today
+                }
               />
               <span className="error-message">
                 {formData.endDate < formData.startDate && (

@@ -3,11 +3,6 @@ import { dispatchDetails, findByInvoiceNo } from "../Controllers/dispatchControl
 
 const router = express.Router();
 
-/**
- * Route to add new dispatch details
- * @route POST /api/dispatch/details
- * @desc Adds dispatch information to the database
- */
 router.post("/details", dispatchDetails);
-router.get("/invoice", findByInvoiceNo);
+router.get("/invoice/:invoicenumber", findByInvoiceNo);
 export default router;

@@ -35,10 +35,8 @@ const Packing1 = () => {
       if (!res.ok) throw new Error(data.message);
 
       setMadeTea(data.data);
-      //  toast.success('Data fetched successfully');
-      setGetTrue(!data.data); // Assumes `data.data` is non-empty if there's data
+      setGetTrue(!data.data);
     } catch (err) {
-      // toast.error(err.message);
     } finally {
       setLoading(false);
     }

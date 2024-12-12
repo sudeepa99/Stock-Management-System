@@ -1,4 +1,4 @@
-import { constants } from '../constants.js'; // Ensure this import works
+import { constants } from '../Constants/constants.js' // Ensure this import works
 
 const errorHandler = (err, req, res, next) => {
     const statusCode = res.statusCode || 500;

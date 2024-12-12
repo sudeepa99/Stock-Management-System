@@ -50,12 +50,11 @@ app.use(cookieParser());
 app.use(cors(corsOptions));
 
 // Routes
-app.use("/api/v1/auth", authRoute); // e.g., POST /api/v1/auth/register
+app.use("/api/v1/auth", authRoute);
 app.use("/api/v1/packing", packingRoute);
 app.use("/api/v1/dispatch", dispatchRoute);
 app.use("/api/v1/report", reportsRoute);
 
-// Custom error handler (should be the last middleware)
 app.use(errorHandler);
 
 // Start the server

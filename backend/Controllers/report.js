@@ -1,14 +1,13 @@
 import DispatchDetails from "../models/DispatchSchema.js";
-import Packing from "../models/PackingSchema.js";
+import Packing from "../models/SaleSchema.js";
 export const report = async (req, res) => {
 
     const packing = await Packing.findOne().sort({ $natural: -1 });
     console.log(packing);
-    const numberOfSale= packing.saleNo;
+    const numberOfSale = packing.saleNo;
     try {
         let record = await DispatchDetails.findOne({ numberOfSale });
 
-        
         if (record) {
 
             return res.status(200).json({

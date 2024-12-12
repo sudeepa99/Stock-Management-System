@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import HashLoader from "react-spinners/HashLoader";
-import { toast } from "react-toastify"; // Assuming you're using react-toastify for notifications
 import { BASE_URL } from "../../config";
 import "./Dashboard.css";
 
@@ -17,14 +16,19 @@ const Dashboard = () => {
           "Content-Type": "application/json",
         },
       });
-      const responseData = await res.json();
-      if (!res.ok) throw new Error(responseData.message);
-      setData(responseData.data);
-      console.log(responseData);
 
-      // toast.success('Data fetched successfully'); // Move the success toast here
+      const responseData = await res.json();
+
+      if (!res.ok) {
+        throw new Error(
+          responseData.message || "Failed to fetch made tea data"
+        );
+      }
+
+      setData(responseData.data);
     } catch (err) {
-      // toast.error(err.message);
+      console.error("Error fetching made tea data:", err);
+      alert(`Error: ${err.message}`);
     } finally {
       setLoading(false);
     }
@@ -91,7 +95,6 @@ const Dashboard = () => {
             </div>
           </div>
 
-          {/* Ensure BOP1A array has at least one element before accessing */}
           {data?.packingDetails && (
             <table className="min-w-full mt-10 border border-collapse border-gray-300">
               <thead>

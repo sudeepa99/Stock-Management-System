@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const PackingSchema = new mongoose.Schema({
+const SaleSchema = new mongoose.Schema({
   startDate: {
     type: Date,
     required: true,
@@ -19,7 +19,7 @@ const PackingSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  saleDays: [{ type: mongoose.Types.ObjectId, ref: "PackingDispatcher" }],
+  saleDays: [{ type: mongoose.Types.ObjectId, ref: "SaleDispatcher" }],
 });
 
-export default mongoose.model("Packing", PackingSchema);
+export default mongoose.model("Sale", SaleSchema);

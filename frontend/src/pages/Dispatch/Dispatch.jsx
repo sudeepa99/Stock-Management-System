@@ -17,50 +17,85 @@ const Dispatch = () => {
   });
   const navigate = useNavigate();
 
-  const handleInputChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+  // Update these constants for conditionally disabling options
+  const disable10b = [
+    "BOP1A",
+    "FBOP",
+    "FBOPF1",
+    "OPA",
+    "OP",
+    "PEKOE",
+    "PEKOE1",
+    "BOP",
+    "BOPSp",
+    "BOP1",
+    "BOPA",
+    "BOPF",
+    "FBOP1",
+    "FBOPF",
+    "OP1",
+    "BP",
+  ].includes(formData.teacategory);
+  const disable20b30b = [
+    "BOP1A",
+    "FBOP",
+    "FBOPF1",
+    "OPA",
+    "OP",
+    "PEKOE",
+  ].includes(formData.teacategory);
+
+  // Handle input changes for dynamic form updates
+  const handleInputChange = async (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+
+    if (name === "invoicenumber") {
+      try {
+        setLoading(true);
+        const res = await fetch(`${BASE_URL}/dispatch/invoice/${value}`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+        const teacategoryData = await res.json();
+
+        if (res.ok && teacategoryData) {
+          const { teacategory, sizeofbag } = teacategoryData;
+          setFormData((prev) => ({
+            ...prev,
+            teacategory,
+            sizeofbag,
+          }));
+        } else {
+          toast.error("Invoice number not found.");
+        }
+      } catch (err) {
+        toast.error("Error fetching data");
+      } finally {
+        setLoading(false);
+      }
+    }
   };
 
-  const disable10b =
-    formData.teacategory === "BOP1A" ||
-    formData.teacategory === "FBOP" ||
-    formData.teacategory === "FBOPF1" ||
-    formData.teacategory === "OPA" ||
-    formData.teacategory === "OP" ||
-    formData.teacategory === "PEKOE" ||
-    formData.teacategory === "PEKOE1" ||
-    formData.teacategory === "BOP" ||
-    formData.teacategory === "BOPSp" ||
-    formData.teacategory === "BOP1" ||
-    formData.teacategory === "BOPA" ||
-    formData.teacategory === "BOPF" ||
-    formData.teacategory === "FBOP1" ||
-    formData.teacategory === "FBOPF" ||
-    formData.teacategory === "OP1" ||
-    formData.teacategory === "BP";
-  const disable20b30b =
-    formData.teacategory === "BOP1A" ||
-    formData.teacategory === "FBOP" ||
-    formData.teacategory === "FBOPF1" ||
-    formData.teacategory === "OPA" ||
-    formData.teacategory === "OP" ||
-    formData.teacategory === "PEKOE";
+  // Submission handler
   const submitHandler = async (event) => {
     event.preventDefault();
     setLoading(true);
 
     try {
-      const update = {
-        teacategory: formData.teacategory,
-        invoicenumber: formData.invoicenumber,
-        sizeofbag: formData.sizeofbag,
-        numofbags: formData.numofbags,
-      };
-
       const payload = {
         date: formData.date,
         details: formData.details,
-        updates: [update], // wrap update object in an array
+        updates: [
+          {
+            teacategory: formData.teacategory,
+            invoicenumber: formData.invoicenumber,
+            sizeofbag: formData.sizeofbag,
+            numofbags: formData.numofbags,
+          },
+        ],
       };
 
       const res = await fetch(`${BASE_URL}/dispatch/details`, {
@@ -72,15 +107,11 @@ const Dispatch = () => {
       });
 
       const { message } = await res.json();
-      if (!res.ok) {
-        throw new Error(message);
-      }
+      if (!res.ok) throw new Error(message);
 
-      setLoading(false);
       toast.success(message);
       navigate("/dispatch");
 
-      // Reset the form fields to default values
       setFormData({
         date: new Date().toISOString().substr(0, 10),
         details: "packing",
@@ -91,6 +122,7 @@ const Dispatch = () => {
       });
     } catch (err) {
       toast.error(err.message);
+    } finally {
       setLoading(false);
     }
   };
@@ -147,7 +179,7 @@ const Dispatch = () => {
           </select>
         </div>
         <div className="mb-5">
-          <label className="made-tea">Waight of Bag</label>
+          <label className="made-tea">Weight of Bag</label>
           <br />
           <input
             type="number"
@@ -155,8 +187,7 @@ const Dispatch = () => {
             placeholder="kg"
             className="control2"
             value={formData.sizeofbag}
-            onChange={handleInputChange}
-            required
+            readOnly
           />
         </div>
         <div className="mb-5">
