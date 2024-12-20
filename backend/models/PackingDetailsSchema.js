@@ -22,10 +22,15 @@ const teaSchema = new mongoose.Schema({
 
   },
   numofbags: {
-    type: String,
+    type: Number,
     required: true,
 
   },
+});
+
+const categorySchema = new mongoose.Schema({
+  data: [teaSchema],
+  totalNet: { type: Number, required: true },
 });
 
 const packingDetailsSchema = new mongoose.Schema({
@@ -52,25 +57,25 @@ const packingDetailsSchema = new mongoose.Schema({
     type: String,
   },
 
-  BOP1A: [teaSchema],
-  FBOP: [teaSchema],
-  FBOPF1: [teaSchema],
-  OPA: [teaSchema],
-  OP: [teaSchema],
-  PEKOE: [teaSchema],
-  PEKOE1: [teaSchema],
-  BOP: [teaSchema],
-  BOPSp: [teaSchema],
-  BOP1: [teaSchema],
-  BOPA: [teaSchema],
-  BOPF: [teaSchema],
-  FBOP1: [teaSchema],
-  FBOPF: [teaSchema],
-  OP1: [teaSchema],
-  BP: [teaSchema],
-  FBOPFSp: [teaSchema],
-  FFEXSP: [teaSchema],
-  FFEXSP1: [teaSchema],
+  BOP1A: categorySchema,
+  FBOP: categorySchema,
+  FBOPF1: categorySchema,
+  OPA: categorySchema,
+  OP: categorySchema,
+  PEKOE: categorySchema,
+  PEKOE1: categorySchema,
+  BOP: categorySchema,
+  BOPSp: categorySchema,
+  BOP1: categorySchema,
+  BOPA: categorySchema,
+  BOPF: categorySchema,
+  FBOP1: categorySchema,
+  FBOPF: categorySchema,
+  OP1: categorySchema,
+  BP: categorySchema,
+  FBOPFSp: categorySchema,
+  FFEXSP: categorySchema,
+  FFEXSP1: categorySchema,
 
 });
 

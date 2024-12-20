@@ -6,6 +6,7 @@ import "./Dashboard.css";
 const Dashboard = () => {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(false);
+  const today = new Date().toLocaleDateString();
 
   const getMadeTeaF = async () => {
     setLoading(true);
@@ -24,6 +25,8 @@ const Dashboard = () => {
           responseData.message || "Failed to fetch made tea data"
         );
       }
+      console.log(responseData.data);
+
 
       setData(responseData.data);
     } catch (err) {
@@ -45,7 +48,9 @@ const Dashboard = () => {
       ) : (
         <div className="a1">
           <div>
-            <p className="b1">Current Status</p>
+            <div className="flex-col gap-3">
+              <p className="b1">Current Status {today}</p>
+            </div>
             <div className="absolute flex flex-row top-[15px] right-[10px]">
               <label className="sale">Sale Number - </label>
               <span className="text-xl ">{data?.saleDetails.saleNo}</span>
@@ -109,10 +114,10 @@ const Dashboard = () => {
                     Tea Category
                   </th>
                   <th className="px-4 py-2 text-[#50EDED] border border-gray-300">
-                    Waight of Bag
+                    Weight of Bag
                   </th>
                   <th className="px-4 py-2 text-[#50EDED] border border-gray-300">
-                    Num Of Bags
+                    Num of Bags
                   </th>
                 </tr>
               </thead>
@@ -121,10 +126,10 @@ const Dashboard = () => {
                   const categoryDetails = data.packingDetails[key];
 
                   if (
-                    Array.isArray(categoryDetails) &&
-                    categoryDetails.length > 0
+                    Array.isArray(categoryDetails.data) &&
+                    categoryDetails.data.length > 0
                   ) {
-                    return categoryDetails.map((item) => (
+                    return categoryDetails.data.map((item) => (
                       <tr key={item._id} className="">
                         <td className="px-4 py-2 border border-gray-300">
                           {item.invoiceNo}
@@ -144,7 +149,6 @@ const Dashboard = () => {
                       </tr>
                     ));
                   }
-                  return null;
                 })}
               </tbody>
             </table>

@@ -102,7 +102,7 @@ const Packing2 = () => {
         teacategoryData: {
           teacategory: formData.teacategory,
           sizeofbag: parseInt(formData.sizeofbag, 10),
-          numofbags: formData.numofbags,
+          numofbags: parseInt(formData.numofbags),
           teaMark: formData.teaMark,
           invoiceNo: formData.invoiceNo,
         },
@@ -185,7 +185,7 @@ const Packing2 = () => {
           </p>
         )}{" "}
         {/* Display error message here */}
-        <label className="made-tea">Waight of Bag</label>
+        <label className="made-tea">Weight of Bag</label>
         <br />
         <input
           type="number"
@@ -193,8 +193,7 @@ const Packing2 = () => {
           placeholder="kg"
           className="control2"
           value={formData.sizeofbag}
-          min={minSize || ""}
-          max={maxSize || ""}
+          min={minSize || 0}
           onChange={handleInputChange}
         />
       </div>

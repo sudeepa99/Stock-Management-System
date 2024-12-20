@@ -7,6 +7,7 @@ import "./App.css";
 import Dashboard from "./Routes/Dashboard";
 import Packing from "./Routes/Packing";
 import Dispatch from "./Routes/Dispatch";
+import ReportExcel from "./Routes/ReportExcel"
 
 const AppLayout = () => (
   <>
@@ -16,7 +17,7 @@ const AppLayout = () => (
 );
 
 const router = createBrowserRouter([
-  
+
   {
     element: <AppLayout />,
     children: [
@@ -35,6 +36,10 @@ const router = createBrowserRouter([
       {
         path: "reports",
         element: <Reports />,
+      },
+      {
+        path: "reportexcel",
+        element: <ReportExcel />,
       },
     ],
   },

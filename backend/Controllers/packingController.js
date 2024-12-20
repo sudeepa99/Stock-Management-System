@@ -31,20 +31,16 @@ export const saleDetails = async (req, res) => {
                     .status(200)
                     .json({ success: true, message: "Packing successfully created" });
             } else {
-                return res
-                    .status(400)
-                    .json({
-                        success: false,
-                        message: "Invalid details or unable to create packing",
-                    });
-            }
-        } else {
-            return res
-                .status(400)
-                .json({
+                return res.status(400).json({
                     success: false,
                     message: "Invalid details or unable to create packing",
                 });
+            }
+        } else {
+            return res.status(400).json({
+                success: false,
+                message: "Invalid details or unable to create packing",
+            });
         }
     } catch (err) {
         console.error("Error:", err);
@@ -80,13 +76,11 @@ export const packingDetails = async (req, res) => {
             await record.save();
         }
 
-        return res
-            .status(200)
-            .json({
-                success: true,
-                message: "Packing details successfully saved",
-                data: record,
-            });
+        return res.status(200).json({
+            success: true,
+            message: "Packing details successfully saved",
+            data: record,
+        });
     } catch (err) {
         console.error("Error:", err);
         return res.status(500).json({ success: false, message: err.message });
@@ -94,14 +88,28 @@ export const packingDetails = async (req, res) => {
 };
 
 // Retrieve Endpoint for Packing details
+// Function to update the tea category
+const updateTeaCategory = async (documentId, teacategory, newItem) => {
+    try {
+        const updatedDocument = await PackingDetailsSchema.findOneAndUpdate(
+            { _id: documentId },
+            {
+                $push: { [`${teacategory}.data`]: newItem },
+                $inc: { [`${teacategory}.totalNet`]: newItem.totalNet },
+            },
+            { new: true, useFindAndModify: false }
+        );
+        return updatedDocument;
+    } catch (err) {
+        console.error("Error updating tea category:", err);
+        throw err;
+    }
+};
 export const updatePackingDetails = async (req, res) => {
     const { teacategory, teacategoryData } = req.body;
-
     try {
         const currentDate = new Date().toISOString().split("T")[0];
-
         const document = await PackingDetailsSchema.findOne({ date: currentDate });
-
         if (!document) {
             return res
                 .status(404)
@@ -110,68 +118,58 @@ export const updatePackingDetails = async (req, res) => {
                     message: "Document with the current date not found",
                 });
         }
-
         const teaCategories = TeaCategoriesConst;
-
         if (teaCategories.includes(teacategory)) {
             const latestPacking = await PackingDetailsSchema.findOne({
-                [`${teacategory}.invoiceNo`]: { $exists: true },
-            }).sort({ [`${teacategory}.invoiceNo`]: -1 });
-
+                [`${teacategory}.data.invoiceNo`]: { $exists: true },
+            }).sort({ [`${teacategory}.data.invoiceNo`]: -1 });
             const datePart = new Date().toISOString().slice(0, 10).replace(/-/g, "");
             let newInvoiceNo;
-
             if (
                 latestPacking &&
                 latestPacking[teacategory] &&
-                latestPacking[teacategory].length > 0
+                latestPacking[teacategory].data.length > 0
             ) {
-                const existingInvoices = latestPacking[teacategory].map(
+                const existingInvoices = latestPacking[teacategory].data.map(
                     (subdocument) => {
                         const parts = subdocument.invoiceNo.split("-");
                         return parts.length === 3 ? parseInt(parts[2]) : 0;
                     }
                 );
-
                 const maxInvoiceNumber = Math.max(...existingInvoices, 0);
-
                 newInvoiceNo = `${datePart}-${teacategory}-${(maxInvoiceNumber + 1)
                     .toString()
                     .padStart(3, "0")}`;
             } else {
                 newInvoiceNo = `${datePart}-${teacategory}-001`;
             }
-
             const newItem = {
                 ...teacategoryData,
                 invoiceNo: newInvoiceNo,
+                totalNet: teacategoryData.sizeofbag * teacategoryData.numofbags,
             };
 
-            // Update the packing details document by pushing the new item into the specified category array
-            const updatedPackingDetails = await PackingDetailsSchema.findOneAndUpdate(
-                { _id: document._id },
-                { $push: { [teacategory]: newItem } },
-                { new: true }
+            const updatedDocument = await updateTeaCategory(
+                document._id,
+                teacategory,
+                newItem
             );
-            return res.status(200).json({
-                success: true,
-                message: "Successfully updated",
-                data: updatedPackingDetails,
-            });
+            return res
+                .status(200)
+                .json({
+                    success: true,
+                    message: "Successfully updated",
+                    data: updatedDocument,
+                });
         } else {
-            return res.status(400).json({
-                success: false,
-                message: "Invalid teacategory provided",
-            });
+            return res
+                .status(400)
+                .json({ success: false, message: "Invalid teacategory provided" });
         }
     } catch (err) {
-        return res.status(500).json({
-            success: false,
-            message: err.message,
-        });
+        return res.status(500).json({ success: false, message: err.message });
     }
 };
-
 //Get the latest packin details
 export const getPackingDetails = async (req, res) => {
     try {
@@ -180,12 +178,10 @@ export const getPackingDetails = async (req, res) => {
         const packingDetails = await PackingDetailsSchema.findOne({ date: today });
 
         if (!packingDetails) {
-            return res
-                .status(404)
-                .json({
-                    success: false,
-                    message: "No packing details found for today.",
-                });
+            return res.status(404).json({
+                success: false,
+                message: "No packing details found for today.",
+            });
         }
 
         return res.status(200).json({ success: true, data: packingDetails });
