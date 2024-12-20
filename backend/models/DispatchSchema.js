@@ -14,6 +14,10 @@ const dispatchteaSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  date: {
+    type: Date,
+    required: true,
+  },
 });
 
 const categorySchema = new mongoose.Schema({
@@ -22,10 +26,6 @@ const categorySchema = new mongoose.Schema({
 });
 const dispatchDetailsSchema = new mongoose.Schema({
   saleNumber: { type: Number, min: 0, required: true },
-  date: {
-    type: Date,
-    required: true,
-  },
   details: { type: String, required: true },
   BOP1A: categorySchema,
   FBOP: categorySchema,
