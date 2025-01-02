@@ -18,6 +18,10 @@ const dispatchteaSchema = new mongoose.Schema({
     type: Date,
     required: true,
   },
+  broker: {
+    type: String,
+    required: true,
+  }
 });
 
 const categorySchema = new mongoose.Schema({

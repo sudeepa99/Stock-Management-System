@@ -144,6 +144,19 @@ const Packing2 = () => {
         Please enter the following details to continue the process.
       </p>
       <div className="mb-5">
+        <label className="green-leaf">Invoice Number</label>
+        <br />
+        <input
+          type="number"
+          name="invoiceNo"
+          placeholder="0001"
+          className="control2"
+          value={formData.invoiceNo}
+          min={minSize || 0}
+          onChange={handleInputChange}
+        />
+      </div>
+      <div className="mb-5">
         <label className="green-leaf">Tea Mark</label>
         <br />
         <select

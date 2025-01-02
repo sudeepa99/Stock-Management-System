@@ -6,6 +6,8 @@ import "./Dashboard.css";
 const Dashboard = () => {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(false);
+  const rowsPerPage = 5; // Set number of rows per page
+  const [currentPage, setCurrentPage] = useState(1);
   const today = new Date().toLocaleDateString();
 
   const getMadeTeaF = async () => {
@@ -27,7 +29,6 @@ const Dashboard = () => {
       }
       console.log(responseData.data);
 
-
       setData(responseData.data);
     } catch (err) {
       console.error("Error fetching made tea data:", err);
@@ -36,10 +37,35 @@ const Dashboard = () => {
       setLoading(false);
     }
   };
-
   useEffect(() => {
     getMadeTeaF();
   }, []);
+
+  // Aggregate dispatch details for pagination
+  const allDispatchDetails = Object.keys(data?.dispatchDetails || {}).reduce(
+    (acc, key) => {
+      const categoryDetails = data.dispatchDetails[key];
+      if (Array.isArray(categoryDetails.data)) {
+        acc.push(...categoryDetails.data);
+      }
+      return acc;
+    },
+    []
+  );
+
+  const totalPages = Math.ceil(allDispatchDetails.length / rowsPerPage);
+
+  // Data for the current page
+  const currentData = allDispatchDetails.slice(
+    (currentPage - 1) * rowsPerPage,
+    currentPage * rowsPerPage
+  );
+
+  const handlePageChange = (pageNumber) => {
+    if (pageNumber > 0 && pageNumber <= totalPages) {
+      setCurrentPage(pageNumber);
+    }
+  };
 
   return (
     <div className="container">
@@ -153,7 +179,86 @@ const Dashboard = () => {
               </tbody>
             </table>
           )}
+          {data?.dispatchDetails && (
+            <div>
+              <table className="min-w-full mt-10 border border-collapse border-gray-300">
+                <thead>
+                  <tr className="bg-transparent">
+                    <th className="px-4 py-2 border text-[#50EDED] border-gray-300">
+                      Invoice No
+                    </th>
+                    <th className="px-4 py-2 border text-[#50EDED] border-gray-300">
+                      Date
+                    </th>
+                    <th className="px-4 py-2 text-[#50EDED] border border-gray-300">
+                      Weight of Bag
+                    </th>
+                    <th className="px-4 py-2 text-[#50EDED] border border-gray-300">
+                      Num of Bags
+                    </th>
+                    <th className="px-4 py-2 text-[#50EDED] border border-gray-300">
+                      Broker
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {currentData.map((item) => (
+                    <tr key={item._id} className="">
+                      <td className="px-4 py-2 border border-gray-300">
+                        {item.invoicenumber}
+                      </td>
+                      <td className="px-4 py-2 border border-gray-300">
+                        {item.date
+                          ? new Date(item.date).toLocaleDateString()
+                          : ""}
+                      </td>
+                      <td className="px-4 py-2 border border-gray-300">
+                        {item.sizeofbag}
+                      </td>
+                      <td className="px-4 py-2 border border-gray-300">
+                        {item.numofbags}
+                      </td>
+                      <td className="px-4 py-2 border border-gray-300">
+                        {item.broker}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+              {/* Pagination Controls */}
+              <div className="flex justify-center mt-4">
+                <button
+                  onClick={() => handlePageChange(currentPage - 1)}
+                  disabled={currentPage === 1}
+                  className="px-4 py-2 mx-1 border border-gray-300 text-gray-500 disabled:opacity-50"
+                >
+                  Previous
+                </button>
+                {Array.from({ length: totalPages }, (_, index) => (
+                  <button
+                    key={index}
+                    onClick={() => handlePageChange(index + 1)}
+                    className={`px-4 py-2 mx-1 border border-gray-300 ${currentPage === index + 1
+                        ? "bg-[#50EDED] text-white"
+                        : "text-gray-500"
+                      }`}
+                  >
+                    {index + 1}
+                  </button>
+                ))}
+                <button
+                  onClick={() => handlePageChange(currentPage + 1)}
+                  disabled={currentPage === totalPages}
+                  className="px-4 py-2 mx-1 border border-gray-300 text-gray-500 disabled:opacity-50"
+                >
+                  Next
+                </button>
+              </div>
+            </div>
+          )}
+
         </div>
+
       )}
     </div>
   );

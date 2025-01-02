@@ -14,6 +14,7 @@ const Dispatch = () => {
     sizeofbag: "",
     numofbags: "",
     invoicenumber: "",
+    broker: "",
   });
   const navigate = useNavigate();
 
@@ -44,6 +45,12 @@ const Dispatch = () => {
     "OP",
     "PEKOE",
   ].includes(formData.teacategory);
+
+  const brokers = {
+    Broker1: "Brokers1",
+    Broker2: "Brokers2",
+    Broker3: "Brokers3",
+  };
 
   // Handle input changes for dynamic form updates
   const handleInputChange = async (e) => {
@@ -94,6 +101,7 @@ const Dispatch = () => {
             invoicenumber: formData.invoicenumber,
             sizeofbag: formData.sizeofbag,
             numofbags: formData.numofbags,
+            broker: formData.broker,
           },
         ],
       };
@@ -119,6 +127,7 @@ const Dispatch = () => {
         sizeofbag: "",
         numofbags: "",
         invoicenumber: "",
+        broker: "",
       });
     } catch (err) {
       toast.error(err.message);
@@ -145,6 +154,23 @@ const Dispatch = () => {
             onChange={handleInputChange}
             required
           />
+        </div>
+        <div className="mb-5">
+          <label className="green-leaf">Broker</label>
+          <br />
+          <select
+            name="broker"
+            value={formData.broker}
+            onChange={handleInputChange}
+            className="tea_category"
+          >
+            <option value="">Select the Broker</option>
+            {Object.keys(brokers).map((grade) => (
+              <option key={grade} value={grade}>
+                {grade}
+              </option>
+            ))}
+          </select>
         </div>
         <div className="mb-5">
           <label className="green-leaf">Tea Category</label>

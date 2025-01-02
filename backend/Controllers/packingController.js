@@ -1,6 +1,7 @@
 import Packing from "../models/SaleSchema.js";
 import PackingDetailsSchema from "../models/PackingDetailsSchema.js";
 import TeaCategoriesConst from "../Constants/TeaCategoryConst.js";
+import DispatchDetails from "../models/DispatchSchema.js";
 
 //Create a new sale
 export const saleDetails = async (req, res) => {
@@ -50,31 +51,44 @@ export const saleDetails = async (req, res) => {
 
 // Create Endpoint  for Recieved tea and made tea
 export const packingDetails = async (req, res) => {
-    const { date, greenleaves, madetea, details, teacategories } = req.body;
+    const { date, greenleaves, madetea, details } = req.body;
     const packing = await Packing.findOne().sort({ $natural: -1 });
     try {
-        // Validate request details
         if (details !== "packing") {
             return res
                 .status(400)
                 .json({ success: false, message: "Invalid details" });
         }
         let record = await PackingDetailsSchema.findOne({ date });
-        if (record) {
-            record.teacategories = teacategories;
-            await record.save();
-        } else {
-            record = new PackingDetailsSchema({
-                date,
-                details,
-                greenleaves,
-                madetea,
-                teacategories,
-                saleNumber: packing.saleNo,
-            });
+        record = new PackingDetailsSchema({
+            date,
+            details,
+            greenleaves,
+            madetea,
+            saleNumber: packing.saleNo,
+            // Initialize all tea categories
+            BOP1A: { data: [], totalNet: 0 },
+            FBOP: { data: [], totalNet: 0 },
+            FBOPF1: { data: [], totalNet: 0 },
+            OPA: { data: [], totalNet: 0 },
+            OP: { data: [], totalNet: 0 },
+            PEKOE: { data: [], totalNet: 0 },
+            PEKOE1: { data: [], totalNet: 0 },
+            BOP: { data: [], totalNet: 0 },
+            BOPSp: { data: [], totalNet: 0 },
+            BOP1: { data: [], totalNet: 0 },
+            BOPA: { data: [], totalNet: 0 },
+            BOPF: { data: [], totalNet: 0 },
+            FBOP1: { data: [], totalNet: 0 },
+            FBOPF: { data: [], totalNet: 0 },
+            OP1: { data: [], totalNet: 0 },
+            BP: { data: [], totalNet: 0 },
+            FBOPFSp: { data: [], totalNet: 0 },
+            FFEXSP: { data: [], totalNet: 0 },
+            FFEXSP1: { data: [], totalNet: 0 },
+        });
 
-            await record.save();
-        }
+        await record.save();
 
         return res.status(200).json({
             success: true,
@@ -90,6 +104,8 @@ export const packingDetails = async (req, res) => {
 // Retrieve Endpoint for Packing details
 // Function to update the tea category
 const updateTeaCategory = async (documentId, teacategory, newItem) => {
+    console.log(teacategory);
+
     try {
         const updatedDocument = await PackingDetailsSchema.findOneAndUpdate(
             { _id: documentId },
@@ -105,18 +121,17 @@ const updateTeaCategory = async (documentId, teacategory, newItem) => {
         throw err;
     }
 };
+
 export const updatePackingDetails = async (req, res) => {
     const { teacategory, teacategoryData } = req.body;
     try {
         const currentDate = new Date().toISOString().split("T")[0];
         const document = await PackingDetailsSchema.findOne({ date: currentDate });
         if (!document) {
-            return res
-                .status(404)
-                .json({
-                    success: false,
-                    message: "Document with the current date not found",
-                });
+            return res.status(404).json({
+                success: false,
+                message: "Document with the current date not found",
+            });
         }
         const teaCategories = TeaCategoriesConst;
         if (teaCategories.includes(teacategory)) {
@@ -154,13 +169,11 @@ export const updatePackingDetails = async (req, res) => {
                 teacategory,
                 newItem
             );
-            return res
-                .status(200)
-                .json({
-                    success: true,
-                    message: "Successfully updated",
-                    data: updatedDocument,
-                });
+            return res.status(200).json({
+                success: true,
+                message: "Successfully updated",
+                data: updatedDocument,
+            });
         } else {
             return res
                 .status(400)
@@ -170,6 +183,7 @@ export const updatePackingDetails = async (req, res) => {
         return res.status(500).json({ success: false, message: err.message });
     }
 };
+
 //Get the latest packin details
 export const getPackingDetails = async (req, res) => {
     try {
@@ -244,6 +258,7 @@ export const getMadeTea = async (req, res) => {
     }
 };
 
+
 export const getSaleDetails = async (req, res) => {
     try {
         const today = new Date().toISOString().split("T")[0];
@@ -262,9 +277,15 @@ export const getSaleDetails = async (req, res) => {
             });
         }
 
+        console.log(saleDetails);
+
+
+        const dispatchDetails = await DispatchDetails.findOne({ saleNumber: saleDetails.saleNo });
+
         const allDetails = {
             saleDetails: saleDetails || null,
             packingDetails: packingDetails || null,
+            dispatchDetails: dispatchDetails || null,
         };
 
         return res.status(200).json({
