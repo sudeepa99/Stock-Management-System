@@ -9,11 +9,13 @@ import AppLayout from '../layout/Layout';
 import Packing from '../pages/Packing/Packing';
 import Packing1 from '../pages/Packing/Packing1';
 import Packing2 from '../pages/Packing/Packing2';
+import DispatchReport from '../pages/DispatchReport/DispatchReport';
+
 import "../App.css";
 
 
 // Define the router configuration
-  const router = createBrowserRouter([
+const router = createBrowserRouter([
   {
     path: "/",
     element: <Login />,
@@ -45,6 +47,11 @@ import "../App.css";
         path: "reports",
         element: <Reports />,
       },
+      {
+        path: "dispatchReport",
+        element: <DispatchReport />,
+      },
+
     ],
   },
 ]);

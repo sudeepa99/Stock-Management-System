@@ -42,6 +42,7 @@ const Packing2 = () => {
     BP: { min: 35, max: 60 },
     FBOPFSp: { min: 30, max: 55 },
     FFEXSP: { min: 20, max: 52 },
+    FFEXSP1: { min: 20, max: 52 },
   };
 
   const handleInputChange = (e) => {
@@ -102,7 +103,7 @@ const Packing2 = () => {
         teacategoryData: {
           teacategory: formData.teacategory,
           sizeofbag: parseInt(formData.sizeofbag, 10),
-          numofbags: formData.numofbags,
+          numofbags: parseInt(formData.numofbags),
           teaMark: formData.teaMark,
           invoiceNo: formData.invoiceNo,
         },
@@ -143,6 +144,19 @@ const Packing2 = () => {
       <p className="b2">
         Please enter the following details to continue the process.
       </p>
+      <div className="mb-5">
+        <label className="green-leaf">Invoice Number</label>
+        <br />
+        <input
+          type="number"
+          name="invoiceNo"
+          placeholder="0001"
+          className="control2"
+          value={formData.invoiceNo}
+          min={minSize || 0}
+          onChange={handleInputChange}
+        />
+      </div>
       <div className="mb-5">
         <label className="green-leaf">Tea Mark</label>
         <br />
@@ -185,7 +199,7 @@ const Packing2 = () => {
           </p>
         )}{" "}
         {/* Display error message here */}
-        <label className="made-tea">Waight of Bag</label>
+        <label className="made-tea">Weight of Bag</label>
         <br />
         <input
           type="number"
@@ -193,8 +207,7 @@ const Packing2 = () => {
           placeholder="kg"
           className="control2"
           value={formData.sizeofbag}
-          min={minSize || ""}
-          max={maxSize || ""}
+          min={minSize || 0}
           onChange={handleInputChange}
         />
       </div>
