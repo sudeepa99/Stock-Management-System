@@ -3,6 +3,7 @@ import Packing from "../models/SaleSchema.js";
 import PackingDetailsSchema from "../models/PackingDetailsSchema.js";
 import TeaCategoriesConst from "../Constants/TeaCategoryConst.js";
 
+// find by invoice number for dispatch
 export const findByInvoiceNo = async (req, res) => {
     const { invoicenumber } = req.params;
 
@@ -341,6 +342,7 @@ export const findByInvoiceNo = async (req, res) => {
     }
 };
 
+// Create Endpoint  for create dispatch
 export const dispatchDetails = async (req, res) => {
     const { details, updates } = req.body;
     const packing = await Packing.findOne().sort({ $natural: -1 });
@@ -367,11 +369,8 @@ export const dispatchDetails = async (req, res) => {
 
         // todo: check if the dispatch record exists
         if (record) {
-            const today = new Date().toISOString().split("T")[0];
-
             for (const update of updates) {
-                const { teacategory, invoicenumber, sizeofbag, numofbags, broker } =
-                    update;
+                const { teacategory, invoicenumber, sizeofbag, numofbags, broker } = update;
 
                 const Bop1aToPekoe1 =
                     teacategory === "BOP1A" ||
@@ -410,18 +409,57 @@ export const dispatchDetails = async (req, res) => {
                     record[teacategory] = [];
                 }
 
-                // Convert the Mongoose document to a plain object
                 const plainRecord = record.toObject();
-                // Check if teacategory is a property of plainRecord
                 const isCategory = plainRecord.hasOwnProperty(teacategory);
-                // todo: check if the dispatch record exists with the given tea category
+                let packingDetailsList = await PackingDetailsSchema.find({
+                    saleNumber,
+                });
+                if (!packingDetailsList) {
+                    throw new Error(
+                        "Packing details not found for the given sale number"
+                    );
+                }
+                const packingBagMap = {
+                    "10B Below": 1,
+                    "10B": 10,
+                    "15B": 15,
+                    "20B": 20,
+                    "30B": 30,
+                    "40B": 40,
+                };
+                const packingBag = packingBagMap[numofbags] || parseInt(numofbags, 10);
+                let updated = false;
+                for (const packingDetails of packingDetailsList) {
+                    const categoryDetails = packingDetails[teacategory].data;
+                    if (categoryDetails && Array.isArray(categoryDetails)) {
+                        for (let item of categoryDetails) {
+                            if (item.invoiceNo === invoicenumber) {
+                                const updatedNumOfBags = item.numofbags - packingBag;
+                                if (updatedNumOfBags < 0) {
+                                    return res.status(400).json({
+                                        success: false,
+                                        message: `Insufficient bags for invoice ${invoicenumber}`,
+                                    });
+                                }
+                                item.numofbags = updatedNumOfBags;
+                                updated = true;
+                                break;
+                            }
+                        }
+                        if (updated) break;
+                    }
+                }
+                if (!updated) {
+                    return res.status(404).json({
+                        success: false,
+                        message: `Invoice number ${invoicenumber} not found in any category`,
+                    });
+                }
                 if (isCategory) {
                     const teaCategoryArray = record[teacategory].data;
-
                     const numofbagsArray = teaCategoryArray.map(
                         (entry) => entry.numofbags
                     );
-
                     const newEntry = {
                         invoicenumber,
                         sizeofbag,
@@ -444,121 +482,21 @@ export const dispatchDetails = async (req, res) => {
                     if (isPresent) {
                         //-------------1-----------------//
                         if (Bop1aToPekoe1) {
-                            console.log(1);
-
                             if (numofbags === "10B" && b10 < 3 && b20 == 0) {
-                                console.log(2);
                                 teaCategoryArray.push(newEntry);
                                 await record.save();
-                                let packingDetailsList = await PackingDetailsSchema.find({
-                                    saleNumber,
-                                });
-
-                                if (!packingDetailsList) {
-                                    throw new Error(
-                                        "Packing details not found for the given sale number"
-                                    );
-                                }
-
-                                // Determine packing bag count based on numofbags
-                                const packingBagMap = {
-                                    "10B": 10,
-                                    "15B": 15,
-                                    "20B": 20,
-                                    "30B": 30,
-                                    "40B": 40,
-                                };
-                                const packingBag = packingBagMap[numofbags] || 0;
-                                let updated = false;
-                                for (const packingDetails of packingDetailsList) {
-                                    const categoryDetails = packingDetails[teacategory].data;
-                                    if (categoryDetails && Array.isArray(categoryDetails)) {
-                                        for (let item of categoryDetails) {
-                                            if (item.invoiceNo === invoicenumber) {
-                                                const updatedNumOfBags = item.numofbags - packingBag;
-                                                if (updatedNumOfBags < 0) {
-                                                    return res.status(400).json({
-                                                        success: false,
-                                                        message: `Insufficient bags for invoice ${invoicenumber}`,
-                                                    });
-                                                }
-                                                item.numofbags = updatedNumOfBags;
-                                                updated = true;
-                                                break;
-                                            }
-                                        }
-
-                                        if (updated) break;
-                                    }
-                                }
-                                if (!updated) {
-                                    return res.status(404).json({
-                                        success: false,
-                                        message: `Invoice number ${invoicenumber} not found in any category`,
-                                    });
-                                }
-
                                 // Save the updated packing details
                                 for (const packingDetails of packingDetailsList) {
                                     await packingDetails.save();
                                 }
-
                                 return res.status(200).json({
                                     success: true,
                                     message: `Successfully updated ${teacategory}`,
                                     data: record,
                                 });
                             } else if (numofbags === "20B" && b20 < 3 && b10 == 0) {
-                                console.log(3);
                                 teaCategoryArray.push(newEntry);
                                 await record.save();
-                                let packingDetailsList = await PackingDetailsSchema.find({
-                                    saleNumber,
-                                });
-
-                                if (!packingDetailsList) {
-                                    throw new Error(
-                                        "Packing details not found for the given sale number"
-                                    );
-                                }
-
-                                // Determine packing bag count based on numofbags
-                                const packingBagMap = {
-                                    "10B": 10,
-                                    "15B": 15,
-                                    "20B": 20,
-                                    "30B": 30,
-                                    "40B": 40,
-                                };
-                                const packingBag = packingBagMap[numofbags] || 0;
-                                let updated = false;
-                                for (const packingDetails of packingDetailsList) {
-                                    const categoryDetails = packingDetails[teacategory].data;
-                                    if (categoryDetails && Array.isArray(categoryDetails)) {
-                                        for (let item of categoryDetails) {
-                                            if (item.invoiceNo === invoicenumber) {
-                                                const updatedNumOfBags = item.numofbags - packingBag;
-                                                if (updatedNumOfBags < 0) {
-                                                    return res.status(400).json({
-                                                        success: false,
-                                                        message: `Insufficient bags for invoice ${invoicenumber}`,
-                                                    });
-                                                }
-                                                item.numofbags = updatedNumOfBags;
-                                                updated = true;
-                                                break;
-                                            }
-                                        }
-
-                                        if (updated) break;
-                                    }
-                                }
-                                if (!updated) {
-                                    return res.status(404).json({
-                                        success: false,
-                                        message: `Invoice number ${invoicenumber} not found in any category`,
-                                    });
-                                }
 
                                 // Save the updated packing details
                                 for (const packingDetails of packingDetailsList) {
@@ -570,57 +508,13 @@ export const dispatchDetails = async (req, res) => {
                                     message: `Successfully updated ${teacategory}`,
                                     data: record,
                                 });
-                            } else if ((numofbags === "10B" || numofbags === "20B") && b10 == 2 && b20 == 0) {
-                                console.log(4);
+                            } else if (
+                                (numofbags === "10B" || numofbags === "20B") &&
+                                b10 == 2 &&
+                                b20 == 0
+                            ) {
                                 teaCategoryArray.push(newEntry);
                                 await record.save();
-                                let packingDetailsList = await PackingDetailsSchema.find({
-                                    saleNumber,
-                                });
-
-                                if (!packingDetailsList) {
-                                    throw new Error(
-                                        "Packing details not found for the given sale number"
-                                    );
-                                }
-
-                                // Determine packing bag count based on numofbags
-                                const packingBagMap = {
-                                    "10B": 10,
-                                    "15B": 15,
-                                    "20B": 20,
-                                    "30B": 30,
-                                    "40B": 40,
-                                };
-                                const packingBag = packingBagMap[numofbags] || 0;
-                                let updated = false;
-                                for (const packingDetails of packingDetailsList) {
-                                    const categoryDetails = packingDetails[teacategory].data;
-                                    if (categoryDetails && Array.isArray(categoryDetails)) {
-                                        for (let item of categoryDetails) {
-                                            if (item.invoiceNo === invoicenumber) {
-                                                const updatedNumOfBags = item.numofbags - packingBag;
-                                                if (updatedNumOfBags < 0) {
-                                                    return res.status(400).json({
-                                                        success: false,
-                                                        message: `Insufficient bags for invoice ${invoicenumber}`,
-                                                    });
-                                                }
-                                                item.numofbags = updatedNumOfBags;
-                                                updated = true;
-                                                break;
-                                            }
-                                        }
-
-                                        if (updated) break;
-                                    }
-                                }
-                                if (!updated) {
-                                    return res.status(404).json({
-                                        success: false,
-                                        message: `Invoice number ${invoicenumber} not found in any category`,
-                                    });
-                                }
 
                                 // Save the updated packing details
                                 for (const packingDetails of packingDetailsList) {
@@ -632,57 +526,13 @@ export const dispatchDetails = async (req, res) => {
                                     message: `Successfully updated ${teacategory}`,
                                     data: record,
                                 });
-                            } else if ((numofbags === "10B" || numofbags === "20B") && b10 == 0 && b20 == 2) {
-                                console.log(5);
+                            } else if (
+                                (numofbags === "10B" || numofbags === "20B") &&
+                                b10 == 0 &&
+                                b20 == 2
+                            ) {
                                 teaCategoryArray.push(newEntry);
                                 await record.save();
-                                let packingDetailsList = await PackingDetailsSchema.find({
-                                    saleNumber,
-                                });
-
-                                if (!packingDetailsList) {
-                                    throw new Error(
-                                        "Packing details not found for the given sale number"
-                                    );
-                                }
-
-                                // Determine packing bag count based on numofbags
-                                const packingBagMap = {
-                                    "10B": 10,
-                                    "15B": 15,
-                                    "20B": 20,
-                                    "30B": 30,
-                                    "40B": 40,
-                                };
-                                const packingBag = packingBagMap[numofbags] || 0;
-                                let updated = false;
-                                for (const packingDetails of packingDetailsList) {
-                                    const categoryDetails = packingDetails[teacategory].data;
-                                    if (categoryDetails && Array.isArray(categoryDetails)) {
-                                        for (let item of categoryDetails) {
-                                            if (item.invoiceNo === invoicenumber) {
-                                                const updatedNumOfBags = item.numofbags - packingBag;
-                                                if (updatedNumOfBags < 0) {
-                                                    return res.status(400).json({
-                                                        success: false,
-                                                        message: `Insufficient bags for invoice ${invoicenumber}`,
-                                                    });
-                                                }
-                                                item.numofbags = updatedNumOfBags;
-                                                updated = true;
-                                                break;
-                                            }
-                                        }
-
-                                        if (updated) break;
-                                    }
-                                }
-                                if (!updated) {
-                                    return res.status(404).json({
-                                        success: false,
-                                        message: `Invoice number ${invoicenumber} not found in any category`,
-                                    });
-                                }
 
                                 // Save the updated packing details
                                 for (const packingDetails of packingDetailsList) {
@@ -694,57 +544,13 @@ export const dispatchDetails = async (req, res) => {
                                     message: `Successfully updated ${teacategory}`,
                                     data: record,
                                 });
-                            } else if ((numofbags === "10B" || numofbags === "20B") && b10 == 1 && b20 == 1) {
-                                console.log(6);
+                            } else if (
+                                (numofbags === "10B" || numofbags === "20B") &&
+                                b10 == 1 &&
+                                b20 == 1
+                            ) {
                                 teaCategoryArray.push(newEntry);
                                 await record.save();
-                                let packingDetailsList = await PackingDetailsSchema.find({
-                                    saleNumber,
-                                });
-
-                                if (!packingDetailsList) {
-                                    throw new Error(
-                                        "Packing details not found for the given sale number"
-                                    );
-                                }
-
-                                // Determine packing bag count based on numofbags
-                                const packingBagMap = {
-                                    "10B": 10,
-                                    "15B": 15,
-                                    "20B": 20,
-                                    "30B": 30,
-                                    "40B": 40,
-                                };
-                                const packingBag = packingBagMap[numofbags] || 0;
-                                let updated = false;
-                                for (const packingDetails of packingDetailsList) {
-                                    const categoryDetails = packingDetails[teacategory].data;
-                                    if (categoryDetails && Array.isArray(categoryDetails)) {
-                                        for (let item of categoryDetails) {
-                                            if (item.invoiceNo === invoicenumber) {
-                                                const updatedNumOfBags = item.numofbags - packingBag;
-                                                if (updatedNumOfBags < 0) {
-                                                    return res.status(400).json({
-                                                        success: false,
-                                                        message: `Insufficient bags for invoice ${invoicenumber}`,
-                                                    });
-                                                }
-                                                item.numofbags = updatedNumOfBags;
-                                                updated = true;
-                                                break;
-                                            }
-                                        }
-
-                                        if (updated) break;
-                                    }
-                                }
-                                if (!updated) {
-                                    return res.status(404).json({
-                                        success: false,
-                                        message: `Invoice number ${invoicenumber} not found in any category`,
-                                    });
-                                }
 
                                 // Save the updated packing details
                                 for (const packingDetails of packingDetailsList) {
@@ -757,62 +563,13 @@ export const dispatchDetails = async (req, res) => {
                                     data: record,
                                 });
                             } else if (numofbags === "40B") {
-                                console.log(7);
                                 teaCategoryArray.push(newEntry);
                                 await record.save();
-                                let packingDetailsList = await PackingDetailsSchema.find({
-                                    saleNumber,
-                                });
-
-                                if (!packingDetailsList) {
-                                    throw new Error(
-                                        "Packing details not found for the given sale number"
-                                    );
-                                }
-
-                                // Determine packing bag count based on numofbags
-                                const packingBagMap = {
-                                    "10B": 10,
-                                    "15B": 15,
-                                    "20B": 20,
-                                    "30B": 30,
-                                    "40B": 40,
-                                };
-                                const packingBag = packingBagMap[numofbags] || 0;
-                                let updated = false;
-                                for (const packingDetails of packingDetailsList) {
-                                    const categoryDetails = packingDetails[teacategory].data;
-                                    if (categoryDetails && Array.isArray(categoryDetails)) {
-                                        for (let item of categoryDetails) {
-                                            if (item.invoiceNo === invoicenumber) {
-                                                const updatedNumOfBags = item.numofbags - packingBag;
-                                                if (updatedNumOfBags < 0) {
-                                                    return res.status(400).json({
-                                                        success: false,
-                                                        message: `Insufficient bags for invoice ${invoicenumber}`,
-                                                    });
-                                                }
-                                                item.numofbags = updatedNumOfBags;
-                                                updated = true;
-                                                break;
-                                            }
-                                        }
-
-                                        if (updated) break;
-                                    }
-                                }
-                                if (!updated) {
-                                    return res.status(404).json({
-                                        success: false,
-                                        message: `Invoice number ${invoicenumber} not found in any category`,
-                                    });
-                                }
 
                                 // Save the updated packing details
                                 for (const packingDetails of packingDetailsList) {
                                     await packingDetails.save();
                                 }
-
                                 return res.status(200).json({
                                     success: true,
                                     message: `Successfully updated ${teacategory}`,
@@ -829,56 +586,8 @@ export const dispatchDetails = async (req, res) => {
                         //---------------2---------------//
                         else if (BopSpToOp1) {
                             if (numofbags === "20B" && b20 == 1 && b30 == 0) {
-                                console.log(8);
                                 teaCategoryArray.push(newEntry);
                                 await record.save();
-                                let packingDetailsList = await PackingDetailsSchema.find({
-                                    saleNumber,
-                                });
-
-                                if (!packingDetailsList) {
-                                    throw new Error(
-                                        "Packing details not found for the given sale number"
-                                    );
-                                }
-
-                                // Determine packing bag count based on numofbags
-                                const packingBagMap = {
-                                    "10B": 10,
-                                    "15B": 15,
-                                    "20B": 20,
-                                    "30B": 30,
-                                    "40B": 40,
-                                };
-                                const packingBag = packingBagMap[numofbags] || 0;
-                                let updated = false;
-                                for (const packingDetails of packingDetailsList) {
-                                    const categoryDetails = packingDetails[teacategory].data;
-                                    if (categoryDetails && Array.isArray(categoryDetails)) {
-                                        for (let item of categoryDetails) {
-                                            if (item.invoiceNo === invoicenumber) {
-                                                const updatedNumOfBags = item.numofbags - packingBag;
-                                                if (updatedNumOfBags < 0) {
-                                                    return res.status(400).json({
-                                                        success: false,
-                                                        message: `Insufficient bags for invoice ${invoicenumber}`,
-                                                    });
-                                                }
-                                                item.numofbags = updatedNumOfBags;
-                                                updated = true;
-                                                break;
-                                            }
-                                        }
-
-                                        if (updated) break;
-                                    }
-                                }
-                                if (!updated) {
-                                    return res.status(404).json({
-                                        success: false,
-                                        message: `Invoice number ${invoicenumber} not found in any category`,
-                                    });
-                                }
 
                                 // Save the updated packing details
                                 for (const packingDetails of packingDetailsList) {
@@ -887,60 +596,12 @@ export const dispatchDetails = async (req, res) => {
 
                                 return res.status(200).json({
                                     success: true,
-                                    message: `Successfully updated ${teacategory}`,
+                                    message: `Successfully updated ${teacategory} with 20B bags`,
                                     data: record,
                                 });
                             } else if (numofbags === "30B" && b30 == 1 && b20 == 0) {
-                                console.log(9);
                                 teaCategoryArray.push(newEntry);
                                 await record.save();
-                                let packingDetailsList = await PackingDetailsSchema.find({
-                                    saleNumber,
-                                });
-
-                                if (!packingDetailsList) {
-                                    throw new Error(
-                                        "Packing details not found for the given sale number"
-                                    );
-                                }
-
-                                // Determine packing bag count based on numofbags
-                                const packingBagMap = {
-                                    "10B": 10,
-                                    "15B": 15,
-                                    "20B": 20,
-                                    "30B": 30,
-                                    "40B": 40,
-                                };
-                                const packingBag = packingBagMap[numofbags] || 0;
-                                let updated = false;
-                                for (const packingDetails of packingDetailsList) {
-                                    const categoryDetails = packingDetails[teacategory].data;
-                                    if (categoryDetails && Array.isArray(categoryDetails)) {
-                                        for (let item of categoryDetails) {
-                                            if (item.invoiceNo === invoicenumber) {
-                                                const updatedNumOfBags = item.numofbags - packingBag;
-                                                if (updatedNumOfBags < 0) {
-                                                    return res.status(400).json({
-                                                        success: false,
-                                                        message: `Insufficient bags for invoice ${invoicenumber}`,
-                                                    });
-                                                }
-                                                item.numofbags = updatedNumOfBags;
-                                                updated = true;
-                                                break;
-                                            }
-                                        }
-
-                                        if (updated) break;
-                                    }
-                                }
-                                if (!updated) {
-                                    return res.status(404).json({
-                                        success: false,
-                                        message: `Invoice number ${invoicenumber} not found in any category`,
-                                    });
-                                }
 
                                 // Save the updated packing details
                                 for (const packingDetails of packingDetailsList) {
@@ -949,60 +610,12 @@ export const dispatchDetails = async (req, res) => {
 
                                 return res.status(200).json({
                                     success: true,
-                                    message: `Successfully updated ${teacategory}`,
+                                    message: `Successfully updated ${teacategory} with 30B bags`,
                                     data: record,
                                 });
                             } else if (b20 == 1 && numofbags === "30B" && b30 == 0) {
-                                console.log(10);
                                 teaCategoryArray.push(newEntry);
                                 await record.save();
-                                let packingDetailsList = await PackingDetailsSchema.find({
-                                    saleNumber,
-                                });
-
-                                if (!packingDetailsList) {
-                                    throw new Error(
-                                        "Packing details not found for the given sale number"
-                                    );
-                                }
-
-                                // Determine packing bag count based on numofbags
-                                const packingBagMap = {
-                                    "10B": 10,
-                                    "15B": 15,
-                                    "20B": 20,
-                                    "30B": 30,
-                                    "40B": 40,
-                                };
-                                const packingBag = packingBagMap[numofbags] || 0;
-                                let updated = false;
-                                for (const packingDetails of packingDetailsList) {
-                                    const categoryDetails = packingDetails[teacategory].data;
-                                    if (categoryDetails && Array.isArray(categoryDetails)) {
-                                        for (let item of categoryDetails) {
-                                            if (item.invoiceNo === invoicenumber) {
-                                                const updatedNumOfBags = item.numofbags - packingBag;
-                                                if (updatedNumOfBags < 0) {
-                                                    return res.status(400).json({
-                                                        success: false,
-                                                        message: `Insufficient bags for invoice ${invoicenumber}`,
-                                                    });
-                                                }
-                                                item.numofbags = updatedNumOfBags;
-                                                updated = true;
-                                                break;
-                                            }
-                                        }
-
-                                        if (updated) break;
-                                    }
-                                }
-                                if (!updated) {
-                                    return res.status(404).json({
-                                        success: false,
-                                        message: `Invoice number ${invoicenumber} not found in any category`,
-                                    });
-                                }
 
                                 // Save the updated packing details
                                 for (const packingDetails of packingDetailsList) {
@@ -1011,60 +624,12 @@ export const dispatchDetails = async (req, res) => {
 
                                 return res.status(200).json({
                                     success: true,
-                                    message: `Successfully updated ${teacategory}`,
+                                    message: `Successfully updated ${teacategory} with 30B bags`,
                                     data: record,
                                 });
                             } else if (b20 == 0 && numofbags === "20B" && b30 == 1) {
-                                console.log(11);
                                 teaCategoryArray.push(newEntry);
                                 await record.save();
-                                let packingDetailsList = await PackingDetailsSchema.find({
-                                    saleNumber,
-                                });
-
-                                if (!packingDetailsList) {
-                                    throw new Error(
-                                        "Packing details not found for the given sale number"
-                                    );
-                                }
-
-                                // Determine packing bag count based on numofbags
-                                const packingBagMap = {
-                                    "10B": 10,
-                                    "15B": 15,
-                                    "20B": 20,
-                                    "30B": 30,
-                                    "40B": 40,
-                                };
-                                const packingBag = packingBagMap[numofbags] || 0;
-                                let updated = false;
-                                for (const packingDetails of packingDetailsList) {
-                                    const categoryDetails = packingDetails[teacategory].data;
-                                    if (categoryDetails && Array.isArray(categoryDetails)) {
-                                        for (let item of categoryDetails) {
-                                            if (item.invoiceNo === invoicenumber) {
-                                                const updatedNumOfBags = item.numofbags - packingBag;
-                                                if (updatedNumOfBags < 0) {
-                                                    return res.status(400).json({
-                                                        success: false,
-                                                        message: `Insufficient bags for invoice ${invoicenumber}`,
-                                                    });
-                                                }
-                                                item.numofbags = updatedNumOfBags;
-                                                updated = true;
-                                                break;
-                                            }
-                                        }
-
-                                        if (updated) break;
-                                    }
-                                }
-                                if (!updated) {
-                                    return res.status(404).json({
-                                        success: false,
-                                        message: `Invoice number ${invoicenumber} not found in any category`,
-                                    });
-                                }
 
                                 // Save the updated packing details
                                 for (const packingDetails of packingDetailsList) {
@@ -1073,60 +638,12 @@ export const dispatchDetails = async (req, res) => {
 
                                 return res.status(200).json({
                                     success: true,
-                                    message: `Successfully updated ${teacategory}`,
+                                    message: `Successfully updated ${teacategory} with 20B bags`,
                                     data: record,
                                 });
                             } else if (numofbags === "40B") {
-                                console.log(12);
                                 teaCategoryArray.push(newEntry);
                                 await record.save();
-                                let packingDetailsList = await PackingDetailsSchema.find({
-                                    saleNumber,
-                                });
-
-                                if (!packingDetailsList) {
-                                    throw new Error(
-                                        "Packing details not found for the given sale number"
-                                    );
-                                }
-
-                                // Determine packing bag count based on numofbags
-                                const packingBagMap = {
-                                    "10B": 10,
-                                    "15B": 15,
-                                    "20B": 20,
-                                    "30B": 30,
-                                    "40B": 40,
-                                };
-                                const packingBag = packingBagMap[numofbags] || 0;
-                                let updated = false;
-                                for (const packingDetails of packingDetailsList) {
-                                    const categoryDetails = packingDetails[teacategory].data;
-                                    if (categoryDetails && Array.isArray(categoryDetails)) {
-                                        for (let item of categoryDetails) {
-                                            if (item.invoiceNo === invoicenumber) {
-                                                const updatedNumOfBags = item.numofbags - packingBag;
-                                                if (updatedNumOfBags < 0) {
-                                                    return res.status(400).json({
-                                                        success: false,
-                                                        message: `Insufficient bags for invoice ${invoicenumber}`,
-                                                    });
-                                                }
-                                                item.numofbags = updatedNumOfBags;
-                                                updated = true;
-                                                break;
-                                            }
-                                        }
-
-                                        if (updated) break;
-                                    }
-                                }
-                                if (!updated) {
-                                    return res.status(404).json({
-                                        success: false,
-                                        message: `Invoice number ${invoicenumber} not found in any category`,
-                                    });
-                                }
 
                                 // Save the updated packing details
                                 for (const packingDetails of packingDetailsList) {
@@ -1135,70 +652,21 @@ export const dispatchDetails = async (req, res) => {
 
                                 return res.status(200).json({
                                     success: true,
-                                    message: `Successfully updated ${teacategory}`,
+                                    message: `Successfully updated ${teacategory} with 40B bags`,
                                     data: record,
                                 });
                             } else {
-                                console.log(13);
                                 return res.status(400).json({
                                     success: false,
-                                    message: "Here is the message",
+                                    message: "Invalid number of bags provided",
                                 });
                             }
                         }
                         //---------------3-----------------//
                         else if (Bp) {
                             if (numofbags === "20B" && b20 == 1) {
-                                console.log(14);
                                 teaCategoryArray.push(newEntry);
                                 await record.save();
-                                let packingDetailsList = await PackingDetailsSchema.find({
-                                    saleNumber,
-                                });
-
-                                if (!packingDetailsList) {
-                                    throw new Error(
-                                        "Packing details not found for the given sale number"
-                                    );
-                                }
-
-                                // Determine packing bag count based on numofbags
-                                const packingBagMap = {
-                                    "10B": 10,
-                                    "15B": 15,
-                                    "20B": 20,
-                                    "30B": 30,
-                                    "40B": 40,
-                                };
-                                const packingBag = packingBagMap[numofbags] || 0;
-                                let updated = false;
-                                for (const packingDetails of packingDetailsList) {
-                                    const categoryDetails = packingDetails[teacategory].data;
-                                    if (categoryDetails && Array.isArray(categoryDetails)) {
-                                        for (let item of categoryDetails) {
-                                            if (item.invoiceNo === invoicenumber) {
-                                                const updatedNumOfBags = item.numofbags - packingBag;
-                                                if (updatedNumOfBags < 0) {
-                                                    return res.status(400).json({
-                                                        success: false,
-                                                        message: `Insufficient bags for invoice ${invoicenumber}`,
-                                                    });
-                                                }
-                                                item.numofbags = updatedNumOfBags;
-                                                updated = true;
-                                                break;
-                                            }
-                                        }
-
-                                        if (updated) break;
-                                    }
-                                }
-                                if (!updated) {
-                                    return res.status(404).json({
-                                        success: false,
-                                        message: `Invoice number ${invoicenumber} not found in any category`,
-                                    });
-                                }
 
                                 // Save the updated packing details
                                 for (const packingDetails of packingDetailsList) {
@@ -1207,60 +675,12 @@ export const dispatchDetails = async (req, res) => {
 
                                 return res.status(200).json({
                                     success: true,
-                                    message: `Successfully updated ${teacategory}`,
+                                    message: `Successfully updated ${teacategory} with 20B bags`,
                                     data: record,
                                 });
                             } else if (numofbags === "40B") {
-                                console.log(15);
                                 teaCategoryArray.push(newEntry);
                                 await record.save();
-                                let packingDetailsList = await PackingDetailsSchema.find({
-                                    saleNumber,
-                                });
-
-                                if (!packingDetailsList) {
-                                    throw new Error(
-                                        "Packing details not found for the given sale number"
-                                    );
-                                }
-
-                                // Determine packing bag count based on numofbags
-                                const packingBagMap = {
-                                    "10B": 10,
-                                    "15B": 15,
-                                    "20B": 20,
-                                    "30B": 30,
-                                    "40B": 40,
-                                };
-                                const packingBag = packingBagMap[numofbags] || 0;
-                                let updated = false;
-                                for (const packingDetails of packingDetailsList) {
-                                    const categoryDetails = packingDetails[teacategory].data;
-                                    if (categoryDetails && Array.isArray(categoryDetails)) {
-                                        for (let item of categoryDetails) {
-                                            if (item.invoiceNo === invoicenumber) {
-                                                const updatedNumOfBags = item.numofbags - packingBag;
-                                                if (updatedNumOfBags < 0) {
-                                                    return res.status(400).json({
-                                                        success: false,
-                                                        message: `Insufficient bags for invoice ${invoicenumber}`,
-                                                    });
-                                                }
-                                                item.numofbags = updatedNumOfBags;
-                                                updated = true;
-                                                break;
-                                            }
-                                        }
-
-                                        if (updated) break;
-                                    }
-                                }
-                                if (!updated) {
-                                    return res.status(404).json({
-                                        success: false,
-                                        message: `Invoice number ${invoicenumber} not found in any category`,
-                                    });
-                                }
 
                                 // Save the updated packing details
                                 for (const packingDetails of packingDetailsList) {
@@ -1269,36 +689,23 @@ export const dispatchDetails = async (req, res) => {
 
                                 return res.status(200).json({
                                     success: true,
-                                    message: `Successfully updated ${teacategory}`,
+                                    message: `Successfully updated ${teacategory} with 40B bags`,
                                     data: record,
                                 });
                             } else {
-                                console.log(16);
                                 return res.status(400).json({
                                     success: false,
-                                    message: "Here is the message",
+                                    message: "Invalid number of bags provided for BP category",
                                 });
                             }
                         }
                         //---------------4-----------------//
                         else if (FbopfSpToFfexsp1) {
-                            if (
-                                (numofbags === "10B" && b10 == 1) ||
-                                (numofbags === "15B" && b15 == 1) ||
-                                (numofbags === "20B" && b20 == 1) ||
-                                (numofbags === "30B" && b30 == 1) ||
-                                (numofbags === "40B" && b40 == 1) ||
-                                (numofbags === "10B Below" && b01 == 1)
-                            ) {
-                                console.log(17);
-                                return res.status(400).json({
-                                    success: false,
-                                    message: "Here is the message",
-                                });
-                            }
-                        }
-                        else {
-                            console.log(18);
+                            return res.status(400).json({
+                                success: false,
+                                message: "The specified number of bags already exists for this category",
+                            });
+                        } else {
                             return res.status(400).json({
                                 success: false,
                                 message: "Invalid details provided",
@@ -1309,60 +716,13 @@ export const dispatchDetails = async (req, res) => {
                     // todo: the dispatch record exists with the given tea category but not the given num of bags
                     else {
                         if (Bop1aToPekoe1) {
-                            console.log(19);
-
-                            if (numofbags === "40B" || (numofbags === "20B" && b10 <= 2 && b20 == 0) || (numofbags === "10B" && b20 <= 2 && b10 == 0)) {
-                                console.log(20);
+                            if (
+                                numofbags === "40B" ||
+                                (numofbags === "20B" && b10 <= 2 && b20 == 0) ||
+                                (numofbags === "10B" && b20 <= 2 && b10 == 0)
+                            ) {
                                 teaCategoryArray.push(newEntry);
                                 await record.save();
-                                await record.save();
-                                let packingDetailsList = await PackingDetailsSchema.find({
-                                    saleNumber,
-                                });
-
-                                if (!packingDetailsList) {
-                                    throw new Error(
-                                        "Packing details not found for the given sale number"
-                                    );
-                                }
-
-                                // Determine packing bag count based on numofbags
-                                const packingBagMap = {
-                                    "10B": 10,
-                                    "15B": 15,
-                                    "20B": 20,
-                                    "30B": 30,
-                                    "40B": 40,
-                                };
-                                const packingBag = packingBagMap[numofbags] || 0;
-                                let updated = false;
-                                for (const packingDetails of packingDetailsList) {
-                                    const categoryDetails = packingDetails[teacategory].data;
-                                    if (categoryDetails && Array.isArray(categoryDetails)) {
-                                        for (let item of categoryDetails) {
-                                            if (item.invoiceNo === invoicenumber) {
-                                                const updatedNumOfBags = item.numofbags - packingBag;
-                                                if (updatedNumOfBags < 0) {
-                                                    return res.status(400).json({
-                                                        success: false,
-                                                        message: `Insufficient bags for invoice ${invoicenumber}`,
-                                                    });
-                                                }
-                                                item.numofbags = updatedNumOfBags;
-                                                updated = true;
-                                                break;
-                                            }
-                                        }
-
-                                        if (updated) break;
-                                    }
-                                }
-                                if (!updated) {
-                                    return res.status(404).json({
-                                        success: false,
-                                        message: `Invoice number ${invoicenumber} not found in any category`,
-                                    });
-                                }
 
                                 // Save the updated packing details
                                 for (const packingDetails of packingDetailsList) {
@@ -1371,30 +731,29 @@ export const dispatchDetails = async (req, res) => {
 
                                 return res.status(200).json({
                                     success: true,
-                                    message: `Successfully updated ${teacategory}`,
+                                    message: `Successfully updated ${teacategory} with ${numofbags} bags`,
                                     data: record,
                                 });
-
-                            }
-                            else if (b10 == 3 || b20 == 3) {
-                                console.log(21);
-                                console.log("Invalid or insufficient number of bags");
-                                return res.status(500).json({
-                                    success: true,
-                                    message: "UnSuccessfully updated",
-                                    data: record,
+                            } else if (b10 == 3 || b20 == 3) {
+                                return res.status(400).json({
+                                    success: false,
+                                    message: "Invalid or insufficient number of bags",
                                 });
-                            }
-                            else {
-                                console.log(22);
+                            } else {
                                 return res.status(400).json({
                                     success: false,
                                     message: "Invalid details provided",
                                 });
                             }
-                        } else if (BopSpToOp1) {
-                            if ((numofbags === "20B" && b30 == 1) || (numofbags === "30B" && b20 == 1) || numofbags === "40B" || (numofbags === "20B" && b30 == 0) || (numofbags === "30B" && b20 == 0)) {
-                                console.log(23);
+                        }
+                        else if (BopSpToOp1) {
+                            if (
+                                (numofbags === "20B" && b30 == 1) ||
+                                (numofbags === "30B" && b20 == 1) ||
+                                numofbags === "40B" ||
+                                (numofbags === "20B" && b30 == 0) ||
+                                (numofbags === "30B" && b20 == 0)
+                            ) {
                                 teaCategoryArray.push({
                                     invoicenumber,
                                     sizeofbag,
@@ -1402,56 +761,7 @@ export const dispatchDetails = async (req, res) => {
                                     date: today,
                                     broker,
                                 });
-                                console.log(`There are bags of 10B - 3 or 20B - 3`);
                                 await record.save();
-
-                                let packingDetailsList = await PackingDetailsSchema.find({
-                                    saleNumber,
-                                });
-
-                                if (!packingDetailsList) {
-                                    throw new Error(
-                                        "Packing details not found for the given sale number"
-                                    );
-                                }
-
-                                // Determine packing bag count based on numofbags
-                                const packingBagMap = {
-                                    "10B": 10,
-                                    "15B": 15,
-                                    "20B": 20,
-                                    "30B": 30,
-                                    "40B": 40,
-                                };
-                                const packingBag = packingBagMap[numofbags] || 0;
-                                let updated = false;
-                                for (const packingDetails of packingDetailsList) {
-                                    const categoryDetails = packingDetails[teacategory].data;
-                                    if (categoryDetails && Array.isArray(categoryDetails)) {
-                                        for (let item of categoryDetails) {
-                                            if (item.invoiceNo === invoicenumber) {
-                                                const updatedNumOfBags = item.numofbags - packingBag;
-                                                if (updatedNumOfBags < 0) {
-                                                    return res.status(400).json({
-                                                        success: false,
-                                                        message: `Insufficient bags for invoice ${invoicenumber}`,
-                                                    });
-                                                }
-                                                item.numofbags = updatedNumOfBags;
-                                                updated = true;
-                                                break;
-                                            }
-                                        }
-
-                                        if (updated) break;
-                                    }
-                                }
-                                if (!updated) {
-                                    return res.status(404).json({
-                                        success: false,
-                                        message: `Invoice number ${invoicenumber} not found in any category`,
-                                    });
-                                }
 
                                 // Save the updated packing details
                                 for (const packingDetails of packingDetailsList) {
@@ -1459,123 +769,23 @@ export const dispatchDetails = async (req, res) => {
                                 }
                                 return res.status(200).json({
                                     success: true,
-                                    message: "Successfully updated",
-                                    data: record,
-                                });
-                            }
-                            else if (numofbags === "15B" || numofbags === "10B") {
-                                console.log(24);
-                                return res.status(400).json({
-                                    success: false,
-                                    message: "You cannot add both 10B and 15B",
-                                });
-                            }
-                            else {
-                                console.log(25);
-                                return res.status(400).json({
-                                    success: false,
-                                    message: "BP 15 Cannot be added",
-                                });
-                            }
-                        } else if (Bp) {
-                            if (numofbags === "20B" || numofbags === "40B") {
-                                console.log(26);
-                                teaCategoryArray.push({
-                                    invoicenumber,
-                                    sizeofbag,
-                                    numofbags,
-                                    date: today,
-                                    broker,
-                                });
-                                console.log(`There are bags of 10B - 3 or 20B - 3`);
-                                await record.save();
-
-                                let packingDetailsList = await PackingDetailsSchema.find({
-                                    saleNumber,
-                                });
-
-                                if (!packingDetailsList) {
-                                    throw new Error(
-                                        "Packing details not found for the given sale number"
-                                    );
-                                }
-
-                                // Determine packing bag count based on numofbags
-                                const packingBagMap = {
-                                    "10B": 10,
-                                    "15B": 15,
-                                    "20B": 20,
-                                    "30B": 30,
-                                    "40B": 40,
-                                };
-                                const packingBag = packingBagMap[numofbags] || 0;
-                                let updated = false;
-                                for (const packingDetails of packingDetailsList) {
-                                    const categoryDetails = packingDetails[teacategory].data;
-                                    if (categoryDetails && Array.isArray(categoryDetails)) {
-                                        for (let item of categoryDetails) {
-                                            if (item.invoiceNo === invoicenumber) {
-                                                const updatedNumOfBags = item.numofbags - packingBag;
-                                                if (updatedNumOfBags < 0) {
-                                                    return res.status(400).json({
-                                                        success: false,
-                                                        message: `Insufficient bags for invoice ${invoicenumber}`,
-                                                    });
-                                                }
-                                                item.numofbags = updatedNumOfBags;
-                                                updated = true;
-                                                break;
-                                            }
-                                        }
-
-                                        if (updated) break;
-                                    }
-                                }
-                                if (!updated) {
-                                    return res.status(404).json({
-                                        success: false,
-                                        message: `Invoice number ${invoicenumber} not found in any category`,
-                                    });
-                                }
-
-                                // Save the updated packing details
-                                for (const packingDetails of packingDetailsList) {
-                                    await packingDetails.save();
-                                }
-                                return res.status(200).json({
-                                    success: true,
-                                    message: "Successfully updated",
+                                    message: "Successfully updated the dispatch record",
                                     data: record,
                                 });
                             } else if (numofbags === "15B" || numofbags === "10B") {
-                                console.log(27);
                                 return res.status(400).json({
                                     success: false,
-                                    message: "You cannot add both 10B and 15B",
+                                    message: "You cannot add both 10B and 15B bags",
                                 });
                             } else {
-                                console.log(28);
                                 return res.status(400).json({
                                     success: false,
-                                    message: "BP 15 Cannot be added",
+                                    message: "Invalid number of bags provided for BOPSp to OP1 category",
                                 });
                             }
-                        } else if (FbopfSpToFfexsp1) {
-                            if (
-                                (numofbags === "10B" ||
-                                    numofbags === "15B" ||
-                                    numofbags === "20B" ||
-                                    numofbags === "30B" ||
-                                    numofbags === "40B" ||
-                                    numofbags === "10B Below") &&
-                                b10 == 0 &&
-                                b15 == 0 &&
-                                b20 == 0 &&
-                                b30 == 0 &&
-                                b40 == 0 &&
-                                b01 == 0
-                            ) {
-                                console.log(29);
+                        }
+                        else if (Bp) {
+                            if (numofbags === "20B" || numofbags === "40B") {
                                 teaCategoryArray.push({
                                     invoicenumber,
                                     sizeofbag,
@@ -1583,56 +793,7 @@ export const dispatchDetails = async (req, res) => {
                                     date: today,
                                     broker,
                                 });
-                                console.log(`There are bags of 10B - 3 or 20B - 3`);
                                 await record.save();
-
-                                let packingDetailsList = await PackingDetailsSchema.find({
-                                    saleNumber,
-                                });
-
-                                if (!packingDetailsList) {
-                                    throw new Error(
-                                        "Packing details not found for the given sale number"
-                                    );
-                                }
-
-                                // Determine packing bag count based on numofbags
-                                const packingBagMap = {
-                                    "10B": 10,
-                                    "15B": 15,
-                                    "20B": 20,
-                                    "30B": 30,
-                                    "40B": 40,
-                                };
-                                const packingBag = packingBagMap[numofbags] || 0;
-                                let updated = false;
-                                for (const packingDetails of packingDetailsList) {
-                                    const categoryDetails = packingDetails[teacategory].data;
-                                    if (categoryDetails && Array.isArray(categoryDetails)) {
-                                        for (let item of categoryDetails) {
-                                            if (item.invoiceNo === invoicenumber) {
-                                                const updatedNumOfBags = item.numofbags - packingBag;
-                                                if (updatedNumOfBags < 0) {
-                                                    return res.status(400).json({
-                                                        success: false,
-                                                        message: `Insufficient bags for invoice ${invoicenumber}`,
-                                                    });
-                                                }
-                                                item.numofbags = updatedNumOfBags;
-                                                updated = true;
-                                                break;
-                                            }
-                                        }
-
-                                        if (updated) break;
-                                    }
-                                }
-                                if (!updated) {
-                                    return res.status(404).json({
-                                        success: false,
-                                        message: `Invoice number ${invoicenumber} not found in any category`,
-                                    });
-                                }
 
                                 // Save the updated packing details
                                 for (const packingDetails of packingDetailsList) {
@@ -1640,21 +801,32 @@ export const dispatchDetails = async (req, res) => {
                                 }
                                 return res.status(200).json({
                                     success: true,
-                                    message: "Successfully updated",
+                                    message: "Successfully updated BP category with 20B or 40B bags",
                                     data: record,
                                 });
-                            } else {
-                                console.log(30);
+                            } else if (numofbags === "15B" || numofbags === "10B") {
                                 return res.status(400).json({
                                     success: false,
-                                    message: "BP 15 Cannot be added",
+                                    message: "You cannot add both 10B and 15B bags to BP category",
+                                });
+                            } else {
+                                return res.status(400).json({
+                                    success: false,
+                                    message: "Invalid number of bags provided for BP category",
                                 });
                             }
-                        } else {
-                            console.log(31);
+                        }
+                        else if (FbopfSpToFfexsp1) {
                             return res.status(400).json({
                                 success: false,
-                                message: "BP 15 Cannot be added",
+                                message: "The specified number of bags already exists for this category",
+                            });
+
+                        }
+                        else {
+                            return res.status(400).json({
+                                success: false,
+                                message: "Invalid details provided",
                             });
                         }
                     }
@@ -1676,60 +848,9 @@ export const dispatchDetails = async (req, res) => {
                         broker,
                     });
                     await record.save();
-
-                    let packingDetailsList = await PackingDetailsSchema.find({
-                        saleNumber,
-                    });
-
-                    if (!packingDetailsList) {
-                        throw new Error(
-                            "Packing details not found for the given sale number"
-                        );
-                    }
-
-                    // Determine packing bag count based on numofbags
-                    const packingBagMap = {
-                        "10B": 10,
-                        "15B": 15,
-                        "20B": 20,
-                        "30B": 30,
-                        "40B": 40,
-                    };
-                    const packingBag = packingBagMap[numofbags] || 0;
-                    let updated = false;
-                    for (const packingDetails of packingDetailsList) {
-                        const categoryDetails = packingDetails[teacategory].data;
-                        if (categoryDetails && Array.isArray(categoryDetails)) {
-                            for (let item of categoryDetails) {
-                                if (item.invoiceNo === invoicenumber) {
-                                    const updatedNumOfBags = item.numofbags - packingBag;
-                                    if (updatedNumOfBags < 0) {
-                                        return res.status(400).json({
-                                            success: false,
-                                            message: `Insufficient bags for invoice ${invoicenumber}`,
-                                        });
-                                    }
-                                    item.numofbags = updatedNumOfBags;
-                                    updated = true;
-                                    break;
-                                }
-                            }
-
-                            if (updated) break;
-                        }
-                    }
-                    if (!updated) {
-                        return res.status(404).json({
-                            success: false,
-                            message: `Invoice number ${invoicenumber} not found in any category`,
-                        });
-                    }
-
-                    // Save the updated packing details
                     for (const packingDetails of packingDetailsList) {
                         await packingDetails.save();
                     }
-
                     return res.status(200).json({
                         success: true,
                         message: `Successfully updated ${teacategory}`,

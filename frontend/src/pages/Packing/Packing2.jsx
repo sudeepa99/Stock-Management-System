@@ -42,6 +42,7 @@ const Packing2 = () => {
     BP: { min: 35, max: 60 },
     FBOPFSp: { min: 30, max: 55 },
     FFEXSP: { min: 20, max: 52 },
+    FFEXSP1: { min: 20, max: 52 },
   };
 
   const handleInputChange = (e) => {

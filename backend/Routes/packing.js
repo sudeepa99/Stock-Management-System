@@ -7,7 +7,8 @@ import {
     getDateDetails,
     getMadeTea,
     getSaleDetails,
-    getPackingDetails
+    getPackingDetails,
+    updateEndDate,
 } from "../Controllers/packingController.js";
 
 const router = express.Router();
@@ -19,5 +20,6 @@ router.get("/date", getDateDetails);
 router.get("/made-tea", getMadeTea);
 router.get("/sale", getSaleDetails);
 router.get("/detail", getPackingDetails);
+router.put("/end-date", updateEndDate);
 
 export default router;

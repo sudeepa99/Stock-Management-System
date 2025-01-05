@@ -219,46 +219,60 @@ const Dispatch = () => {
         <div className="mb-5">
           <label className="made-tea">Number of Bags</label>
           <br />
-          <select
-            name="numofbags"
-            value={formData.numofbags}
-            onChange={handleInputChange}
-            className="bags_no"
-          >
-            <option value="">Select number of bags</option>
-            <option
-              value="Below 10B"
-              className={disable10b ? "red-option" : "black-option"}
-              disabled={disable10b}
+          {formData.teacategory === "FBOPFSp" ||
+            formData.teacategory === "FFEXSP" ||
+            formData.teacategory === "FFEXSP1" ? (
+            <input
+              type="number"
+              name="numofbags"
+              placeholder="10"
+              className="control2"
+              onChange={handleInputChange}
+              value={formData.numofbags}
+              required
+            />
+          ) : (
+            <select
+              name="numofbags"
+              value={formData.numofbags}
+              onChange={handleInputChange}
+              className="bags_no"
             >
-              Below 10B
-            </option>
-            <option value="10B">10B</option>
-            <option
-              value="15B"
-              className={
-                disable20b30b || formData.teacategory === "PEKOE1"
-                  ? "red-option"
-                  : "black-option"
-              }
-              disabled={disable20b30b || formData.teacategory === "PEKOE1"}
-            >
-              15B
-            </option>
-            <option value="20B">20B</option>
-            <option
-              value="30B"
-              className={
-                disable20b30b || formData.teacategory === "BP"
-                  ? "red-option"
-                  : "black-option"
-              }
-              disabled={disable20b30b || formData.teacategory === "BP"}
-            >
-              30B
-            </option>
-            <option value="40B">40B</option>
-          </select>
+              <option value="">Select number of bags</option>
+              <option
+                value="Below 10B"
+                className={disable10b ? "red-option" : "black-option"}
+                disabled={disable10b}
+              >
+                Below 10B
+              </option>
+              <option value="10B">10B</option>
+              <option
+                value="15B"
+                className={
+                  disable20b30b || formData.teacategory === "PEKOE1"
+                    ? "red-option"
+                    : "black-option"
+                }
+                disabled={disable20b30b || formData.teacategory === "PEKOE1"}
+              >
+                15B
+              </option>
+              <option value="20B">20B</option>
+              <option
+                value="30B"
+                className={
+                  disable20b30b || formData.teacategory === "BP"
+                    ? "red-option"
+                    : "black-option"
+                }
+                disabled={disable20b30b || formData.teacategory === "BP"}
+              >
+                30B
+              </option>
+              <option value="40B">40B</option>
+            </select>
+          )}
         </div>
         <div className="bg-[#54ed50] w-[150px] text-center rounded-[5px] text-[23px] desktop:ml-[43%] mt-3 laptop:ml-[41%] ">
           <button disabled={loading} type="submit">

@@ -2,8 +2,7 @@ import Packing from "../models/SaleSchema.js";
 import PackingDetailsSchema from "../models/PackingDetailsSchema.js";
 import TeaCategoriesConst from "../Constants/TeaCategoryConst.js";
 import DispatchDetails from "../models/DispatchSchema.js";
-
-//Create a new sale
+// Create a new sale
 export const saleDetails = async (req, res) => {
     const { saleNo, startDate, endDate, details } = req.body;
     try {
@@ -49,7 +48,7 @@ export const saleDetails = async (req, res) => {
     }
 };
 
-// Create Endpoint  for Recieved tea and made tea
+// Create Endpoint for Received tea and made tea
 export const packingDetails = async (req, res) => {
     const { date, greenleaves, madetea, details } = req.body;
     const packing = await Packing.findOne().sort({ $natural: -1 });
@@ -101,11 +100,8 @@ export const packingDetails = async (req, res) => {
     }
 };
 
-// Retrieve Endpoint for Packing details
 // Function to update the tea category
 const updateTeaCategory = async (documentId, teacategory, newItem) => {
-    console.log(teacategory);
-
     try {
         const updatedDocument = await PackingDetailsSchema.findOneAndUpdate(
             { _id: documentId },
@@ -122,6 +118,7 @@ const updateTeaCategory = async (documentId, teacategory, newItem) => {
     }
 };
 
+// Update packing details with new tea category data
 export const updatePackingDetails = async (req, res) => {
     const { teacategory, teacategoryData } = req.body;
     try {
@@ -184,7 +181,7 @@ export const updatePackingDetails = async (req, res) => {
     }
 };
 
-//Get the latest packin details
+// Get the latest packing details for today
 export const getPackingDetails = async (req, res) => {
     try {
         const today = new Date().toISOString().split("T")[0];
@@ -204,19 +201,19 @@ export const getPackingDetails = async (req, res) => {
     }
 };
 
-//FoR Report
+// Get all packing details for reporting
 export const getAllPackingDetails = async (req, res) => {
     try {
         const packingD = await PackingDetailsSchema.find({}).select("-password");
         res
             .status(200)
-            .json({ success: true, message: "Packing  found", data: packingD });
+            .json({ success: true, message: "Packing found", data: packingD });
     } catch (err) {
         res.status(404).json({ success: false, message: "Not Found" });
     }
 };
 
-// For Packaging
+// Get the date details for packaging
 export const getDateDetails = async (req, res) => {
     try {
         const packing = await Packing.findOne().sort({ $natural: -1 });
@@ -239,7 +236,7 @@ export const getDateDetails = async (req, res) => {
     }
 };
 
-//For packing
+// Check if tea has been made for today
 export const getMadeTea = async (req, res) => {
     try {
         const today = new Date().toISOString().split("T")[0];
@@ -258,7 +255,7 @@ export const getMadeTea = async (req, res) => {
     }
 };
 
-
+// Get sale details for today
 export const getSaleDetails = async (req, res) => {
     try {
         const today = new Date().toISOString().split("T")[0];
@@ -276,9 +273,6 @@ export const getSaleDetails = async (req, res) => {
                 message: "No packing or sale details found for today.",
             });
         }
-
-        console.log(saleDetails);
-
 
         const dispatchDetails = await DispatchDetails.findOne({ saleNumber: saleDetails.saleNo });
 
@@ -300,3 +294,35 @@ export const getSaleDetails = async (req, res) => {
         });
     }
 };
+
+//update catelogues end date
+export const updateEndDate = async (req, res) => {
+    try {
+        const { endDate } = req.body;
+
+        if (!endDate) {
+            return res.status(400).json({ success: false, message: "End date is required" });
+        }
+
+        const packing = await Packing.findOne().sort({ $natural: -1 });
+
+        if (!packing) {
+            return res.status(404).json({ success: false, message: "Packing record not found" });
+        }
+
+        const packingDetails = await PackingDetailsSchema.findOne({ date: packing.endDate });
+
+        if (packingDetails) {
+            return res.status(400).json({ success: false, message: "End date cannot be updated" });
+        } else {
+            packing.endDate = endDate;
+            await packing.save();
+            return res.status(200).json({ success: true, message: "End date updated successfully" });
+        }
+
+    } catch (err) {
+        console.error("Error updating end date:", err);
+        return res.status(500).json({ success: false, message: "Server Error" });
+    }
+};
+
