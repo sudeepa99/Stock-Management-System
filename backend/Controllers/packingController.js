@@ -312,7 +312,7 @@ export const updateEndDate = async (req, res) => {
 
         const packingDetails = await PackingDetailsSchema.findOne({ date: packing.endDate });
 
-        if (packingDetails) {
+        if (packingDetails && packing.endDate === endDate) {
             return res.status(400).json({ success: false, message: "End date cannot be updated" });
         } else {
             packing.endDate = endDate;
@@ -326,3 +326,31 @@ export const updateEndDate = async (req, res) => {
     }
 };
 
+// get packing details within a date range for weekly report
+export const getWeeklyPackingDetails = async (req, res) => {
+    try {
+        const toDate = new Date();
+        const startDate = new Date();
+        startDate.setDate(toDate.getDate() - 7);
+
+        const packingDetails = await PackingDetailsSchema.find({
+            date: { $gte: startDate.toISOString().split("T")[0], $lte: toDate.toISOString().split("T")[0] },
+        });
+
+        const daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+        const weeklyData = {};
+
+        packingDetails.forEach(detail => {
+            const dayName = daysOfWeek[new Date(detail.date).getDay()];
+            if (!weeklyData[dayName]) {
+                weeklyData[dayName] = [];
+            }
+            weeklyData[dayName].push(detail);
+        });
+
+        return res.status(200).json({ success: true, data: weeklyData });
+    } catch (err) {
+        console.error("Error fetching packing details:", err);
+        return res.status(500).json({ success: false, message: "Server Error" });
+    }
+}

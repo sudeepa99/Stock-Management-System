@@ -2,6 +2,7 @@ import DispatchDetails from "../models/DispatchSchema.js";
 import Packing from "../models/SaleSchema.js";
 import PackingDetailsSchema from "../models/PackingDetailsSchema.js";
 import TeaCategoriesConst from "../Constants/TeaCategoryConst.js";
+import teaCategories from "../Constants/TeaCategoryConst.js";
 
 // find by invoice number for dispatch
 export const findByInvoiceNo = async (req, res) => {
@@ -960,5 +961,117 @@ export const dispatchDetails = async (req, res) => {
         }
     } catch (err) {
         return res.status(500).json({ success: false, err: err.message });
+    }
+};
+
+// get dispatch details within a date range for weekly report
+export const getWeeklyDispatchDetails = async (req, res) => {
+    try {
+        const today = new Date().toISOString().split("T")[0];
+
+        // Find the relevant sale details
+        const saleDetails = await Packing.findOne({
+            startDate: { $lte: today },
+            endDate: { $gte: today },
+        });
+
+        if (!saleDetails) {
+            return res.status(404).json({ success: false, message: "No sale details found for the current date range." });
+        }
+
+        // Find the dispatch details for the sale number
+        const dispatchDetails = await DispatchDetails.findOne({ saleNumber: saleDetails.saleNo });
+
+        if (!dispatchDetails) {
+            return res.status(404).json({ success: false, message: "No dispatch details found for the sale number." });
+        }
+
+        // Define broker-specific details
+        const brokerOneDetails = [];
+        const brokerTwoDetails = [];
+        const brokerThreeDetails = [];
+
+        // Aggregate data for each broker
+        for (const category of TeaCategoriesConst) {
+            const categoryData = dispatchDetails[category]?.data || [];
+            for (const item of categoryData) {
+                if (item.broker === "Broker1") {
+                    brokerOneDetails.push({ data: item, category });
+                } else if (item.broker === "Broker2") {
+                    brokerTwoDetails.push({ data: item, category });
+                } else if (item.broker === "Broker3") {
+                    brokerThreeDetails.push({ data: item, category });
+                } else {
+                    console.warn(`Unhandled broker: ${item.broker}`);
+                }
+            }
+        }
+        return res.status(200).json({
+            success: true,
+            data: {
+                brokerOneDetails,
+                brokerTwoDetails,
+                brokerThreeDetails,
+            },
+        });
+    } catch (err) {
+        console.error("Error fetching packing details:", err);
+        return res.status(500).json({ success: false, message: "Server Error" });
+    }
+};
+
+// get dispatch details within a date range for weekly report
+export const getWeeklyDispatchDetailsDefault = async (req, res) => {
+    try {
+        const today = new Date().toISOString().split("T")[0];
+
+        // Find the relevant sale details
+        const saleDetails = await Packing.findOne({
+            startDate: { $lte: today },
+            endDate: { $gte: today },
+        });
+
+        if (!saleDetails) {
+            return res.status(404).json({ success: false, message: "No sale details found for the current date range." });
+        }
+
+        // Find the dispatch details for the sale number
+        const dispatchDetails = await DispatchDetails.findOne({ saleNumber: saleDetails.saleNo });
+
+        if (!dispatchDetails) {
+            return res.status(404).json({ success: false, message: "No dispatch details found for the sale number." });
+        }
+
+        // Define broker-specific details
+        const brokerOneDetails = [];
+        const brokerTwoDetails = [];
+        const brokerThreeDetails = [];
+
+        // Aggregate data for each broker
+        for (const category of TeaCategoriesConst) {
+            const categoryData = dispatchDetails[category]?.data || [];
+            for (const item of categoryData) {
+                if (item.broker === "Broker1") {
+                    brokerOneDetails.push({ data: item, category });
+                } else if (item.broker === "Broker2") {
+                    brokerTwoDetails.push({ data: item, category });
+                } else if (item.broker === "Broker3") {
+                    brokerThreeDetails.push({ data: item, category });
+                } else {
+                    console.warn(`Unhandled broker: ${item.broker}`);
+                }
+            }
+        }
+        return res.status(200).json({
+            success: true,
+            data: {
+                brokerOneDetails,
+                brokerTwoDetails,
+                brokerThreeDetails,
+            },
+        });
+    } catch (err) {
+        console.error("Error fetching packing details:", err);
+        return res.status(500).json({ success: false, message: "Server Error" });
     }
 };

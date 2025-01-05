@@ -9,7 +9,7 @@ import AppLayout from '../layout/Layout';
 import Packing from '../pages/Packing/Packing';
 import Packing1 from '../pages/Packing/Packing1';
 import Packing2 from '../pages/Packing/Packing2';
-import ReportExcel from '../pages/ReportExcel/ReportExcel';
+import DispatchReport from '../pages/DispatchReport/DispatchReport';
 
 import "../App.css";
 
@@ -48,8 +48,8 @@ const router = createBrowserRouter([
         element: <Reports />,
       },
       {
-        path: "reportexcel",
-        element: <ReportExcel />,
+        path: "dispatchReport",
+        element: <DispatchReport />,
       },
 
     ],

@@ -4,11 +4,12 @@ import { BASE_URL } from "../../config";
 import "./Dashboard.css";
 
 const Dashboard = () => {
-  const [data, setData] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [data, setData] = useState(null); // Initialize data state
   const rowsPerPage = 5; // Set number of rows per page
   const [currentPage, setCurrentPage] = useState(1);
   const today = new Date().toLocaleDateString();
+  const [endDate, setEndDate] = useState(today);
 
   const getMadeTeaF = async () => {
     setLoading(true);
@@ -37,6 +38,7 @@ const Dashboard = () => {
       setLoading(false);
     }
   };
+
   useEffect(() => {
     getMadeTeaF();
   }, []);
@@ -64,6 +66,30 @@ const Dashboard = () => {
   const handlePageChange = (pageNumber) => {
     if (pageNumber > 0 && pageNumber <= totalPages) {
       setCurrentPage(pageNumber);
+    }
+  };
+
+  const submitHandler = async (event) => {
+    event.preventDefault();
+    setLoading(true);
+    try {
+      const res = await fetch(`${BASE_URL}/packing/end-date`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ endDate }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.message);
+      }
+      setLoading(false);
+      toast.success(data.message);
+      setEndDate(false);
+    } catch (err) {
+      toast.error(err.message);
+      setLoading(false);
     }
   };
 
@@ -99,6 +125,23 @@ const Dashboard = () => {
                     ? new Date(data.saleDetails.endDate).toLocaleDateString()
                     : ""}
                 </span>
+                <p></p>
+                <form onSubmit={submitHandler}>
+                  <label className="text-[#D5D767]">Update End date</label>
+                  <p></p>
+                  <input
+                    type="date"
+                    name="endDate"
+                    className="text-[#D5D767]"
+                    value={endDate}
+                    required
+                    min={new Date().toISOString().split("T")[0]}
+                    onChange={(e) => setEndDate(e.target.value)}
+                  />
+                  <button disabled={loading} type="submit" className="text-[#D5D767]">
+                    {loading ? <HashLoader size={45} color="#ffffff" /> : "Submit"}
+                  </button>
+                </form>
               </div>
             </div>
             <div className="flex flex-row items-start justify-center h-40 max-w-md gap-8 px-4 pt-4 rounded-lg bg-slate-900">
@@ -239,8 +282,8 @@ const Dashboard = () => {
                     key={index}
                     onClick={() => handlePageChange(index + 1)}
                     className={`px-4 py-2 mx-1 border border-gray-300 ${currentPage === index + 1
-                        ? "bg-[#50EDED] text-white"
-                        : "text-gray-500"
+                      ? "bg-[#50EDED] text-white"
+                      : "text-gray-500"
                       }`}
                   >
                     {index + 1}
@@ -256,9 +299,7 @@ const Dashboard = () => {
               </div>
             </div>
           )}
-
         </div>
-
       )}
     </div>
   );
