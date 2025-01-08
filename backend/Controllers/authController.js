@@ -6,9 +6,10 @@ import bcrypt from 'bcrypt';
 // Generate JWT token
 const generateToken = (user) => {
     return jwt.sign(
-        { id: user._id, role: user.role },
+        { id: user._id, role: user.role, },
+
         process.env.JWT_SECRET_KEY, // Changed to JWT_SECRET_KEY for consistency
-        { expiresIn: '15d' }
+        { expiresIn: '24h' }
     );
 };
 
@@ -55,10 +56,19 @@ export const login = async (req, res) => {
     const { email, password } = req.body;
 
     try {
+        let user = null;
         // Find user in both collections
         const viewer = await User.findOne({ email });
         const admin = await Admin.findOne({ email });
-        const user = viewer || admin; // Set user if found
+        if (viewer) {
+            user = viewer;
+        }
+        else if (admin) {
+            user = admin;
+        }
+        else {
+            return res.status(400).json({ status: false, message: 'Invalid credentials' });
+        }
 
         // Check if user exists
         if (!user) {
@@ -66,7 +76,7 @@ export const login = async (req, res) => {
         }
 
         // Compare passwords
-        const isPasswordMatch = await bcrypt.compare(password, user.password);
+        const isPasswordMatch = await bcrypt.compare(req.body.password, user.password);
 
         if (!isPasswordMatch) {
             return res.status(400).json({ status: false, message: 'Invalid credentials' });
@@ -76,7 +86,9 @@ export const login = async (req, res) => {
         const token = generateToken(user);
 
         // Destructure the user object to exclude sensitive information
-        const { password: _, role, appointments, ...rest } = user._doc;
+        const { password, role, ...rest } = user._doc;
+        console.log(token);
+
 
         res.status(200).json({
             status: true,

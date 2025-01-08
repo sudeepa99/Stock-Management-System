@@ -4,17 +4,20 @@ import { SidebarData } from "./SidebarData";
 import "../App.css";
 import CompanyLogo from "../assets/icons/logo.png";
 import LogoutIcon from "../assets/icons/Logout.png";
-import {authContext} from '../context/AuthContext';
-import {useNavigate} from 'react-router-dom';
+import { authContext } from '../context/AuthContext';
+import { useNavigate } from 'react-router-dom';
 
 const Navbar = () => {
   const location = useLocation();
-  const {dispatch}= useContext(authContext);
-  const navigate= useNavigate();
-  const handleLogout =()=>{
-    dispatch({type:'LOGOUT'});
+  const { role, dispatch } = useContext(authContext);
+  const navigate = useNavigate();
+  const handleLogout = () => {
+    dispatch({ type: 'LOGOUT' });
     navigate("/");
-  }
+  };
+  const filteredSidebarData = SidebarData.filter((item) =>
+    item.roles.includes(role)
+  );
   return (
     <div className="nav-menu active">
       <div className="nav-menu-header">
@@ -22,7 +25,7 @@ const Navbar = () => {
         <span className="company-name">Ceciliyan</span>
       </div>
       <ul className="nav-menu-items">
-        {SidebarData.map((item, index) => {
+        {filteredSidebarData.map((item, index) => {
           const isActive = location.pathname === item.path;
           return (
             <li key={index} className={item.cName}>
@@ -43,3 +46,7 @@ const Navbar = () => {
 };
 
 export default Navbar;
+
+
+
+

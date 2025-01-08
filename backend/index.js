@@ -22,8 +22,9 @@ const port = process.env.PORT || 8000;
 
 // Configure CORS
 const corsOptions = {
-    origin: process.env.CLIENT_URL || '*', // Customize the origin for security
-    credentials: true, // Allow credentials (cookies, authorization headers)
+    origin: true,
+    // origin: process.env.CLIENT_URL || '*', // Customize the origin for security
+    // credentials: true, // Allow credentials (cookies, authorization headers)
 };
 
 // Define a simple root route for health checks
