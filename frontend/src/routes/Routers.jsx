@@ -10,6 +10,7 @@ import Packing from '../pages/Packing/Packing';
 import Packing1 from '../pages/Packing/Packing1';
 import Packing2 from '../pages/Packing/Packing2';
 import DispatchReport from '../pages/DispatchReport/DispatchReport';
+import ProtectedRoute from './ProtectedRoute';
 
 import "../App.css";
 
@@ -17,7 +18,7 @@ import "../App.css";
 // Define the router configuration
 const router = createBrowserRouter([
   {
-    path: "/",
+    path: "/login",
     element: <Login />,
   },
   {
@@ -25,31 +26,33 @@ const router = createBrowserRouter([
     children: [
       {
         path: "/dashboard",
-        element: <Dashboard />,
+        element: < ProtectedRoute allowedRoles={["viewer", "admin"]} > <Dashboard /></ProtectedRoute>
       },
       {
         path: "packing",
-        element: <Packing />,
+        element: < ProtectedRoute allowedRoles={["admin"]} > <Packing /></ProtectedRoute>
       },
       {
         path: "packing1",
-        element: <Packing1 />,
+        element: < ProtectedRoute allowedRoles={["admin"]} > <Packing1 /></ProtectedRoute>
       },
       {
         path: "packing2",
-        element: <Packing2 />,
+        element: < ProtectedRoute allowedRoles={["admin"]} > <Packing2 /></ProtectedRoute>
       },
       {
         path: "dispatch",
-        element: <Dispatch />,
+        element: < ProtectedRoute allowedRoles={["admin"]} > <Dispatch /></ProtectedRoute>
+
       },
       {
         path: "reports",
-        element: <Reports />,
+        element: < ProtectedRoute allowedRoles={["viewer", "admin"]} > <Reports /></ProtectedRoute>
+
       },
       {
         path: "dispatchReport",
-        element: <DispatchReport />,
+        element: < ProtectedRoute allowedRoles={["viewer", "admin"]} ><DispatchReport /></ProtectedRoute>
       },
 
     ],

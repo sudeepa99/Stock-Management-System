@@ -10,30 +10,35 @@ export const SidebarData = [
     path: "/dashboard",
     icon: <img src={DashboardIcon} alt="Dashboard" className="dashboard-icon" />,
     cName: "nav-text dashboard",
+    roles: ["viewer", "admin"],
   },
   {
     title: "Packing",
     path: "/packing",
     icon: <img src={PackingIcon} alt="Packing" className="packing-icon" />,
     cName: "nav-text packing",
+    roles: ["admin"],
   },
   {
     title: "Dispatch",
     path: "/dispatch",
     icon: <img src={DispatchIcon} alt="Dispatch" className="dispatch-icon" />,
     cName: "nav-text dispatch",
+    roles: ["admin"],
   },
-
   {
     title: "Reports",
     path: "/reports",
     icon: <img src={ReportsIcon} alt="Reports" className="reports-icon" />,
     cName: "nav-text reports",
+    roles: ["viewer", "admin"],
   },
   {
-    title: "Reports",
+    title: "Dispatch Report",
     path: "/dispatchReport",
     icon: <img src={ReportsIcon} alt="Reports" className="reports-icon" />,
     cName: "nav-text reports",
+    roles: ["viewer", "admin"],
   },
 ];
+
