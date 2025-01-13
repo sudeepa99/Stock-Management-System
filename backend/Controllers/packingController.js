@@ -329,17 +329,36 @@ export const updateEndDate = async (req, res) => {
 // get packing details within a date range for weekly report
 export const getWeeklyPackingDetails = async (req, res) => {
     try {
-        const toDate = new Date();
-        const startDate = new Date();
-        startDate.setDate(toDate.getDate() - 7);
+        const today = new Date();
+        const dayOfWeek = today.getDay(); // 0 (Sunday) to 6 (Saturday)
 
-        const packingDetails = await PackingDetailsSchema.find({
-            date: { $gte: startDate.toISOString().split("T")[0], $lte: toDate.toISOString().split("T")[0] },
+        // Calculate the start of the week (Monday)
+        const startOfWeek = new Date(today);
+        startOfWeek.setDate(today.getDate() - dayOfWeek + (dayOfWeek === 0 ? -6 : 1)); // Adjust when today is Sunday
+
+        // Calculate the end of the week (Sunday)
+        const endOfWeek = new Date(startOfWeek);
+        endOfWeek.setDate(startOfWeek.getDate() + 6);
+
+        const startDate = startOfWeek.toISOString().split("T")[0];
+        const endDate = endOfWeek.toISOString().split("T")[0];
+
+        // Find the relevant sale details
+        const packingDetails = await PackingDetailsSchema.findOne({
+            startDate: { $lte: endDate },
+            endDate: { $gte: startDate },
         });
 
         const daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
         const weeklyData = {};
 
+        for (const dayName of daysOfWeek) {
+            weeklyData[dayName] = [];
+        }
+
+        if (!packingDetails) {
+            return res.status(200).json({ success: true, message: "No packing details found for the week" });
+        }
         packingDetails.forEach(detail => {
             const dayName = daysOfWeek[new Date(detail.date).getDay()];
             if (!weeklyData[dayName]) {
@@ -353,4 +372,5 @@ export const getWeeklyPackingDetails = async (req, res) => {
         console.error("Error fetching packing details:", err);
         return res.status(500).json({ success: false, message: "Server Error" });
     }
-}
+};
+

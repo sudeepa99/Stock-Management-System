@@ -18,7 +18,7 @@ import "../App.css";
 // Define the router configuration
 const router = createBrowserRouter([
   {
-    path: "/login",
+    path: "/",
     element: <Login />,
   },
   {
