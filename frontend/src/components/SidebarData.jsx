@@ -47,6 +47,13 @@ export const SidebarData = [
     cName: "nav-text reports",
     roles: ["viewer", "admin"],
   },
+  {
+    title: "ReportsD",
+    path: "/alldispatch",
+    icon: <img src={ReportsIcon} alt="Reports" className="reports-icon" />,
+    cName: "nav-text reports",
+    roles: ["viewer", "admin"],
+  },
 
 ];
 

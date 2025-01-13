@@ -47,9 +47,9 @@ const Dispatch = () => {
   ].includes(formData.teacategory);
 
   const brokers = {
-    Broker1: "Brokers1",
-    Broker2: "Brokers2",
-    Broker3: "Brokers3",
+    Farbas: "Farbas",
+    Mercantile: "Mercantile",
+    JKeels: "JKeels",
   };
 
   // Handle input changes for dynamic form updates

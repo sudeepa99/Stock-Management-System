@@ -204,14 +204,57 @@ export const getPackingDetails = async (req, res) => {
 // Get all packing details for reporting
 export const getAllPackingDetails = async (req, res) => {
     try {
-        const packingD = await PackingDetailsSchema.find({}).select("-password");
-        res
-            .status(200)
-            .json({ success: true, message: "Packing found", data: packingD });
+        const today = new Date().toISOString().split("T")[0];
+
+        // Find the relevant sale details
+        const saleDetails = await Packing.findOne({
+            startDate: { $lte: today },
+            endDate: { $gte: today },
+        });
+
+        if (!saleDetails) {
+            return res.status(404).json({ success: false, message: "No sale details found for the current date range." });
+        }
+
+        // Find the dispatch details for the sale number
+        const dispatchDetails = await DispatchDetails.findOne({ saleNumber: saleDetails.saleNo });
+
+        if (!dispatchDetails) {
+            return res.status(404).json({ success: false, message: "No dispatch details found for the sale number." });
+        }
+
+        const startDate = new Date(saleDetails.startDate);
+        const endDate = new Date(saleDetails.endDate);
+        const dateRangeDetails = {};
+
+        // Initialize date range details
+        for (let d = new Date(startDate); d <= endDate; d.setDate(d.getDate() + 1)) {
+            const dateStr = d.toISOString().split("T")[0];
+            dateRangeDetails[dateStr] = [];
+        }
+
+        // Aggregate data for each date in the range
+        for (const category of TeaCategoriesConst) {
+            const categoryData = dispatchDetails[category]?.data || [];
+            for (const item of categoryData) {
+                const itemDate = new Date(item.date).toISOString().split("T")[0];
+                if (dateRangeDetails[itemDate]) {
+                    dateRangeDetails[itemDate].push({ data: item, category });
+                }
+            }
+        }
+
+        return res.status(200).json({
+            success: true,
+            data: dateRangeDetails,
+        });
     } catch (err) {
-        res.status(404).json({ success: false, message: "Not Found" });
+        console.error("Error fetching packing details:", err);
+        return res.status(500).json({ success: false, message: "Server Error" });
     }
 };
+
+
 
 // Get the date details for packaging
 export const getDateDetails = async (req, res) => {

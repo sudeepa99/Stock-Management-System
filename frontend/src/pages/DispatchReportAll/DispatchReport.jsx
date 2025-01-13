@@ -14,7 +14,7 @@ const DispatchReport = () => {
     const getMadeTeaF = async () => {
         setLoading(true);
         try {
-            const res = await fetch(`${BASE_URL}/dispatch/weekly`, {
+            const res = await fetch(`${BASE_URL}/packing/all`, {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json",
@@ -71,18 +71,6 @@ const DispatchReport = () => {
                     <div>
                         <div className="flex-col gap-3">
                             <p className="b1">Weekly Report</p>
-                        </div>
-                        <div className="absolute flex flex-row top-[15px] right-[10px]">
-                            <select
-                                name="sortBy"
-                                className="px-4 py-2 border text-[#131919]"
-                                required
-                            >
-                                <option value="">Sort By</option>
-                                <option value="Default">Default</option>
-                                <option value="Brokers">Brokers</option>
-                                <option value="Grade">Grade</option>
-                            </select>
                         </div>
                     </div>
 

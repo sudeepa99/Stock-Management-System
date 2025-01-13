@@ -348,7 +348,9 @@ export const dispatchDetails = async (req, res) => {
     const { details, updates } = req.body;
     const packing = await Packing.findOne().sort({ $natural: -1 });
     const saleNumber = packing.saleNo;
-    const today = new Date().toISOString().split("T")[0];
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    const today = tomorrow.toISOString().split("T")[0];
 
     try {
         if (details !== "packing") {
@@ -987,20 +989,20 @@ export const getWeeklyDispatchDetails = async (req, res) => {
         }
 
         // Define broker-specific details
-        const brokerOneDetails = [];
-        const brokerTwoDetails = [];
-        const brokerThreeDetails = [];
+        const brokerFarbasDetails = [];
+        const brokerMercantileDetails = [];
+        const brokerJKeelsDetails = [];
 
         // Aggregate data for each broker
         for (const category of TeaCategoriesConst) {
             const categoryData = dispatchDetails[category]?.data || [];
             for (const item of categoryData) {
-                if (item.broker === "Broker1") {
-                    brokerOneDetails.push({ data: item, category });
-                } else if (item.broker === "Broker2") {
-                    brokerTwoDetails.push({ data: item, category });
-                } else if (item.broker === "Broker3") {
-                    brokerThreeDetails.push({ data: item, category });
+                if (item.broker === "Farbas") {
+                    brokerFarbasDetails.push({ data: item, category });
+                } else if (item.broker === "Mercantile") {
+                    brokerMercantileDetails.push({ data: item, category });
+                } else if (item.broker === "JKeels") {
+                    brokerJKeelsDetails.push({ data: item, category });
                 } else {
                     console.warn(`Unhandled broker: ${item.broker}`);
                 }
@@ -1009,9 +1011,9 @@ export const getWeeklyDispatchDetails = async (req, res) => {
         return res.status(200).json({
             success: true,
             data: {
-                brokerOneDetails,
-                brokerTwoDetails,
-                brokerThreeDetails,
+                brokerFarbasDetails,
+                brokerMercantileDetails,
+                brokerJKeelsDetails,
             },
         });
     } catch (err) {

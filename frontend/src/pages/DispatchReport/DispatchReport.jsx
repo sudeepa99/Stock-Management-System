@@ -6,10 +6,10 @@ import "./DispatchReport.css";
 const DispatchReport = () => {
     const [data, setData] = useState(null);
     const [loading, setLoading] = useState(false);
-    const [currentDay, setCurrentDay] = useState("brokerOneDetails"); // Default to brokerOneDetails
+    const [currentDay, setCurrentDay] = useState("Farbas"); // Default to Farbas
     const [currentPage, setCurrentPage] = useState(1);
     const rowsPerPage = 25; // Number of rows per page
-    const daysOfWeek = ["brokerOneDetails", "brokerTwoDetails", "brokerThreeDetails"];
+    const daysOfWeek = ["Farbas", "Mercantile", "JKeels"];
 
     const getMadeTeaF = async () => {
         setLoading(true);
@@ -42,7 +42,7 @@ const DispatchReport = () => {
 
     // Get data for the current day
     const currentDayData =
-        data?.[currentDay]?.flatMap((item) => item ? [item] : []) || [];
+        data?.[`broker${currentDay}Details`]?.flatMap((item) => item ? [item] : []) || [];
 
     // Pagination logic
     const totalPages = Math.ceil(currentDayData.length / rowsPerPage);
@@ -71,18 +71,6 @@ const DispatchReport = () => {
                     <div>
                         <div className="flex-col gap-3">
                             <p className="b1">Weekly Report</p>
-                        </div>
-                        <div className="absolute flex flex-row top-[15px] right-[10px]">
-                            <select
-                                name="sortBy"
-                                className="px-4 py-2 border text-[#131919]"
-                                required
-                            >
-                                <option value="">Sort By</option>
-                                <option value="Default">Default</option>
-                                <option value="Brokers">Brokers</option>
-                                <option value="Grade">Grade</option>
-                            </select>
                         </div>
                     </div>
 
@@ -140,6 +128,13 @@ const DispatchReport = () => {
 
                         {/* Day Selector */}
                         <div className="flex justify-center mb-4">
+                            <button
+                                onClick={() => handlePageChange(currentPage - 1)}
+                                disabled={currentPage === 1}
+                                className="px-4 py-2 mx-1 border border-gray-300 text-gray-500"
+                            >
+                                Previous
+                            </button>
                             {daysOfWeek.map((day) => (
                                 <button
                                     key={day}
@@ -150,17 +145,6 @@ const DispatchReport = () => {
                                     {day}
                                 </button>
                             ))}
-                        </div>
-
-                        {/* Pagination */}
-                        <div className="flex justify-center mt-4">
-                            <button
-                                onClick={() => handlePageChange(currentPage - 1)}
-                                disabled={currentPage === 1}
-                                className="px-4 py-2 mx-1 border border-gray-300 text-gray-500"
-                            >
-                                Previous
-                            </button>
                             <button
                                 onClick={() => handlePageChange(currentPage + 1)}
                                 disabled={currentPage === totalPages}
@@ -169,6 +153,10 @@ const DispatchReport = () => {
                                 Next
                             </button>
                         </div>
+
+                        {/* Pagination */}
+
+
                     </div>
                 </div>
             )}

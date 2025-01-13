@@ -11,6 +11,7 @@ import Packing1 from '../pages/Packing/Packing1';
 import Packing2 from '../pages/Packing/Packing2';
 import DispatchReport from '../pages/DispatchReport/DispatchReport';
 import ReDispatch from '../pages/ReDispatch/DispatchReport';
+import DispatchReportAll from '../pages/DispatchReportAll/DispatchReport';
 import ProtectedRoute from './ProtectedRoute';
 
 import "../App.css";
@@ -58,6 +59,10 @@ const router = createBrowserRouter([
       {
         path: "redispatch",
         element: < ProtectedRoute allowedRoles={["viewer", "admin"]} ><ReDispatch /></ProtectedRoute>
+      },
+      {
+        path: "alldispatch",
+        element: < ProtectedRoute allowedRoles={["viewer", "admin"]} ><DispatchReportAll /></ProtectedRoute>
       },
 
     ],
