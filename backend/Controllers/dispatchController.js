@@ -1042,33 +1042,30 @@ export const getWeeklyDispatchDetailsDefault = async (req, res) => {
             return res.status(404).json({ success: false, message: "No dispatch details found for the sale number." });
         }
 
-        // Define broker-specific details
-        const brokerOneDetails = [];
-        const brokerTwoDetails = [];
-        const brokerThreeDetails = [];
+        const startDate = new Date(saleDetails.startDate);
+        const endDate = new Date(saleDetails.endDate);
+        const dateRangeDetails = {};
 
-        // Aggregate data for each broker
+        // Initialize date range details
+        for (let d = new Date(startDate); d <= endDate; d.setDate(d.getDate() + 1)) {
+            const dateStr = d.toISOString().split("T")[0];
+            dateRangeDetails[dateStr] = [];
+        }
+
+        // Aggregate data for each date in the range
         for (const category of TeaCategoriesConst) {
             const categoryData = dispatchDetails[category]?.data || [];
             for (const item of categoryData) {
-                if (item.broker === "Broker1") {
-                    brokerOneDetails.push({ data: item, category });
-                } else if (item.broker === "Broker2") {
-                    brokerTwoDetails.push({ data: item, category });
-                } else if (item.broker === "Broker3") {
-                    brokerThreeDetails.push({ data: item, category });
-                } else {
-                    console.warn(`Unhandled broker: ${item.broker}`);
+                const itemDate = new Date(item.date).toISOString().split("T")[0];
+                if (dateRangeDetails[itemDate]) {
+                    dateRangeDetails[itemDate].push({ data: item, category });
                 }
             }
         }
+
         return res.status(200).json({
             success: true,
-            data: {
-                brokerOneDetails,
-                brokerTwoDetails,
-                brokerThreeDetails,
-            },
+            data: dateRangeDetails,
         });
     } catch (err) {
         console.error("Error fetching packing details:", err);

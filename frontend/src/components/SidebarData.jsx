@@ -27,18 +27,26 @@ export const SidebarData = [
     roles: ["admin"],
   },
   {
-    title: "Reports",
+    title: "ReportsA",
     path: "/reports",
     icon: <img src={ReportsIcon} alt="Reports" className="reports-icon" />,
     cName: "nav-text reports",
     roles: ["viewer", "admin"],
   },
   {
-    title: "Dispatch Report",
+    title: "ReportsB",
     path: "/dispatchReport",
     icon: <img src={ReportsIcon} alt="Reports" className="reports-icon" />,
     cName: "nav-text reports",
     roles: ["viewer", "admin"],
   },
+  {
+    title: "ReportsC",
+    path: "/redispatch",
+    icon: <img src={ReportsIcon} alt="Reports" className="reports-icon" />,
+    cName: "nav-text reports",
+    roles: ["viewer", "admin"],
+  },
+
 ];
 

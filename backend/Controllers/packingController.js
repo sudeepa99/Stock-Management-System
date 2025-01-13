@@ -329,24 +329,12 @@ export const updateEndDate = async (req, res) => {
 // get packing details within a date range for weekly report
 export const getWeeklyPackingDetails = async (req, res) => {
     try {
-        const today = new Date();
-        const dayOfWeek = today.getDay(); // 0 (Sunday) to 6 (Saturday)
+        const toDate = new Date();
+        const startDate = new Date();
+        startDate.setDate(toDate.getDate() - 7);
 
-        // Calculate the start of the week (Monday)
-        const startOfWeek = new Date(today);
-        startOfWeek.setDate(today.getDate() - dayOfWeek + (dayOfWeek === 0 ? -6 : 1)); // Adjust when today is Sunday
-
-        // Calculate the end of the week (Sunday)
-        const endOfWeek = new Date(startOfWeek);
-        endOfWeek.setDate(startOfWeek.getDate() + 6);
-
-        const startDate = startOfWeek.toISOString().split("T")[0];
-        const endDate = endOfWeek.toISOString().split("T")[0];
-
-        // Find the relevant sale details
-        const packingDetails = await PackingDetailsSchema.findOne({
-            startDate: { $lte: endDate },
-            endDate: { $gte: startDate },
+        const packingDetails = await PackingDetailsSchema.find({
+            date: { $gte: startDate.toISOString().split("T")[0], $lte: toDate.toISOString().split("T")[0] },
         });
 
         const daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
