@@ -29,7 +29,6 @@ const Dashboard = () => {
           responseData.message || "Failed to fetch made tea data"
         );
       }
-      console.log(responseData.data);
 
       setData(responseData.data);
     } catch (err) {
@@ -196,6 +195,8 @@ const Dashboard = () => {
             <tbody>
               {Object.keys(data.packingDetails).map((key) => {
                 const categoryDetails = data.packingDetails[key];
+                console.log(categoryDetails);
+
 
                 if (
                   Array.isArray(categoryDetails.data) &&

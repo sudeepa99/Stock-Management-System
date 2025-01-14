@@ -348,9 +348,7 @@ export const dispatchDetails = async (req, res) => {
     const { details, updates } = req.body;
     const packing = await Packing.findOne().sort({ $natural: -1 });
     const saleNumber = packing.saleNo;
-    const tomorrow = new Date();
-    tomorrow.setDate(tomorrow.getDate() + 1);
-    const today = tomorrow.toISOString().split("T")[0];
+    const today = new Date().toISOString().split("T")[0];
 
     try {
         if (details !== "packing") {

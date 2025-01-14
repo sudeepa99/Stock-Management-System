@@ -124,6 +124,55 @@ const DispatchReport = () => {
                                     ))
                                 )}
                             </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td colSpan="4" className="text-center text-gray-500 px-4 py-2">
+                                        Total Number of Bags: {currentData.reduce((acc, item) => {
+                                            let numBags = 0;
+                                            if (item.data.numofbags === "10B") {
+                                                numBags = 10;
+                                            } else if (item.data.numofbags === "20B") {
+                                                numBags = 20;
+
+                                            }
+                                            else if (item.data.numofbags === "15B") {
+                                                numBags = 15;
+
+                                            } else if (item.data.numofbags === "30B") {
+                                                numBags = 30;
+
+                                            } else if (item.data.numofbags === "40B") {
+                                                numBags = 40;
+                                            }
+                                            return acc + numBags;
+                                        }, 0)}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colSpan="4" className="text-center text-gray-500 px-4 py-2">
+                                        Total Weight of Bags:
+                                        {currentData.reduce((acc, item) => {
+                                            let numBags = 0;
+                                            if (item.data.numofbags === "10B") {
+                                                numBags = 10;
+                                            } else if (item.data.numofbags === "20B") {
+                                                numBags = 20;
+
+                                            }
+                                            else if (item.data.numofbags === "15B") {
+                                                numBags = 15;
+
+                                            } else if (item.data.numofbags === "30B") {
+                                                numBags = 30;
+
+                                            } else if (item.data.numofbags === "40B") {
+                                                numBags = 40;
+                                            }
+                                            return acc + numBags * item.data.sizeofbag;
+                                        }, 0)}
+                                    </td>
+                                </tr>
+                            </tfoot>
                         </table>
 
                         {/* Day Selector */}
