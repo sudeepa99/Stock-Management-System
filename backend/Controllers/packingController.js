@@ -185,32 +185,8 @@ export const updatePackingDetails = async (req, res) => {
         }
         const teaCategories = TeaCategoriesConst;
         if (teaCategories.includes(teacategory)) {
-            const latestPacking = await PackingDetailsSchema.findOne({
-                [`${teacategory}.data.invoiceNo`]: { $exists: true },
-            }).sort({ [`${teacategory}.data.invoiceNo`]: -1 });
-            const datePart = new Date().toISOString().slice(0, 10).replace(/-/g, "");
-            let newInvoiceNo;
-            if (
-                latestPacking &&
-                latestPacking[teacategory] &&
-                latestPacking[teacategory].data.length > 0
-            ) {
-                const existingInvoices = latestPacking[teacategory].data.map(
-                    (subdocument) => {
-                        const parts = subdocument.invoiceNo.split("-");
-                        return parts.length === 3 ? parseInt(parts[2]) : 0;
-                    }
-                );
-                const maxInvoiceNumber = Math.max(...existingInvoices, 0);
-                newInvoiceNo = `${datePart}-${teacategory}-${(maxInvoiceNumber + 1)
-                    .toString()
-                    .padStart(3, "0")}`;
-            } else {
-                newInvoiceNo = `${datePart}-${teacategory}-001`;
-            }
             const newItem = {
                 ...teacategoryData,
-                invoiceNo: newInvoiceNo,
                 totalNet: teacategoryData.sizeofbag * teacategoryData.numofbags,
             };
 
