@@ -9,6 +9,7 @@ const Dashboard = () => {
   const [data, setData] = useState(null); // Initialize data state
   const rowsPerPage = 5; // Set number of rows per page
   const [currentPage, setCurrentPage] = useState(1);
+  const [currentPageP, setCurrentPageP] = useState(1);
   const today = new Date().toLocaleDateString();
   const [endDate, setEndDate] = useState(today);
 
@@ -43,29 +44,36 @@ const Dashboard = () => {
     getMadeTeaF();
   }, []);
 
-  // Aggregate dispatch details for pagination
-  const allDispatchDetails = Object.keys(data?.dispatchDetails || {}).reduce(
-    (acc, key) => {
-      const categoryDetails = data.dispatchDetails[key];
+  const getAggregatedData = (details) => {
+    if (!details) return [];
+    return Object.keys(details).reduce((acc, key) => {
+      const categoryDetails = details[key];
       if (Array.isArray(categoryDetails.data)) {
         acc.push(...categoryDetails.data);
       }
       return acc;
-    },
-    []
-  );
+    }, []);
+  };
 
-  const totalPages = Math.ceil(allDispatchDetails.length / rowsPerPage);
+  const dispatchDetails = getAggregatedData(data?.dispatchDetails);
+  const packingDetails = getAggregatedData(data?.packingDetails);
 
-  // Data for the current page
-  const currentData = allDispatchDetails.slice(
+  const totalPages = Math.ceil(dispatchDetails.length / rowsPerPage);
+  const totalPagesP = Math.ceil(packingDetails.length / rowsPerPage);
+
+  const currentDispatchData = dispatchDetails.slice(
     (currentPage - 1) * rowsPerPage,
     currentPage * rowsPerPage
   );
 
-  const handlePageChange = (pageNumber) => {
-    if (pageNumber > 0 && pageNumber <= totalPages) {
-      setCurrentPage(pageNumber);
+  const currentPackingData = packingDetails.slice(
+    (currentPageP - 1) * rowsPerPage,
+    currentPageP * rowsPerPage
+  );
+
+  const handlePageChange = (setPage, pageNumber, total) => {
+    if (pageNumber > 0 && pageNumber <= total) {
+      setPage(pageNumber);
     }
   };
 
@@ -170,7 +178,7 @@ const Dashboard = () => {
             </div>
           </div>
         </div>
-
+        <p className="table-name">Packing Details</p>
         {data?.packingDetails && (
           <table className="min-w-full mt-10 border border-collapse border-gray-300">
             <thead>
@@ -193,39 +201,41 @@ const Dashboard = () => {
               </tr>
             </thead>
             <tbody>
-              {Object.keys(data.packingDetails).map((key) => {
-                const categoryDetails = data.packingDetails[key];
-                console.log(categoryDetails);
-
-
-                if (
-                  Array.isArray(categoryDetails.data) &&
-                  categoryDetails.data.length > 0
-                ) {
-                  return categoryDetails.data.map((item) => (
-                    <tr key={item._id} className="">
-                      <td className="px-4 py-2 border border-gray-300">
-                        {item.invoiceNo}
-                      </td>
-                      <td className="px-4 py-2 border border-gray-300">
-                        {item.teaMark}
-                      </td>
-                      <td className="px-4 py-2 border border-gray-300">
-                        {item.teacategory}
-                      </td>
-                      <td className="px-4 py-2 border border-gray-300">
-                        {item.sizeofbag}
-                      </td>
-                      <td className="px-4 py-2 border border-gray-300">
-                        {item.numofbags}
-                      </td>
-                    </tr>
-                  ));
-                }
-              })}
+              {currentPackingData.map((item) => (
+                <tr key={item._id} className="">
+                  <td className="px-4 py-2 border border-gray-300">
+                    {item.invoiceNo}
+                  </td>
+                  <td className="px-4 py-2 border border-gray-300">
+                    {item.teaMark}
+                  </td>
+                  <td className="px-4 py-2 border border-gray-300">
+                    {item.teacategory}
+                  </td>
+                  <td className="px-4 py-2 border border-gray-300">
+                    {item.sizeofbag}
+                  </td>
+                  <td className="px-4 py-2 border border-gray-300">
+                    {item.numofbags}
+                  </td>
+                </tr>
+              ))}
             </tbody>
           </table>
+
         )}
+        {/* Pagination Controls */}
+        <div className="flex justify-center mt-4">
+          <button onClick={() => handlePageChange(setCurrentPageP, currentPageP - 1, totalPagesP)} disabled={currentPageP === 1}
+            className="px-4 py-2 mx-1 border border-gray-300 text-gray-500 disabled:opacity-50">
+            Previous
+          </button>
+          <button onClick={() => handlePageChange(setCurrentPageP, currentPageP + 1, totalPagesP)} disabled={currentPageP === totalPagesP}
+            className="px-4 py-2 mx-1 border border-gray-300 text-gray-500 disabled:opacity-50">
+            Next
+          </button>
+        </div>
+        <p className="table-name">Dispatch Details</p>
         {data?.dispatchDetails && (
           <div>
             <table className="min-w-full mt-10 border border-collapse border-gray-300">
@@ -249,7 +259,7 @@ const Dashboard = () => {
                 </tr>
               </thead>
               <tbody>
-                {currentData.map((item) => (
+                {currentDispatchData.map((item) => (
                   <tr key={item._id} className="">
                     <td className="px-4 py-2 border border-gray-300">
                       {item.invoicenumber}
@@ -274,30 +284,12 @@ const Dashboard = () => {
             </table>
             {/* Pagination Controls */}
             <div className="flex justify-center mt-4">
-              <button
-                onClick={() => handlePageChange(currentPage - 1)}
-                disabled={currentPage === 1}
-                className="px-4 py-2 mx-1 border border-gray-300 text-gray-500 disabled:opacity-50"
-              >
+              <button onClick={() => handlePageChange(setCurrentPage, currentPage - 1, totalPages)} disabled={currentPage === 1}
+                className="px-4 py-2 mx-1 border border-gray-300 text-gray-500 disabled:opacity-50">
                 Previous
               </button>
-              {Array.from({ length: totalPages }, (_, index) => (
-                <button
-                  key={index}
-                  onClick={() => handlePageChange(index + 1)}
-                  className={`px-4 py-2 mx-1 border border-gray-300 ${currentPage === index + 1
-                    ? "bg-[#50EDED] text-white"
-                    : "text-gray-500"
-                    }`}
-                >
-                  {index + 1}
-                </button>
-              ))}
-              <button
-                onClick={() => handlePageChange(currentPage + 1)}
-                disabled={currentPage === totalPages}
-                className="px-4 py-2 mx-1 border border-gray-300 text-gray-500 disabled:opacity-50"
-              >
+              <button onClick={() => handlePageChange(setCurrentPage, currentPage + 1, totalPages)} disabled={currentPage === totalPages}
+                className="px-4 py-2 mx-1 border border-gray-300 text-gray-500 disabled:opacity-50">
                 Next
               </button>
             </div>

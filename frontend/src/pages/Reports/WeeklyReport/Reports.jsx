@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import HashLoader from "react-spinners/HashLoader";
 import { toast } from "react-toastify";
-import { BASE_URL } from "../../config";
+import { BASE_URL } from "../../../config";
 import "./report.css";
 
 const Reports = () => {

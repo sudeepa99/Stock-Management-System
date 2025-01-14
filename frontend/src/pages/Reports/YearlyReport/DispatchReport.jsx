@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import HashLoader from "react-spinners/HashLoader";
-import { BASE_URL } from "../../config";
+import { BASE_URL } from "../../../config";
 
 const DispatchReport = () => {
     const [loading, setLoading] = useState(false);

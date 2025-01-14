@@ -161,3 +161,10 @@ body {
   height: 24px;
   object-fit: fill;
 }
+
+.table-name{
+  color: #fff;
+  font-size: 25px;
+  letter-spacing: 5px;
+  margin-top: 10px;
+}

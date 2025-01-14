@@ -1,20 +1,19 @@
 import React, { useState, useEffect } from "react";
 import HashLoader from "react-spinners/HashLoader";
-import { BASE_URL } from "../../config";
+import { BASE_URL } from "../../../config";
 import "./DispatchReport.css";
 
 const DispatchReport = () => {
     const [data, setData] = useState(null);
     const [loading, setLoading] = useState(false);
-    const [currentDay, setCurrentDay] = useState("Farbas"); // Default to Farbas
+    const [selectedDate, setSelectedDate] = useState(""); // State for selected date
     const [currentPage, setCurrentPage] = useState(1);
     const rowsPerPage = 25; // Number of rows per page
-    const daysOfWeek = ["Farbas", "Mercantile", "JKeels"];
 
-    const getMadeTeaF = async () => {
+    const getDispatchData = async () => {
         setLoading(true);
         try {
-            const res = await fetch(`${BASE_URL}/dispatch/weekly`, {
+            const res = await fetch(`${BASE_URL}/dispatch/weekly/default`, {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json",
@@ -24,12 +23,15 @@ const DispatchReport = () => {
             const responseData = await res.json();
 
             if (!res.ok) {
-                throw new Error(responseData.message || "Failed to fetch made tea data");
+                throw new Error(responseData.message || "Failed to fetch dispatch data");
             }
 
-            setData(responseData.data);
+            setData(responseData.data); // Set the dateRangeDetails object
+
+            const today = new Date().toISOString().split("T")[0]; // Get today's date in YYYY-MM-DD format
+            setSelectedDate(responseData.data[today] ? today : Object.keys(responseData.data)?.[0] || ""); // Set default date to today if it exists, otherwise the first available date
         } catch (err) {
-            console.error("Error fetching made tea data:", err);
+            console.error("Error fetching dispatch data:", err);
             alert(`Error: ${err.message}`);
         } finally {
             setLoading(false);
@@ -37,29 +39,20 @@ const DispatchReport = () => {
     };
 
     useEffect(() => {
-        getMadeTeaF();
+        getDispatchData();
     }, []);
 
-    // Get data for the current day
-    const currentDayData =
-        data?.[`broker${currentDay}Details`]?.flatMap((item) => item ? [item] : []) || [];
+    // Get data for the selected date
+    const currentDateData = selectedDate ? data?.[selectedDate] || [] : [];
 
-    // Pagination logic
-    const totalPages = Math.ceil(currentDayData.length / rowsPerPage);
-
-    const currentData = currentDayData.slice(
+    const currentData = currentDateData.slice(
         (currentPage - 1) * rowsPerPage,
         currentPage * rowsPerPage
     );
-    const handleDayChange = (day) => {
-        setCurrentDay(day);
-        setCurrentPage(1); // Reset page to 1 when changing the day
-    };
 
-    const handlePageChange = (pageNumber) => {
-        if (pageNumber > 0 && pageNumber <= totalPages) {
-            setCurrentPage(pageNumber);
-        }
+    const handleDateChange = (e) => {
+        setSelectedDate(e.target.value);
+        setCurrentPage(1); // Reset to the first page on date change
     };
 
     return (
@@ -70,7 +63,23 @@ const DispatchReport = () => {
                 <div className="a1">
                     <div>
                         <div className="flex-col gap-3">
-                            <p className="b1">Weekly Report</p>
+                            <p className="b1">Dispatch Report per day</p>
+                        </div>
+                        {/* Date Selector */}
+                        <div className="absolute flex flex-row top-[15px] right-[10px]">
+                            <select
+                                name="selectDate"
+                                className="px-4 py-2 border text-[#131919]"
+                                value={selectedDate}
+                                onChange={handleDateChange}
+                            >
+                                <option value="">Select a Date</option>
+                                {Object.keys(data || {}).map((date) => (
+                                    <option key={date} value={date}>
+                                        {date}
+                                    </option>
+                                ))}
+                            </select>
                         </div>
                     </div>
 
@@ -82,15 +91,12 @@ const DispatchReport = () => {
                                         Invoice No
                                     </th>
                                     <th className="px-4 py-2 border text-[#50EDED] border-gray-300">
-                                        Date
-                                    </th>
-                                    <th className="px-4 py-2 text-[#50EDED] border border-gray-300">
                                         Category
                                     </th>
-                                    <th className="px-4 py-2 text-[#50EDED] border border-gray-300">
+                                    <th className="px-4 py-2 border text-[#50EDED] border-gray-300">
                                         Weight of Bag
                                     </th>
-                                    <th className="px-4 py-2 text-[#50EDED] border border-gray-300">
+                                    <th className="px-4 py-2 border text-[#50EDED] border-gray-300">
                                         Num of Bags
                                     </th>
                                 </tr>
@@ -98,18 +104,15 @@ const DispatchReport = () => {
                             <tbody>
                                 {currentData.length === 0 ? (
                                     <tr>
-                                        <td colSpan="5" className="text-center text-gray-500 px-4 py-2">
-                                            This date has no data entered
+                                        <td colSpan="4" className="text-center text-gray-500 px-4 py-2">
+                                            No data available for the selected date
                                         </td>
                                     </tr>
                                 ) : (
-                                    currentData.map((item) => (
-                                        <tr key={item._id}>
+                                    currentData.map((item, index) => (
+                                        <tr key={index}>
                                             <td className="px-4 py-2 border border-gray-300">
                                                 {item.data.invoicenumber}
-                                            </td>
-                                            <td className="px-4 py-2 border border-gray-300">
-                                                {new Date(item.data.date).toLocaleDateString()}
                                             </td>
                                             <td className="px-4 py-2 border border-gray-300">
                                                 {item.category}
@@ -174,38 +177,6 @@ const DispatchReport = () => {
                                 </tr>
                             </tfoot>
                         </table>
-
-                        {/* Day Selector */}
-                        <div className="flex justify-center mb-4">
-                            <button
-                                onClick={() => handlePageChange(currentPage - 1)}
-                                disabled={currentPage === 1}
-                                className="px-4 py-2 mx-1 border border-gray-300 text-gray-500"
-                            >
-                                Previous
-                            </button>
-                            {daysOfWeek.map((day) => (
-                                <button
-                                    key={day}
-                                    onClick={() => handleDayChange(day)}
-                                    className={`px-4 py-2 mx-1 border border-gray-300 ${currentDay === day ? "bg-[#50EDED] text-white" : "text-gray-500"
-                                        }`}
-                                >
-                                    {day}
-                                </button>
-                            ))}
-                            <button
-                                onClick={() => handlePageChange(currentPage + 1)}
-                                disabled={currentPage === totalPages}
-                                className="px-4 py-2 mx-1 border border-gray-300 text-gray-500"
-                            >
-                                Next
-                            </button>
-                        </div>
-
-                        {/* Pagination */}
-
-
                     </div>
                 </div>
             )}
