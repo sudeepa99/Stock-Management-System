@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import HashLoader from "react-spinners/HashLoader";
 import { toast } from "react-toastify";
-import { BASE_URL } from "../../config";
+import { BASE_URL } from "../../../config";
 import "./report.css";
 
 const Reports = () => {
@@ -83,18 +83,6 @@ const Reports = () => {
             <div className="flex-col gap-3">
               <p className="b1">Weekly Report</p>
             </div>
-            <div className="absolute flex flex-row top-[15px] right-[10px]">
-              <select
-                name="sortBy"
-                className="px-4 py-2 border text-[#131919]"
-                required
-              >
-                <option value="">Sort By</option>
-                <option value="Default">Default</option>
-                <option value="Brokers">Brokers</option>
-                <option value="Grade">Grade</option>
-              </select>
-            </div>
           </div>
 
           <div>
@@ -147,6 +135,23 @@ const Reports = () => {
 
                 )}
               </tbody>
+              <tfoot>
+                <tr>
+                  <td colSpan="4" className="text-center text-gray-500 px-4 py-2">
+                    Total Number of Bags: {currentData.reduce((acc, item) => {
+                      return acc + item.numofbags;
+                    }, 0)}
+                  </td>
+                </tr>
+                <tr>
+                  <td colSpan="4" className="text-center text-gray-500 px-4 py-2">
+                    Total Weight of Bags:
+                    {currentData.reduce((acc, item) => {
+                      return acc + item.numofbags * item.sizeofbag;
+                    }, 0)}
+                  </td>
+                </tr>
+              </tfoot>
             </table>
 
 

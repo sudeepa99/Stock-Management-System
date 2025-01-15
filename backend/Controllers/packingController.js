@@ -100,6 +100,59 @@ export const packingDetails = async (req, res) => {
     }
 };
 
+
+export const packingDetailsFind = async (req, res) => {
+    const { date, greenleaves, madetea, details } = req.body;
+    const packing = await Packing.findOne().sort({ $natural: -1 });
+    try {
+        if (details !== "packing") {
+            return res
+                .status(400)
+                .json({ success: false, message: "Invalid details" });
+        }
+        let record = await PackingDetailsSchema.findOne({ date });
+        record = new PackingDetailsSchema({
+            date,
+            details,
+            greenleaves,
+            madetea,
+            saleNumber: packing.saleNo,
+            // Initialize all tea categories
+            BOP1A: { data: [], totalNet: 0 },
+            FBOP: { data: [], totalNet: 0 },
+            FBOPF1: { data: [], totalNet: 0 },
+            OPA: { data: [], totalNet: 0 },
+            OP: { data: [], totalNet: 0 },
+            PEKOE: { data: [], totalNet: 0 },
+            PEKOE1: { data: [], totalNet: 0 },
+            BOP: { data: [], totalNet: 0 },
+            BOPSp: { data: [], totalNet: 0 },
+            BOP1: { data: [], totalNet: 0 },
+            BOPA: { data: [], totalNet: 0 },
+            BOPF: { data: [], totalNet: 0 },
+            FBOP1: { data: [], totalNet: 0 },
+            FBOPF: { data: [], totalNet: 0 },
+            OP1: { data: [], totalNet: 0 },
+            BP: { data: [], totalNet: 0 },
+            FBOPFSp: { data: [], totalNet: 0 },
+            FFEXSP: { data: [], totalNet: 0 },
+            FFEXSP1: { data: [], totalNet: 0 },
+        });
+
+        await record.save();
+
+        return res.status(200).json({
+            success: true,
+            message: "Packing details successfully saved",
+            data: record,
+        });
+    } catch (err) {
+        console.error("Error:", err);
+        return res.status(500).json({ success: false, message: err.message });
+    }
+};
+
+
 // Function to update the tea category
 const updateTeaCategory = async (documentId, teacategory, newItem) => {
     try {
@@ -132,32 +185,8 @@ export const updatePackingDetails = async (req, res) => {
         }
         const teaCategories = TeaCategoriesConst;
         if (teaCategories.includes(teacategory)) {
-            const latestPacking = await PackingDetailsSchema.findOne({
-                [`${teacategory}.data.invoiceNo`]: { $exists: true },
-            }).sort({ [`${teacategory}.data.invoiceNo`]: -1 });
-            const datePart = new Date().toISOString().slice(0, 10).replace(/-/g, "");
-            let newInvoiceNo;
-            if (
-                latestPacking &&
-                latestPacking[teacategory] &&
-                latestPacking[teacategory].data.length > 0
-            ) {
-                const existingInvoices = latestPacking[teacategory].data.map(
-                    (subdocument) => {
-                        const parts = subdocument.invoiceNo.split("-");
-                        return parts.length === 3 ? parseInt(parts[2]) : 0;
-                    }
-                );
-                const maxInvoiceNumber = Math.max(...existingInvoices, 0);
-                newInvoiceNo = `${datePart}-${teacategory}-${(maxInvoiceNumber + 1)
-                    .toString()
-                    .padStart(3, "0")}`;
-            } else {
-                newInvoiceNo = `${datePart}-${teacategory}-001`;
-            }
             const newItem = {
                 ...teacategoryData,
-                invoiceNo: newInvoiceNo,
                 totalNet: teacategoryData.sizeofbag * teacategoryData.numofbags,
             };
 
@@ -204,14 +233,94 @@ export const getPackingDetails = async (req, res) => {
 // Get all packing details for reporting
 export const getAllPackingDetails = async (req, res) => {
     try {
-        const packingD = await PackingDetailsSchema.find({}).select("-password");
-        res
-            .status(200)
-            .json({ success: true, message: "Packing found", data: packingD });
+
+        const currentYear = new Date().getFullYear();
+        const startDate = new Date(currentYear, 0, 1).toISOString().split("T")[0];
+        const endDate = new Date(currentYear, 11, 31).toISOString().split("T")[0];
+
+        // Find the relevant sale details
+        const saleDetails = await Packing.find({
+            startDate: { $lte: endDate },
+            endDate: { $gte: startDate },
+        });
+        const saleNumbers = saleDetails.map(sale => ({
+            saleNo: sale.saleNo,
+            startDate: sale.startDate,
+            endDate: sale.endDate
+        }));
+
+        if (!saleDetails) {
+            return res.status(404).json({ success: false, message: "No sale details found for the current date range." });
+        }
+        const saleDetailsOfPD = [];
+        const dateRangeDetails = {};
+        const dateRangeDetailsPacking = {};
+        for (const sale of saleNumbers) {
+            const dispatchDetails = await DispatchDetails.findOne({ saleNumber: sale.saleNo });
+            const packingDetails = await PackingDetailsSchema.find({ saleNumber: sale.saleNo });
+
+            const startDate = sale.startDate;
+            const endDate = sale.endDate;
+
+            // Initialize date range details
+            for (let d = new Date(startDate); d <= endDate; d.setDate(d.getDate() + 1)) {
+                const dateStr = d.toISOString().split("T")[0];
+                dateRangeDetails[dateStr] = [];
+            }
+
+            // Aggregate data for each date in the range
+            for (const category of TeaCategoriesConst) {
+                const categoryData = dispatchDetails[category]?.data || [];
+                for (const item of categoryData) {
+                    const itemDate = new Date(item.date).toISOString().split("T")[0];
+                    if (dateRangeDetails[itemDate]) {
+                        dateRangeDetails[itemDate].push({
+                            data: item, category,
+                        });
+                    }
+                }
+            }
+            for (let d = new Date(startDate); d <= endDate; d.setDate(d.getDate() + 1)) {
+                const dateStr = d.toISOString().split("T")[0];
+                dateRangeDetailsPacking[dateStr] = [];
+            }
+            for (const packing of packingDetails) {
+                const itemDate = new Date(packing.date).toISOString().split("T")[0];
+                if (dateRangeDetailsPacking[itemDate]) {
+                    dateRangeDetailsPacking[itemDate].push(packing);
+                } else {
+                    dateRangeDetailsPacking[itemDate] = [packing];
+                }
+            }
+
+            if (!dispatchDetails || !packingDetails) {
+                return res.status(404).json({ success: false, message: "No dispatch details found for the sale number." });
+            }
+            saleDetailsOfPD.push({
+                saleDetailsAll:
+                {
+                    saleNumber: sale.saleNo,
+                    endDate: sale.endDate,
+                    startDate: sale.startDate,
+                    dispatchDetails: dateRangeDetails,
+                    packingDetails: dateRangeDetailsPacking
+                }
+            });
+
+            // Define broker-specific details
+        }
+
+        return res.status(200).json({
+            success: true,
+            data: saleDetailsOfPD,
+        });
     } catch (err) {
-        res.status(404).json({ success: false, message: "Not Found" });
+        console.error("Error fetching packing details:", err);
+        return res.status(500).json({ success: false, message: "Server Error" });
     }
 };
+
+
 
 // Get the date details for packaging
 export const getDateDetails = async (req, res) => {
@@ -329,24 +438,12 @@ export const updateEndDate = async (req, res) => {
 // get packing details within a date range for weekly report
 export const getWeeklyPackingDetails = async (req, res) => {
     try {
-        const today = new Date();
-        const dayOfWeek = today.getDay(); // 0 (Sunday) to 6 (Saturday)
+        const toDate = new Date();
+        const startDate = new Date();
+        startDate.setDate(toDate.getDate() - 7);
 
-        // Calculate the start of the week (Monday)
-        const startOfWeek = new Date(today);
-        startOfWeek.setDate(today.getDate() - dayOfWeek + (dayOfWeek === 0 ? -6 : 1)); // Adjust when today is Sunday
-
-        // Calculate the end of the week (Sunday)
-        const endOfWeek = new Date(startOfWeek);
-        endOfWeek.setDate(startOfWeek.getDate() + 6);
-
-        const startDate = startOfWeek.toISOString().split("T")[0];
-        const endDate = endOfWeek.toISOString().split("T")[0];
-
-        // Find the relevant sale details
-        const packingDetails = await PackingDetailsSchema.findOne({
-            startDate: { $lte: endDate },
-            endDate: { $gte: startDate },
+        const packingDetails = await PackingDetailsSchema.find({
+            date: { $gte: startDate.toISOString().split("T")[0], $lte: toDate.toISOString().split("T")[0] },
         });
 
         const daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];

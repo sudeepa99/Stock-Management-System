@@ -14,7 +14,7 @@ body {
 .dashboard,
 .reports,
 .packing,
-.team,
+.weekly-report,
 .dispatch,
 .support {
   display: flex;
@@ -160,4 +160,11 @@ body {
   width: 24px;
   height: 24px;
   object-fit: fill;
+}
+
+.table-name{
+  color: #fff;
+  font-size: 25px;
+  letter-spacing: 5px;
+  margin-top: 10px;
 }

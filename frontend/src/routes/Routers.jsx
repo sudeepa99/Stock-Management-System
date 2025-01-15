@@ -2,14 +2,16 @@ import React from 'react';
 import { createBrowserRouter } from "react-router-dom";
 import Login from '../pages/Login/Login';
 // import Signup from '../pages/SignUp';
-import Reports from "../pages/Report/Reports";
+import Reports from "../pages/Reports/WeeklyReport/Reports";
 import Dashboard from "../pages/Dashbord/Dashboard";
 import Dispatch from "../pages/Dispatch/Dispatch";
 import AppLayout from '../layout/Layout';
 import Packing from '../pages/Packing/Packing';
 import Packing1 from '../pages/Packing/Packing1';
 import Packing2 from '../pages/Packing/Packing2';
-import DispatchReport from '../pages/DispatchReport/DispatchReport';
+import DispatchReport from '../pages/Reports/BrokerReport/DispatchReport';
+import ReDispatch from '../pages/Reports/DispatchReportPerDay/DispatchReport';
+import DispatchReportAll from '../pages/Reports/YearlyReport/DispatchReport';
 import ProtectedRoute from './ProtectedRoute';
 
 import "../App.css";
@@ -53,6 +55,14 @@ const router = createBrowserRouter([
       {
         path: "dispatchReport",
         element: < ProtectedRoute allowedRoles={["viewer", "admin"]} ><DispatchReport /></ProtectedRoute>
+      },
+      {
+        path: "redispatch",
+        element: < ProtectedRoute allowedRoles={["viewer", "admin"]} ><ReDispatch /></ProtectedRoute>
+      },
+      {
+        path: "alldispatch",
+        element: < ProtectedRoute allowedRoles={["viewer", "admin"]} ><DispatchReportAll /></ProtectedRoute>
       },
 
     ],
