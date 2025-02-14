@@ -81,7 +81,6 @@ const Dispatch = () => {
           toast.error("Invoice number not found.");
         }
       } catch (err) {
-        toast.error("Error fetching data");
       } finally {
         setLoading(false);
       }
@@ -166,6 +165,7 @@ const Dispatch = () => {
             value={formData.broker}
             onChange={handleInputChange}
             className="tea_category"
+            required
           >
             <option value="">Select the Broker</option>
             {Object.keys(brokers).map((grade) => (

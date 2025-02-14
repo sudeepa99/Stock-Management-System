@@ -13,6 +13,17 @@ const Dashboard = () => {
   const today = new Date().toLocaleDateString();
   const [endDate, setEndDate] = useState(today);
 
+  const [copied, setCopied] = useState(false);
+
+  const handleCopy = (text) => {
+    navigator.clipboard.writeText(text).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000); // reset the "copied" status after 2 seconds
+    }).catch((err) => {
+      console.error('Failed to copy text: ', err);
+    });
+  };
+
   const getMadeTeaF = async () => {
     setLoading(true);
     try {
@@ -110,7 +121,8 @@ const Dashboard = () => {
 
   return (
     <div className="container">
-      <div className="main-container">
+      <div
+        className="main-container">
         <div>
           <div className="flex-col gap-3">
             <p className="b1">Current Status {today}</p>
@@ -120,9 +132,7 @@ const Dashboard = () => {
             {data?.saleDetails?.saleNo ? (
               <span className="text-xl">{data.saleDetails.saleNo}</span>
             ) : (
-              <span className="text-x4 text-[#fb3c52] width-full badge badge-error">
-                Please add new sale
-              </span>
+              <span className="text-x4 text-[#fb3c52] width-full" >Please add new sale</span>
             )}
           </div>
         </div>
@@ -157,11 +167,7 @@ const Dashboard = () => {
                     onChange={(e) => setEndDate(e.target.value)}
                   />
                   <p></p>
-                  <button
-                    disabled={loading}
-                    type="submit"
-                    className="bg-[#54ed50] text-center rounded-[5px] text-[20px] desktop:ml-[43%] laptop:ml-[41%] w-[75px] mt-3"
-                  >
+                  <button disabled={loading} type="submit" className="bg-[#54ed50]  text-center rounded-[5px] text-[20px] desktop:ml-[43%]  laptop:ml-[41%] w-[75px] mt-3">
                     {loading ? <HashLoader size={35} color="#ffffff" /> : "Submit"}
                   </button>
                 </form>
@@ -174,7 +180,8 @@ const Dashboard = () => {
                 Amount of green leaf received
               </label>
               <span className="mt-3">
-                {data?.packingDetails && data.packingDetails.greenleaves !== null
+                {data?.packingDetails &&
+                  data.packingDetails.greenleaves !== null
                   ? data.packingDetails.greenleaves
                   : "Not add data"}
               </span>
@@ -195,21 +202,11 @@ const Dashboard = () => {
         <table className="min-w-full mt-10 border border-collapse border-gray-300">
           <thead>
             <tr className="bg-transparent">
-              <th className="px-4 py-2 border text-[#50EDED] border-gray-300 font-light">
-                Invoice No
-              </th>
-              <th className="px-4 py-2 border text-[#50EDED] border-gray-300 font-light">
-                Tea Mark
-              </th>
-              <th className="px-4 py-2 border text-[#50EDED] border-gray-300 font-light">
-                Tea Category
-              </th>
-              <th className="px-4 py-2 text-[#50EDED] border border-gray-300 font-light">
-                Weight of Bag
-              </th>
-              <th className="px-4 py-2 text-[#50EDED] border border-gray-300 font-light">
-                Num of Bags
-              </th>
+              <th className="px-4 py-2 border  text-[#50EDED] border-gray-300 font-light ">Invoice No</th>
+              <th className="px-4 py-2 border  text-[#50EDED] border-gray-300 font-light">Tea Mark</th>
+              <th className="px-4 py-2 border  text-[#50EDED] border-gray-300 font-light">Tea Category</th>
+              <th className="px-4 py-2 text-[#50EDED] border border-gray-300 font-light">Weight of Bag</th>
+              <th className="px-4 py-2 text-[#50EDED] border border-gray-300 font-light">Num of Bags</th>
             </tr>
           </thead>
           <tbody>
@@ -223,9 +220,15 @@ const Dashboard = () => {
                 </td>
               </tr>
             ) : (
-              data.packingDetails.map((item) => (
+              currentPackingData.map((item) => (
                 <tr key={item._id}>
-                  <td className="px-4 py-2 border border-gray-300">{item.invoiceNo}</td>
+                  <td
+                    className="px-4 py-2 border border-gray-300 cursor-pointer"
+                    onClick={() => handleCopy(item.invoiceNo)}
+                  >
+                    {item.invoiceNo}
+                    {copied && <span className="ml-2 text-green-500">Copied!</span>}
+                  </td>
                   <td className="px-4 py-2 border border-gray-300">{item.teaMark}</td>
                   <td className="px-4 py-2 border border-gray-300">{item.teacategory}</td>
                   <td className="px-4 py-2 border border-gray-300">{item.sizeofbag}</td>
@@ -237,40 +240,16 @@ const Dashboard = () => {
         </table>
         {/* Pagination Controls */}
         <div className="flex justify-center mt-4">
-          <button
-            onClick={() => handlePageChange(setCurrentPageP, currentPageP - 1, totalPagesP)}
-            disabled={currentPageP === 1}
-            className="px-4 py-2 mx-1 border border-gray-300 text-gray-500 disabled:opacity-50"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-5 w-5"
-              viewBox="0 0 20 20"
-              fill="currentColor"
-            >
-              <path
-                fillRule="evenodd"
-                d="M7.707 4.293a1 1 0 010 1.414L4.414 9H16a1 1 0 110 2H4.414l3.293 3.293a1 1 0 01-1.414 1.414l-5-5a1 1 0 010-1.414l5-5a1 1 0 011.414 0z"
-                clipRule="evenodd"
-              />
+          <button onClick={() => handlePageChange(setCurrentPageP, currentPageP - 1, totalPagesP)} disabled={currentPageP === 1}
+            className="px-4 py-2 mx-1 border border-gray-300 text-gray-500 disabled:opacity-50">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+              <path fillRule="evenodd" d="M7.707 4.293a1 1 0 010 1.414L4.414 9H16a1 1 0 110 2H4.414l3.293 3.293a1 1 0 01-1.414 1.414l-5-5a1 1 0 010-1.414l5-5a1 1 0 011.414 0z" clipRule="evenodd" />
             </svg>
           </button>
-          <button
-            onClick={() => handlePageChange(setCurrentPageP, currentPageP + 1, totalPagesP)}
-            disabled={currentPageP === totalPagesP}
-            className="px-4 py-2 mx-1 border border-gray-300 text-gray-500 disabled:opacity-50"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-5 w-5"
-              viewBox="0 0 20 20"
-              fill="currentColor"
-            >
-              <path
-                fillRule="evenodd"
-                d="M12.293 15.707a1 1 0 010-1.414L15.586 11H4a1 1 0 110-2h11.586l-3.293-3.293a1 1 0 011.414-1.414l5 5a1 1 0 010 1.414l-5 5a1 1 0 01-1.414 0z"
-                clipRule="evenodd"
-              />
+          <button onClick={() => handlePageChange(setCurrentPageP, currentPageP + 1, totalPagesP)} disabled={currentPageP === totalPagesP}
+            className="px-4 py-2 mx-1 border border-gray-300 text-gray-500 disabled:opacity-50">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+              <path fillRule="evenodd" d="M12.293 15.707a1 1 0 010-1.414L15.586 11H4a1 1 0 110-2h11.586l-3.293-3.293a1 1 0 011.414-1.414l5 5a1 1 0 010 1.414l-5 5a1 1 0 01-1.414 0z" clipRule="evenodd" />
             </svg>
           </button>
         </div>
@@ -279,10 +258,10 @@ const Dashboard = () => {
           <table className="min-w-full mt-10 border border-collapse border-gray-300">
             <thead>
               <tr className="bg-transparent">
-                <th className="px-4 py-2 border text-[#50EDED] border-gray-300 font-light">
+                <th className="px-4 py-2 border  text-[#50EDED] border-gray-300 font-light">
                   Invoice No
                 </th>
-                <th className="px-4 py-2 border text-[#50EDED] border-gray-300 font-light">
+                <th className="px-4 py-2 border  text-[#50EDED] border-gray-300 font-light">
                   Date
                 </th>
                 <th className="px-4 py-2 text-[#50EDED] border border-gray-300 font-light">
@@ -323,46 +302,22 @@ const Dashboard = () => {
           </table>
           {/* Pagination Controls */}
           <div className="flex justify-center mt-4">
-            <button
-              onClick={() => handlePageChange(setCurrentPage, currentPage - 1, totalPages)}
-              disabled={currentPage === 1}
-              className="px-4 py-2 mx-1 border border-gray-300 text-gray-500 disabled:opacity-50"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-5 w-5"
-                viewBox="0 0 20 20"
-                fill="currentColor"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M7.707 4.293a1 1 0 010 1.414L4.414 9H16a1 1 0 110 2H4.414l3.293 3.293a1 1 0 01-1.414 1.414l-5-5a1 1 0 010-1.414l5-5a1 1 0 011.414 0z"
-                  clipRule="evenodd"
-                />
+            <button onClick={() => handlePageChange(setCurrentPage, currentPage - 1, totalPages)} disabled={currentPage === 1}
+              className="px-4 py-2 mx-1 border border-gray-300 text-gray-500 disabled:opacity-50">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                <path fillRule="evenodd" d="M7.707 4.293a1 1 0 010 1.414L4.414 9H16a1 1 0 110 2H4.414l3.293 3.293a1 1 0 01-1.414 1.414l-5-5a1 1 0 010-1.414l5-5a1 1 0 011.414 0z" clipRule="evenodd" />
               </svg>
             </button>
-            <button
-              onClick={() => handlePageChange(setCurrentPage, currentPage + 1, totalPages)}
-              disabled={currentPage === totalPages}
-              className="px-4 py-2 mx-1 border border-gray-300 text-gray-500 disabled:opacity-50"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-5 w-5"
-                viewBox="0 0 20 20"
-                fill="currentColor"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M12.293 15.707a1 1 0 010-1.414L15.586 11H4a1 1 0 110-2h11.586l-3.293-3.293a1 1 0 011.414-1.414l5 5a1 1 0 010 1.414l-5 5a1 1 0 01-1.414 0z"
-                  clipRule="evenodd"
-                />
+            <button onClick={() => handlePageChange(setCurrentPage, currentPage + 1, totalPages)} disabled={currentPage === totalPages}
+              className="px-4 py-2 mx-1 border border-gray-300 text-gray-500 disabled:opacity-50">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                <path fillRule="evenodd" d="M12.293 15.707a1 1 0 010-1.414L15.586 11H4a1 1 0 110-2h11.586l-3.293-3.293a1 1 0 011.414-1.414l5 5a1 1 0 010 1.414l-5 5a1 1 0 01-1.414 0z" clipRule="evenodd" />
               </svg>
             </button>
           </div>
         </div>
       </div>
-    </div>
+    </div >
   );
 };
 
