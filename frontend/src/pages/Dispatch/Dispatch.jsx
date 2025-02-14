@@ -76,6 +76,7 @@ const Dispatch = () => {
             teacategory,
             sizeofbag,
           }));
+          toast.success(result.message);
         } else {
           toast.error("Invoice number not found.");
         }
@@ -140,7 +141,7 @@ const Dispatch = () => {
 
   return (
     <div className="container">
-      <form className="a1" onSubmit={submitHandler}>
+      <form className="main-container" onSubmit={submitHandler}>
         <p className="b1">Date</p>
         <p className="b2">
           Please enter the following details to continue the process.

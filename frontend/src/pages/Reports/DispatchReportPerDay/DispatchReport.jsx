@@ -1,8 +1,19 @@
 import React, { useState, useEffect } from "react";
 import HashLoader from "react-spinners/HashLoader";
+import { Link } from 'react-router-dom';
+
 import { BASE_URL } from "../../../config";
 import "./DispatchReport.css";
-
+const today = new Date().toLocaleString('en-US', {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    hour: 'numeric',
+    minute: 'numeric',
+    second: 'numeric',
+    hour12: true
+});
 const DispatchReport = () => {
     const [data, setData] = useState(null);
     const [loading, setLoading] = useState(false);
@@ -31,8 +42,7 @@ const DispatchReport = () => {
             const today = new Date().toISOString().split("T")[0]; // Get today's date in YYYY-MM-DD format
             setSelectedDate(responseData.data[today] ? today : Object.keys(responseData.data)?.[0] || ""); // Set default date to today if it exists, otherwise the first available date
         } catch (err) {
-            console.error("Error fetching dispatch data:", err);
-            alert(`Error: ${err.message}`);
+            toast.error(err.message);
         } finally {
             setLoading(false);
         }
@@ -60,27 +70,41 @@ const DispatchReport = () => {
             {loading ? (
                 <HashLoader color="#36d7b7" />
             ) : (
-                <div className="a1">
+                <div className="sub-container">
                     <div>
                         <div className="flex-col gap-3">
                             <p className="b1">Dispatch Report per day</p>
+                            <div className="b5">
+                                <Link to="/report">
+                                    <i className="fas fa-arrow-left" style={{ marginRight: '8px' }}></i>
+                                    Go to Main Report
+                                </Link>
+                            </div>
+                        </div>
+                        <div className="b3">
+                            <p className="b3">Today {today}</p>
                         </div>
                         {/* Date Selector */}
-                        <div className="absolute flex flex-row top-[15px] right-[10px]">
+                        <div className="absolute flex flex-row top-[100px] right-[175px] ">
+                            <span >Select Date</span>
+                        </div>
+                        <div className="absolute flex flex-row top-[100px] right-[10px] bg-transparent ">
                             <select
                                 name="selectDate"
-                                className="px-4 py-2 border text-[#131919]"
+                                className="px-3 py-2 border text-[#ffffff] border-gray-300 bg-transparent"
                                 value={selectedDate}
                                 onChange={handleDateChange}
+                                style={{ color: "#ffffff" }}
                             >
-                                <option value="">Select a Date</option>
+                                <option value="" className="bg-transparent text-[#ffffff]">Select a Date</option>
                                 {Object.keys(data || {}).map((date) => (
-                                    <option key={date} value={date}>
+                                    <option key={date} value={date} className="bg-[#1f2327] text-[#ffffff]">
                                         {date}
                                     </option>
                                 ))}
                             </select>
                         </div>
+
                     </div>
 
                     <div>

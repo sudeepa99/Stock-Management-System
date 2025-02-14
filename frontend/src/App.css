@@ -8,7 +8,7 @@
 }
 
 body {
-  background-color: #151414; /* Change this to your desired background color */
+  background-color: #151414;
 }
 
 .dashboard,
@@ -23,7 +23,7 @@ body {
   justify-content: center;
   font-size: 3rem;
   background-color: #1F2327;
-  color: #fff;
+  color: rgba(0, 0, 0, 0.5);
   padding-top: 30px;
 }
 
@@ -162,9 +162,258 @@ body {
   object-fit: fill;
 }
 
-.table-name{
+.table-name {
   color: #fff;
   font-size: 25px;
-  letter-spacing: 5px;
+  letter-spacing: 2px;
   margin-top: 10px;
+  font-weight: bold;
+}
+
+.main-container{
+  height: 100vh;
+  overflow-y: scroll; 
+  overflow-x: hidden; 
+  position: relative;
+  background-color:  #1f2327;
+  align-content: center;
+  padding: 150px;
+  margin: 0px;
+  margin-left: 40px ;
+  margin-top: 35px;
+  margin-bottom: 130px;
+  width: 100%;
+  border-radius: 10px;
+}
+
+
+.sub-container {
+  height: 100vh;
+  position: relative;
+  background-color: #1f2327;
+  /* align-content: center; */
+  padding: 150px;
+  margin: 0px;
+  margin-left: 40px;
+  margin-top: 35px;
+  margin-bottom: 130px;
+  width: 100%;
+  border-radius: 10px;
+}
+
+
+/* report section */
+
+/* Layout for the row */
+.row {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  margin: 20px;
+}
+
+/* Styling for each box */
+.box {
+  background-color: #fff;
+  width: 200px;
+  padding: 20px;
+  box-shadow: 0 4px 8px rgba(24, 227, 10, 0.2); /* Adding shadow */
+  border-radius: 8px;
+  text-align: center;
+  transition: box-shadow 0.3s ease;
+}
+
+/* Hover effect for shadow */
+.box:hover {
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+}
+
+/* Styling for the button */
+.view-btn {
+  margin-top: 5px;
+  padding: 8px 16px;
+  background-color: #00ff08;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.view-btn:hover {
+  background-color: #0056b3;
+}
+
+.content h3 {
+  font-size: 24px;
+  margin: 0;
+}
+
+
+.box-report{
+  height: 20vh;
+  border-radius: 20px;
+  max-width: 50px;
+ text-align: center;
+ color: white;
+ margin: 0 auto;
+ margin-top: 5vh;
+ box-shadow: 0 0 10px #0066ff;
+ display: flex;
+
+}
+
+.b2{
+  position: absolute;
+  top: 30px;
+  left: 10px;
+  font-size: 12px;
+}
+
+.b5{
+  position: absolute;
+  top: 50px;
+  left: 10px;
+  font-size: 12px;
+  color: #00ff08;
+}
+
+.b3{
+  position: absolute;
+  top: 20px;
+  left: 68%;
+  width: 200px;
+  font-size: 12px;
+  border-radius: 10px;
+ text-align: center;
+ color: white;
+ margin: 0 auto;
+ box-shadow: 0 0 10px #000;
+ display: flex;
+}
+.b4{
+  top:20px;
+}
+
+.b6{
+  top:20px;
+  left: 10px;
+}
+
+
+.date-number-selection {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  margin-left: 2px;
+  margin-right: 2px;
+}
+
+.date-selection > * {
+}
+
+.date-button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100px;
+  height: 30px;
+  border-radius: 5px; 
+  background-color: transparent;
+  border: 3px solid #575759; 
+  margin: 10px;
+  cursor: pointer;
+}
+
+.date-button.selected {
+  background-color: transparent;
+  color: #54ed50;
+}
+
+
+
+.date-selection-div {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  margin-left: 5px;
+  margin-right: 5px;
+}
+
+.date-selection-div > * {
+}
+
+.date-button-div {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 200px;
+  background-color: transparent;
+  margin: 10px;
+  border: none;
+  cursor: pointer;
+}
+
+.date-button.selected-div {
+  background-color: transparent;
+  color: #54ed50;
+}
+
+
+.sale-number-selection {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  margin-left: 50px;
+  margin-right: 50px;
+}
+
+.sale-selection > * {
+}
+
+.sale-button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%; 
+  background-color: transparent;
+  border: 2px solid #575759; 
+  margin: 10px;
+  cursor: pointer;
+}
+
+.sale-button.selected {
+  background-color: transparent;
+  color: #54ed50;
+}
+
+
+
+.sale-selection-div {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  margin-left: 5px;
+  margin-right: 5px;
+}
+
+.sale-selection-div > * {
+}
+
+.sale-button-div {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 200px;
+  background-color: transparent;
+  margin: 10px;
+  border: none;
+  cursor: pointer;
+}
+
+.sale-button.selected-div {
+  background-color: transparent;
+  color: #54ed50;
 }

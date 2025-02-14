@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React, { useContext } from 'react';
 import { Link, useLocation } from "react-router-dom";
 import { SidebarData } from "./SidebarData";
 import "../App.css";
@@ -15,9 +15,17 @@ const Navbar = () => {
     dispatch({ type: 'LOGOUT' });
     navigate("/");
   };
+
+  // Filter sidebar items based on user role
   const filteredSidebarData = SidebarData.filter((item) =>
     item.roles.includes(role)
   );
+
+  // Function to check if the current location matches the item's path or is a subpath
+  const isActivePath = (itemPath) => {
+    return location.pathname.startsWith(itemPath);
+  };
+
   return (
     <div className="nav-menu active">
       <div className="nav-menu-header">
@@ -26,7 +34,7 @@ const Navbar = () => {
       </div>
       <ul className="nav-menu-items">
         {filteredSidebarData.map((item, index) => {
-          const isActive = location.pathname === item.path;
+          const isActive = isActivePath(item.path);  // Check if the current path is the base or subpath of the item
           return (
             <li key={index} className={item.cName}>
               <Link to={item.path} className={`${isActive ? 'active' : ''} ${item.title.toLowerCase()}`}>
@@ -46,7 +54,3 @@ const Navbar = () => {
 };
 
 export default Navbar;
-
-
-
-

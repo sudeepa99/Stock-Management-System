@@ -10,9 +10,10 @@ import Packing from '../pages/Packing/Packing';
 import Packing1 from '../pages/Packing/Packing1';
 import Packing2 from '../pages/Packing/Packing2';
 import DispatchReport from '../pages/Reports/BrokerReport/DispatchReport';
-import ReDispatch from '../pages/Reports/DispatchReportPerDay/DispatchReport';
+import DailyReport from '../pages/Reports/DispatchReportPerDay/DispatchReport';
 import DispatchReportAll from '../pages/Reports/YearlyReport/DispatchReport';
 import ProtectedRoute from './ProtectedRoute';
+import ReportMainPage from '../pages/Reports/ReportMainPage/ReportMainPage'
 
 import "../App.css";
 
@@ -48,20 +49,25 @@ const router = createBrowserRouter([
 
       },
       {
-        path: "reports",
+        path: "report",
+        element: < ProtectedRoute allowedRoles={["viewer", "admin"]} > <ReportMainPage /></ProtectedRoute>
+
+      },
+      {
+        path: "reportW",
         element: < ProtectedRoute allowedRoles={["viewer", "admin"]} > <Reports /></ProtectedRoute>
 
       },
       {
-        path: "dispatchReport",
+        path: "reportB",
         element: < ProtectedRoute allowedRoles={["viewer", "admin"]} ><DispatchReport /></ProtectedRoute>
       },
       {
-        path: "redispatch",
-        element: < ProtectedRoute allowedRoles={["viewer", "admin"]} ><ReDispatch /></ProtectedRoute>
+        path: "reportD",
+        element: < ProtectedRoute allowedRoles={["viewer", "admin"]} ><DailyReport /></ProtectedRoute>
       },
       {
-        path: "alldispatch",
+        path: "reportY",
         element: < ProtectedRoute allowedRoles={["viewer", "admin"]} ><DispatchReportAll /></ProtectedRoute>
       },
 
