@@ -18,12 +18,10 @@ if (!container._reactRoot) {
 }
 
 root.render(
-  <React.StrictMode>
-    <AuthContextProvider>
-      <ToastContainer theme="dark" position="top-right" autoClose={3000} closeOnClick pauseOnHover={false} />
-      <RouterProvider router={router} />
-    </AuthContextProvider>
-  </React.StrictMode>
+  <AuthContextProvider>
+    <ToastContainer theme="dark" position="top-right" autoClose={3000} closeOnClick pauseOnHover={false} />
+    <RouterProvider router={router} />
+  </AuthContextProvider>
 );
 
 export default function Routers() {

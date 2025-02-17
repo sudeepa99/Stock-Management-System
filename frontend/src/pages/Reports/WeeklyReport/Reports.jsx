@@ -1,9 +1,20 @@
 import React, { useState, useEffect } from "react";
 import HashLoader from "react-spinners/HashLoader";
 import { toast } from "react-toastify";
+import { Link } from 'react-router-dom';
+
 import { BASE_URL } from "../../../config";
 import "./report.css";
-
+const today = new Date().toLocaleString('en-US', {
+  weekday: 'long', // 'Monday'
+  year: 'numeric', // '2025'
+  month: 'long', // 'February'
+  day: 'numeric', // '12'
+  hour: 'numeric', // '3'
+  minute: 'numeric', // '47'
+  second: 'numeric', // '25'
+  hour12: true // 12-hour format with AM/PM
+});
 const Reports = () => {
 
   const [data, setData] = useState(null);
@@ -75,13 +86,19 @@ const Reports = () => {
       {loading ? (
         <HashLoader color="#36d7b7" />
       ) : (
-        <div className="a1">
+        <div className="sub-container">
           <div>
             <div className="flex-col gap-3">
-              <p className="b1">Weekly Report</p>
+              <p className="b1">Weekly Report about packing details</p>
+              <div className="b5">
+                <Link to="/report">
+                  <i className="fas fa-arrow-left" style={{ marginRight: '8px' }}></i>
+                  Go to Main Report
+                </Link>
+              </div>
             </div>
-            <div className="flex-col gap-3">
-              <p className="b1">Weekly Report</p>
+            <div className="b3">
+              <p className="b3">Today {today}</p>
             </div>
           </div>
 

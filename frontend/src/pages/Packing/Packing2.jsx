@@ -140,7 +140,7 @@ const Packing2 = () => {
   };
 
   return (
-    <form className="a1" onSubmit={submitHandler}>
+    <form className="main-container" onSubmit={submitHandler}>
       <p className="b1">{today}</p>
       <p className="b2">
         Please enter the following details to continue the process.

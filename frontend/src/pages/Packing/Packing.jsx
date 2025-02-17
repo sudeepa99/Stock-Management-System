@@ -23,6 +23,7 @@ const Packing = () => {
     if (name === "startDate") {
       if (Number(value) > Number(formData.endDate)) {
         setError("Start date cannot exceed the end date.");
+        toast.error(err.message);
       } else {
         setError(""); // Clear error if condition is not met
       }
@@ -101,7 +102,7 @@ const Packing = () => {
   return (
     <div className="container">
       {getEndDate ? (
-        <form className="a1" onSubmit={submitHandler}>
+        <form className="sub-container" onSubmit={submitHandler}>
           <p className="b1">Sale Details</p>
           <p className="b2">
             Please enter the following details to continue the process.

@@ -36,7 +36,9 @@ const Packing1 = () => {
 
       setMadeTea(data.data);
       setGetTrue(!data.data);
+      toast.success(result.message);
     } catch (err) {
+      toast.error(err.message);
     } finally {
       setLoading(false);
     }
@@ -84,7 +86,7 @@ const Packing1 = () => {
   return (
     <div>
       {getTrue ? (
-        <form className="a1" onSubmit={submitHandler}>
+        <form className="sub-container" onSubmit={submitHandler}>
           <p className="b1">{today}</p>
           <p className="b2">
             Please enter the following details to continue the process.

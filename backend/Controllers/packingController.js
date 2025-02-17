@@ -235,14 +235,16 @@ export const getAllPackingDetails = async (req, res) => {
     try {
 
         const currentYear = new Date().getFullYear();
-        const startDate = new Date(currentYear, 0, 1).toISOString().split("T")[0];
-        const endDate = new Date(currentYear, 11, 31).toISOString().split("T")[0];
+        const ystartDate = new Date(currentYear, 0, 1).toISOString().split("T")[0];
+        const yendDate = new Date(currentYear, 11, 31).toISOString().split("T")[0];
 
         // Find the relevant sale details
         const saleDetails = await Packing.find({
-            startDate: { $lte: endDate },
-            endDate: { $gte: startDate },
+            startDate: { $lte: yendDate },
+            endDate: { $gte: ystartDate },
         });
+
+
         const saleNumbers = saleDetails.map(sale => ({
             saleNo: sale.saleNo,
             startDate: sale.startDate,
@@ -252,21 +254,30 @@ export const getAllPackingDetails = async (req, res) => {
         if (!saleDetails) {
             return res.status(404).json({ success: false, message: "No sale details found for the current date range." });
         }
+
         const saleDetailsOfPD = [];
-        const dateRangeDetails = {};
-        const dateRangeDetailsPacking = {};
         for (const sale of saleNumbers) {
+            const dateRangeDetails = {};
+            const dateRangeDetailsPacking = {};
+
             const dispatchDetails = await DispatchDetails.findOne({ saleNumber: sale.saleNo });
             const packingDetails = await PackingDetailsSchema.find({ saleNumber: sale.saleNo });
 
+
             const startDate = sale.startDate;
             const endDate = sale.endDate;
+
+            console.log(startDate, endDate);
+
 
             // Initialize date range details
             for (let d = new Date(startDate); d <= endDate; d.setDate(d.getDate() + 1)) {
                 const dateStr = d.toISOString().split("T")[0];
                 dateRangeDetails[dateStr] = [];
             }
+
+            console.log("sale", dateRangeDetails);
+
 
             // Aggregate data for each date in the range
             for (const category of TeaCategoriesConst) {
