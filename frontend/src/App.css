@@ -389,6 +389,18 @@ body {
   color: #54ed50;
 }
 
+.dash-button{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 35px;
+  height: 35px;
+  border-radius: 50%; 
+  background-color: rgb(23, 23, 23);
+  border: 2px solid #575759; 
+  cursor: pointer;
+}
+
 
 
 .sale-selection-div {
@@ -416,4 +428,18 @@ body {
 .sale-button.selected-div {
   background-color: transparent;
   color: #54ed50;
+}
+
+.custom-tooltip{
+  background-color: transparent;
+  color: #54ed50;
+}
+
+.test{
+  background-color: #ab3da9;
+  color: #82ca9d;
+  color:#ffb400 ;
+  color: #0020ff;
+  color:#A020F0 ;
+  
 }
