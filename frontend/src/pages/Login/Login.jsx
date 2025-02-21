@@ -1,5 +1,5 @@
 import React from "react";
-import { FaEnvelope, FaLock } from "react-icons/fa"; // For email and password icons
+import { FaEnvelope, FaEye, FaEyeSlash, FaLock } from "react-icons/fa"; // For email and password icons
 import "./Login.css"; // For custom styling
 
 import loginImg from "../../assets/images/Login_image.png"; // changed to lowercase for consistency
@@ -20,6 +20,7 @@ const LoginPage = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { dispatch } = useContext(authContext);
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleInputChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -74,10 +75,12 @@ const LoginPage = () => {
             </div>
           </div>
 
-          <div className="input-container bg-greyColor">
-            <form
-              onSubmit={submitHandler}
-            >
+          <div className="input-container bg-[#E7DDDD]">
+            <p className="text-[34px] font-bold  text-[#000] absolute left-[16%] top-[36%]">
+              Log In
+            </p>
+
+            <form onSubmit={submitHandler}>
               <div className="input-field">
                 <FaEnvelope className="input-icon" />
                 <input
@@ -92,14 +95,19 @@ const LoginPage = () => {
               <div className="input-field">
                 <FaLock className="input-icon" />
                 <input
-                  type="password"
+                  type={showPassword ? "text" : "password"}
                   placeholder="Enter Your Password"
                   name="password"
                   value={formData.password}
                   onChange={handleInputChange}
-
                   required
                 />
+                <span
+                  className="absolute text-black bg-transparent cursor-pointer left-[45%] "
+                  onClick={() => setShowPassword((prev) => !prev)}
+                >
+                  {showPassword ? <FaEyeSlash /> : <FaEye />}
+                </span>
               </div>
               <div className="flex justify-center pt-4">
                 <button
@@ -118,7 +126,7 @@ const LoginPage = () => {
           <img src={loginImg} alt="Login" />
         </div>
       </div>
-    </div >
+    </div>
   );
 };
 
@@ -188,7 +196,3 @@ export default LoginPage;
 // };
 
 // export default Login;
-
-
-
-

@@ -4,18 +4,22 @@ import { BASE_URL } from "../../config";
 import "./Dashboard.css";
 import { toast } from "react-toastify";
 import {
-  PieChart, Pie, Cell, Tooltip, Legend,
+  PieChart,
+  Pie,
+  Cell,
+  Tooltip,
+  Legend,
   XAxis,
   YAxis,
   ResponsiveContainer,
-  LineChart, Line,
+  LineChart,
+  Line,
 } from "recharts";
 import { FaLock, FaUser } from "react-icons/fa";
 import { useContext } from "react";
 import { authContext } from "../../context/AuthContext";
 
 const Dashboard = () => {
-
   const [brokerData, setBrokerData] = useState([]);
   const [dispatchData, setDispatchData] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -37,7 +41,9 @@ const Dashboard = () => {
         const responseData = await res.json();
 
         if (!res.ok) {
-          throw new Error(responseData.message || "Failed to fetch made tea data");
+          throw new Error(
+            responseData.message || "Failed to fetch made tea data"
+          );
         }
 
         // Process broker data
@@ -53,14 +59,14 @@ const Dashboard = () => {
             item.data.numofbags === "10B"
               ? 10
               : item.data.numofbags === "20B"
-                ? 20
-                : item.data.numofbags === "15B"
-                  ? 15
-                  : item.data.numofbags === "30B"
-                    ? 30
-                    : item.data.numofbags === "40B"
-                      ? 40
-                      : 0;
+              ? 20
+              : item.data.numofbags === "15B"
+              ? 15
+              : item.data.numofbags === "30B"
+              ? 30
+              : item.data.numofbags === "40B"
+              ? 40
+              : 0;
 
           const totalWeight = numBags * (item.data.sizeofbag || 0); // Ensure sizeofbag is handled safely
 
@@ -93,30 +99,33 @@ const Dashboard = () => {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
-            "Authorization": `Bearer ${localStorage.getItem("token")}`,
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
         });
-
 
         const responseData = await res.json();
 
         if (!res.ok) {
-          throw new Error(responseData.message || "Failed to fetch dispatch data");
+          throw new Error(
+            responseData.message || "Failed to fetch dispatch data"
+          );
         }
 
         // Process dispatch data for bar chart
-        const dispatchDataProcessed = Object.keys(responseData.data || {}).map((date) => {
-          const dateData = responseData.data[date] || [];
-          const totalBags = dateData.reduce((acc, item) => {
-            let numBags = parseInt(item.data.numofbags.replace("B", "")) || 0;
-            return acc + numBags;
-          }, 0);
-          const totalWeight = dateData.reduce((acc, item) => {
-            let numBags = parseInt(item.data.numofbags.replace("B", "")) || 0;
-            return acc + numBags * item.data.sizeofbag;
-          }, 0);
-          return { date, totalBags, totalWeight };
-        });
+        const dispatchDataProcessed = Object.keys(responseData.data || {}).map(
+          (date) => {
+            const dateData = responseData.data[date] || [];
+            const totalBags = dateData.reduce((acc, item) => {
+              let numBags = parseInt(item.data.numofbags.replace("B", "")) || 0;
+              return acc + numBags;
+            }, 0);
+            const totalWeight = dateData.reduce((acc, item) => {
+              let numBags = parseInt(item.data.numofbags.replace("B", "")) || 0;
+              return acc + numBags * item.data.sizeofbag;
+            }, 0);
+            return { date, totalBags, totalWeight };
+          }
+        );
 
         setDispatchData(dispatchDataProcessed);
       } catch (err) {
@@ -175,7 +184,7 @@ const Dashboard = () => {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${localStorage.getItem("token")}`,
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
         body: JSON.stringify({ endDate }),
       });
@@ -194,9 +203,8 @@ const Dashboard = () => {
     }
   };
 
-
   // Colors for the pie chart
-  const COLORS = ["#ffb400", "#0020ff", "#A020F0",];
+  const COLORS = ["#ffb400", "#0020ff", "#A020F0"];
 
   useEffect(() => {
     getMadeTeaF();
@@ -204,21 +212,24 @@ const Dashboard = () => {
 
   return (
     <div className="container">
-      <div
-        className="main-container">
+      <div className="main-container">
         <div>
           <div className="flex-col gap-3">
             <p className="b1">Current Status {today}</p>
           </div>
           <div>
-
             <div className="b2">
-              <p>Date       : {today}</p>
-              <p>Sale Number: {data?.saleDetails?.saleNo ? (
-                <p className="text-xl">{data.saleDetails.saleNo}</p>
-              ) : (
-                <p className="text-x4 text-[#fb3c52] width-full" >Please add new sale</p>
-              )}</p>
+              <p>Date : {today}</p>
+              <p>
+                Sale Number:{" "}
+                {data?.saleDetails?.saleNo ? (
+                  <p className="text-xl">{data.saleDetails.saleNo}</p>
+                ) : (
+                  <p className="text-x4 text-[#fb3c52] width-full">
+                    Please add new sale
+                  </p>
+                )}
+              </p>
             </div>
           </div>
           <div className="absolute flex flex-row top-[15px] right-[10px]">
@@ -234,86 +245,134 @@ const Dashboard = () => {
         </div>
         {/* <div className="flex flex-wrap justify-center gap-1 w-[100%] mb-8" style={{ width: "800px", marginTop: "50px" }}> */}
 
-        <div className="flex flex-wrap justify-center gap-1 w-[100%] mb-8" style={{ width: "800px", marginTop: "50px" }}>
-          <div className="flex justify-center items-start gap-6">
-            <div className="flex flex-col items-center " style={{ width: "180px", top: "200px", borderRadius: "15px", boxShadow: "0 0 10px rgba(0, 0, 0, 0.5)" }}>
+        <div
+          className="flex flex-wrap justify-center gap-1 w-[100%] mb-8"
+          style={{ width: "800px", marginTop: "50px" }}
+        >
+          <div className="flex items-start justify-center gap-6">
+            <div
+              className="flex flex-col items-center "
+              style={{
+                width: "180px",
+                top: "200px",
+                borderRadius: "15px",
+                boxShadow: "0 0 10px rgba(0, 0, 0, 0.5)",
+              }}
+            >
               <div className="mb-5">
-                <label className=" text-center">
-                  Catalogue Start Date
-                </label>
-                <button type="button" className="flex items-center rounded-[5px] text-[16px] w-[150px] mt-3 ">
+                <label className="text-center ">Catalogue Start Date</label>
+                <button
+                  type="button"
+                  className="flex items-center rounded-[5px] text-[16px] w-[150px] mt-3 "
+                >
                   <span className="md-5">
                     {data?.saleDetails.startDate
-                      ? new Date(data.saleDetails.startDate).toLocaleDateString()
+                      ? new Date(
+                          data.saleDetails.startDate
+                        ).toLocaleDateString()
                       : ""}
                   </span>
-                  <i className="fas fa-calendar-alt text-xl dash-button md-8 mr-1 ml-3 text-blue-500"></i>
+                  <i className="ml-3 mr-1 text-xl text-blue-500 fas fa-calendar-alt dash-button md-8"></i>
                   {/* Added margin-right for spacing */}
                 </button>
-
               </div>
             </div>
-            <div className="flex flex-col items-center " style={{ width: "180px", top: "200px", borderRadius: "15px", boxShadow: "0 0 10px rgba(0, 0, 0, 0.5)" }}>
+            <div
+              className="flex flex-col items-center "
+              style={{
+                width: "180px",
+                top: "200px",
+                borderRadius: "15px",
+                boxShadow: "0 0 10px rgba(0, 0, 0, 0.5)",
+              }}
+            >
               <div className="mb-5">
-                <label className=" text-center">
-                  Catalogue End Date
-                </label>
+                <label className="text-center ">Catalogue End Date</label>
 
-
-                <button type="button" className="flex items-center rounded-[5px] text-[16px] w-[150px] mt-3 ">
+                <button
+                  type="button"
+                  className="flex items-center rounded-[5px] text-[16px] w-[150px] mt-3 "
+                >
                   <span className="md-5">
-
                     {data?.saleDetails.endDate
                       ? new Date(data.saleDetails.endDate).toLocaleDateString()
-                      : ""}   </span>
-                  <i className="fas fa-calendar-alt text-xl dash-button md-8 mr-1 ml-3 text-blue-500 "></i>
+                      : ""}{" "}
+                  </span>
+                  <i className="ml-3 mr-1 text-xl text-blue-500 fas fa-calendar-alt dash-button md-8 "></i>
                 </button>
               </div>
             </div>
-            <div className="flex flex-col items-center " style={{ width: "180px", top: "200px", borderRadius: "15px", boxShadow: "0 0 10px rgba(0, 0, 0, 0.5)" }}>
+            <div
+              className="flex flex-col items-center "
+              style={{
+                width: "180px",
+                top: "200px",
+                borderRadius: "15px",
+                boxShadow: "0 0 10px rgba(0, 0, 0, 0.5)",
+              }}
+            >
               <div className="mb-5">
-                <label className=" text-center">
-                  Amount of green leaf
-                </label>
-                <button type="button" className="flex items-center rounded-[5px] text-[16px] w-[150px] mt-3 ">
-                  <span className="md-5 ml-6">
+                <label className="text-center ">Amount of green leaf</label>
+                <button
+                  type="button"
+                  className="flex items-center rounded-[5px] text-[16px] w-[150px] mt-3 "
+                >
+                  <span className="ml-6 md-5">
                     {data?.packingDetails &&
-                      data.packingDetails.greenleaves !== null
+                    data.packingDetails.greenleaves !== null
                       ? data.packingDetails.greenleaves
-                      : "Not add data"}</span>
+                      : "Not add data"}
+                  </span>
                   {/* SVG for two green leaves */}
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 24 24"
                     fill="currentColor"
-                    className="dash-button md-8 mr-1 ml-6 text-blue-500"
+                    className="ml-6 mr-1 text-blue-500 dash-button md-8"
                     width="24"
                     height="24"
                   >
-                    <path
-                      d="M12 2C8.13 2 5 5.13 5 8.5c0 2.49 1.69 4.65 3.85 6.57.58.48 1.15.93 1.65 1.33.65.54 1.15 1.03 1.5 1.6.34-.57.85-1.06 1.5-1.6.5-.4 1.07-.85 1.65-1.33C17.31 13.15 19 11.99 19 8.5c0-3.37-3.13-6.5-7-6.5zM12 10c-.55 0-1-.45-1-1V6c0-.55.45-1 1-1s1 .45 1 1v3c0 .55-.45 1-1 1z"
-                    />
+                    <path d="M12 2C8.13 2 5 5.13 5 8.5c0 2.49 1.69 4.65 3.85 6.57.58.48 1.15.93 1.65 1.33.65.54 1.15 1.03 1.5 1.6.34-.57.85-1.06 1.5-1.6.5-.4 1.07-.85 1.65-1.33C17.31 13.15 19 11.99 19 8.5c0-3.37-3.13-6.5-7-6.5zM12 10c-.55 0-1-.45-1-1V6c0-.55.45-1 1-1s1 .45 1 1v3c0 .55-.45 1-1 1z" />
                   </svg>
                 </button>
               </div>
-
-            </div><div className="flex flex-col items-center " style={{ width: "180px", top: "200px", borderRadius: "15px", boxShadow: "0 0 10px rgba(0, 0, 0, 0.5)" }}>
+            </div>
+            <div
+              className="flex flex-col items-center "
+              style={{
+                width: "180px",
+                top: "200px",
+                borderRadius: "15px",
+                boxShadow: "0 0 10px rgba(0, 0, 0, 0.5)",
+              }}
+            >
               <div className="mb-5">
-                <label className=" text-center">
-                  Amount of tea made
-                </label>
-                <button type="button" className="flex items-center rounded-[5px] text-[16px] w-[150px] mt-3 ">
-                  <span className="md-5 ml-6">
-                    {data?.packingDetails && data.packingDetails.madetea !== null
+                <label className="text-center ">Amount of tea made</label>
+                <button
+                  type="button"
+                  className="flex items-center rounded-[5px] text-[16px] w-[150px] mt-3 "
+                >
+                  <span className="ml-6 md-5">
+                    {data?.packingDetails &&
+                    data.packingDetails.madetea !== null
                       ? data.packingDetails.madetea
                       : "Not add data"}
-                  </span>              <i className="fas fa-calendar-day text-xl dash-button md-8 mr-1 ml-6 text-blue-500 "></i>
+                  </span>{" "}
+                  <i className="ml-6 mr-1 text-xl text-blue-500 fas fa-calendar-day dash-button md-8 "></i>
                 </button>
               </div>
-
-            </div><div className="flex flex-col items-center " style={{ width: "180px", top: "200px", borderRadius: "15px", boxShadow: "0 0 10px rgba(0, 0, 0, 0.5)" }}>
+            </div>
+            <div
+              className="flex flex-col items-center "
+              style={{
+                width: "180px",
+                top: "200px",
+                borderRadius: "15px",
+                boxShadow: "0 0 10px rgba(0, 0, 0, 0.5)",
+              }}
+            >
               <div className="mb-5">
-                <label className=" text-center text-red-500">
+                <label className="text-center text-red-500 ">
                   Update End date
                 </label>
                 <form onSubmit={submitHandler}>
@@ -326,8 +385,16 @@ const Dashboard = () => {
                     min={new Date().toISOString().split("T")[0]}
                     onChange={(e) => setEndDate(e.target.value)}
                   />
-                  <button disabled={loading} type="submit" className="flex items-center text-center rounded-[5px] text-[16px] w-[55px] mt-3 ml-3 bg-[#54ed50]">
-                    {loading ? <HashLoader size={35} color="#ffffff" /> : "Submit"}
+                  <button
+                    disabled={loading}
+                    type="submit"
+                    className="flex items-center text-center rounded-[5px] text-[16px] w-[55px] mt-3 ml-3 bg-[#54ed50]"
+                  >
+                    {loading ? (
+                      <HashLoader size={35} color="#ffffff" />
+                    ) : (
+                      "Submit"
+                    )}
                   </button>
                 </form>
               </div>
@@ -335,11 +402,22 @@ const Dashboard = () => {
           </div>
         </div>
 
-        <div className="flex flex-wrap justify-center gap-1 w-[100%] mb-8" style={{ width: "800px", marginTop: "50px" }}>
-          <div className="flex justify-center items-start gap-6">
+        <div
+          className="flex flex-wrap justify-center gap-1 w-[100%] mb-8"
+          style={{ width: "800px", marginTop: "50px" }}
+        >
+          <div className="flex items-start justify-center gap-6">
             {/* Pie Chart - 25% Width */}
-            <div className="flex flex-col items-center " style={{ width: "25%", top: "200px", borderRadius: "15px", boxShadow: "0 0 10px rgba(0, 0, 0, 0.5)" }}>
-              <h2 className="text-xl text-center mb-8">Broker Details</h2>
+            <div
+              className="flex flex-col items-center "
+              style={{
+                width: "25%",
+                top: "200px",
+                borderRadius: "15px",
+                boxShadow: "0 0 10px rgba(0, 0, 0, 0.5)",
+              }}
+            >
+              <h2 className="mb-8 text-xl text-center">Broker Details</h2>
               {chartData && chartData.length > 0 ? (
                 <PieChart width={300} height={300}>
                   <Pie
@@ -353,7 +431,10 @@ const Dashboard = () => {
                     label
                   >
                     {chartData.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                      <Cell
+                        key={`cell-${index}`}
+                        fill={COLORS[index % COLORS.length]}
+                      />
                     ))}
                   </Pie>
                   <Tooltip
@@ -372,9 +453,17 @@ const Dashboard = () => {
                   />
                   <Legend />
                 </PieChart>
-
               ) : (
-                <div style={{ width: "300px", height: "300px", display: "flex", justifyContent: "center" }}><p className="text-gray-500 mt-4">Opps! No data available</p></div>
+                <div
+                  style={{
+                    width: "300px",
+                    height: "300px",
+                    display: "flex",
+                    justifyContent: "center",
+                  }}
+                >
+                  <p className="mt-4 text-gray-500">Opps! No data available</p>
+                </div>
               )}
             </div>
 
@@ -389,7 +478,9 @@ const Dashboard = () => {
                 boxShadow: "0 0 10px rgba(0, 0, 0, 0.5)",
               }}
             >
-              <h2 className="text-xl text-center mb-4">Dispatch Data Overview</h2>
+              <h2 className="mb-4 text-xl text-center">
+                Dispatch Data Overview
+              </h2>
               {dispatchData && dispatchData.length > 0 ? (
                 <ResponsiveContainer width="100%" height={450}>
                   <LineChart data={dispatchData}>
@@ -425,22 +516,38 @@ const Dashboard = () => {
                       }}
                       isAnimationActive={false}
                     />
-                    <Line type="monotone" dataKey="totalBags" stroke="#A020F0" name="Total Bags" />
-                    <Line type="monotone" dataKey="totalWeight" stroke="#0020ff" name="Total Weight (kg)" />
+                    <Line
+                      type="monotone"
+                      dataKey="totalBags"
+                      stroke="#A020F0"
+                      name="Total Bags"
+                    />
+                    <Line
+                      type="monotone"
+                      dataKey="totalWeight"
+                      stroke="#0020ff"
+                      name="Total Weight (kg)"
+                    />
                     <Legend
-                      contentStyle={{ border: "1px solid #ccc", background: "none", color: "#000" }}
+                      contentStyle={{
+                        border: "1px solid #ccc",
+                        background: "none",
+                        color: "#000",
+                      }}
                       wrapperStyle={{ outline: "none" }}
                     />
                   </LineChart>
                 </ResponsiveContainer>
               ) : (
-                <p className="text-gray-500 mt-4">This will show when you add new sale details.</p>
+                <p className="mt-4 text-gray-500">
+                  This will show when you add new sale details.
+                </p>
               )}
             </div>
           </div>
         </div>
       </div>
-    </div >
+    </div>
   );
 };
 
