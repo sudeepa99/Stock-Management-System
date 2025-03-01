@@ -247,7 +247,7 @@ const Dashboard = () => {
 
         <div
           className="flex flex-wrap justify-center gap-1 w-[100%] mb-8"
-          style={{ width: "800px", marginTop: "50px" }}
+          // style={{ width: "800px", marginTop: "50px" }}
         >
           <div className="flex items-start justify-center gap-6">
             <div
@@ -403,8 +403,8 @@ const Dashboard = () => {
         </div>
 
         <div
-          className="flex flex-wrap justify-center gap-1 w-[100%] mb-8"
-          style={{ width: "800px", marginTop: "50px" }}
+          className="flex flex-wrap justify-center gap-1 w-[100%] mb-8 "
+          // style={{ width: "800px", marginTop: "50px" }}
         >
           <div className="flex items-start justify-center gap-6">
             {/* Pie Chart - 25% Width */}
@@ -482,7 +482,7 @@ const Dashboard = () => {
                 Dispatch Data Overview
               </h2>
               {dispatchData && dispatchData.length > 0 ? (
-                <ResponsiveContainer width="100%" height={450}>
+                <ResponsiveContainer width="100%" height="100%">
                   <LineChart data={dispatchData}>
                     <XAxis
                       dataKey="date"
