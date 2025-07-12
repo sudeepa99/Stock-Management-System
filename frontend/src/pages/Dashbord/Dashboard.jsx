@@ -311,27 +311,36 @@ const Dashboard = () => {
                 </button>
               </div>
 
-            </div><div className="flex flex-col items-center " style={{ width: "180px", top: "200px", borderRadius: "15px", boxShadow: "0 0 10px rgba(0, 0, 0, 0.5)" }}>
-              <div className="mb-5">
-                <label className=" text-center text-red-500">
-                  Update End date
-                </label>
-                <form onSubmit={submitHandler}>
-                  <input
-                    type="date"
-                    name="endDate"
-                    className="text-[#070513]"
-                    value={endDate}
-                    required
-                    min={new Date().toISOString().split("T")[0]}
-                    onChange={(e) => setEndDate(e.target.value)}
-                  />
-                  <button disabled={loading} type="submit" className="flex items-center text-center rounded-[5px] text-[16px] w-[55px] mt-3 ml-3 bg-[#54ed50]">
-                    {loading ? <HashLoader size={35} color="#ffffff" /> : "Submit"}
-                  </button>
-                </form>
-              </div>
             </div>
+            <div className="flex flex-col items-center " style={{ width: "180px", top: "200px", borderRadius: "15px", boxShadow: "0 0 10px rgba(0, 0, 0, 0.5)" }}>               
+  <div className="flex flex-col items-center " style={{ width: "180px", top: "200px", borderRadius: "15px", boxShadow: "0 0 10px rgba(0, 0, 0, 0.5)" }}>               
+  <div className="flex flex-col items-center " style={{ width: "180px", top: "200px", borderRadius: "15px", boxShadow: "0 0 10px rgba(0, 0, 0, 0.5)" }}>               
+  <div className="mb-5">                 
+    <label className="text-center text-white block mb-3">                   
+      Update End date                 
+    </label>                 
+    <form onSubmit={submitHandler}>                   
+      <input                     
+        type="date"                     
+        name="endDate"                     
+        className="text-white bg-transparent border border-white rounded-md px-3 py-2 w-full [color-scheme:dark] mb-4"                     
+        value={endDate}                     
+        required                     
+        min={new Date().toISOString().split("T")[0]}                     
+        onChange={(e) => setEndDate(e.target.value)}                   
+      />                   
+      <button 
+        disabled={loading} 
+        type="submit" 
+        className="flex items-center justify-center rounded-[5px] text-[16px] w-[60px] h-[36px] mx-auto bg-[#54ed50] text-black font-medium"
+      >                     
+        {loading ? <HashLoader size={35} color="#ffffff" /> : "Save"}                   
+      </button>                 
+    </form>               
+  </div>             
+</div>            
+</div>            
+</div>
           </div>
         </div>
 

@@ -193,7 +193,7 @@ const DispatchReport = () => {
                                 <tbody>
                                     {currentData.length === 0 ? (
                                         <tr>
-                                            <td colSpan="4" className="text-center text-gray-500 px-4 py-2">
+                                            <td colSpan="4" className="text-center text-gray-300 px-4 py-2">
                                                 No data available for the selected date
                                             </td>
                                         </tr>
@@ -216,7 +216,7 @@ const DispatchReport = () => {
                                 </tbody>
                                 <tfoot>
                                     <tr>
-                                        <td colSpan="4" className="text-center text-gray-500 px-4 py-2">
+                                        <td colSpan="4" className="text-center text-gray-300 px-4 py-2">
                                             Total Number of Bags: {currentData.reduce((acc, item) => {
                                                 let numBags = 0;
                                                 if (item.data.numofbags === "10B") numBags = 10;
@@ -229,7 +229,7 @@ const DispatchReport = () => {
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td colSpan="4" className="text-center text-gray-500 px-4 py-2">
+                                        <td colSpan="4" className="text-center text-gray-300 px-4 py-2">
                                             Total Weight of Bags: {currentData.reduce((acc, item) => {
                                                 let numBags = 0;
                                                 if (item.data.numofbags === "10B") numBags = 10;
@@ -259,7 +259,7 @@ const DispatchReport = () => {
                                 <tbody>
                                     {Object.keys(currentDateDataP).length === 0 ? (
                                         <tr>
-                                            <td colSpan="5" className="text-center text-gray-500 px-4 py-2">
+                                            <td colSpan="5" className="text-center text-gray-300 px-4 py-2">
                                                 No data available for the selected date
                                             </td>
                                         </tr>
@@ -296,7 +296,7 @@ const DispatchReport = () => {
                                 </tbody>
                                 <tfoot>
                                     <tr>
-                                        <td colSpan="5" className="text-center text-gray-500 px-4 py-2">
+                                        <td colSpan="5" className="text-center text-gray-300 px-4 py-2">
                                             Total Number of Bags: {Object.keys(currentDateDataP).reduce((total, key) => {
                                                 const categoryDetails = currentDateDataP[key];
                                                 return total + Object.keys(categoryDetails).reduce((subTotal, subKey) => {
@@ -310,7 +310,7 @@ const DispatchReport = () => {
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td colSpan="5" className="text-center text-gray-500 px-4 py-2">
+                                        <td colSpan="5" className="text-center text-gray-300 px-4 py-2">
                                             Total Weight of Bags: {Object.keys(currentDateDataP).reduce((total, key) => {
                                                 const categoryDetails = currentDateDataP[key];
                                                 return total + Object.keys(categoryDetails).reduce((subTotal, subKey) => {

@@ -7,6 +7,7 @@ import "./Dispatch.css";
 
 const Dispatch = () => {
   const [loading, setLoading] = useState(false);
+  const [errors, setErrors] = useState({});
   const [formData, setFormData] = useState({
     date: new Date().toISOString().substr(0, 10),
     details: "packing",
@@ -52,10 +53,43 @@ const Dispatch = () => {
     JKeels: "JKeels",
   };
 
+  // Validation function
+  const validateForm = () => {
+    const newErrors = {};
+    
+    if (!formData.invoicenumber.trim()) {
+      newErrors.invoicenumber = "Invoice number is required";
+    }
+    
+    if (!formData.broker) {
+      newErrors.broker = "Broker selection is required";
+    }
+    
+    if (!formData.teacategory) {
+      newErrors.teacategory = "Tea category is required";
+    }
+    
+    if (!formData.sizeofbag) {
+      newErrors.sizeofbag = "Weight of bag is required";
+    }
+    
+    if (!formData.numofbags) {
+      newErrors.numofbags = "Number of bags is required";
+    }
+    
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
   // Handle input changes for dynamic form updates
   const handleInputChange = async (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
+
+    // Clear error for the field being updated
+    if (errors[name]) {
+      setErrors({ ...errors, [name]: "" });
+    }
 
     if (name === "invoicenumber") {
       try {
@@ -76,11 +110,12 @@ const Dispatch = () => {
             teacategory,
             sizeofbag,
           }));
-          toast.success(result.message);
+          toast.success("Invoice data loaded successfully");
         } else {
           toast.error("Invoice number not found.");
         }
       } catch (err) {
+        toast.error("Error fetching invoice data");
       } finally {
         setLoading(false);
       }
@@ -90,6 +125,12 @@ const Dispatch = () => {
   // Submission handler
   const submitHandler = async (event) => {
     event.preventDefault();
+    
+    if (!validateForm()) {
+      toast.error("Please fill in all required fields");
+      return;
+    }
+
     setLoading(true);
 
     try {
@@ -131,6 +172,7 @@ const Dispatch = () => {
         invoicenumber: "",
         broker: "",
       });
+      setErrors({});
     } catch (err) {
       toast.error(err.message);
     } finally {
@@ -140,7 +182,7 @@ const Dispatch = () => {
 
   return (
     <div className="container">
-      <form className="main-container" onSubmit={submitHandler}>
+      <form className="main-container" onSubmit={submitHandler} noValidate>
         <p className="b1">Date</p>
         <p className="b2">
           Please enter the following details to continue the process.
@@ -151,11 +193,14 @@ const Dispatch = () => {
           <input
             type="text"
             name="invoicenumber"
-            className="control2"
+            className={`control2 ${errors.invoicenumber ? 'border-red-500' : ''}`}
             value={formData.invoicenumber}
             onChange={handleInputChange}
             required
           />
+          {errors.invoicenumber && (
+            <div className="text-red-500 text-sm mt-1">{errors.invoicenumber}</div>
+          )}
         </div>
         <div className="mb-5">
           <label className="green-leaf">Broker</label>
@@ -164,7 +209,7 @@ const Dispatch = () => {
             name="broker"
             value={formData.broker}
             onChange={handleInputChange}
-            className="tea_category"
+            className={`tea_category ${errors.broker ? 'border-red-500' : ''}`}
             required
           >
             <option value="">Select the Broker</option>
@@ -174,6 +219,9 @@ const Dispatch = () => {
               </option>
             ))}
           </select>
+          {errors.broker && (
+            <div className="text-red-500 text-sm mt-1">{errors.broker}</div>
+          )}
         </div>
         <div className="mb-5">
           <label className="green-leaf">Tea Category</label>
@@ -182,8 +230,9 @@ const Dispatch = () => {
             name="teacategory"
             value={formData.teacategory}
             onChange={handleInputChange}
-            className="tea_category"
+            className={`tea_category ${errors.teacategory ? 'border-red-500' : ''}`}
             required
+            disabled={true}
           >
             <option value="">Select a category</option>
             <option value="BOP1A">BOP1A</option>
@@ -206,6 +255,9 @@ const Dispatch = () => {
             <option value="FFEXSP">FF EX SP</option>
             <option value="FFEXSP1">FF EX SP 1</option>
           </select>
+          {errors.teacategory && (
+            <div className="text-red-500 text-sm mt-1">{errors.teacategory}</div>
+          )}
         </div>
         <div className="mb-5">
           <label className="made-tea">Weight of Bag</label>
@@ -214,10 +266,13 @@ const Dispatch = () => {
             type="number"
             name="sizeofbag"
             placeholder="kg"
-            className="control2"
+            className={`control2 ${errors.sizeofbag ? 'border-red-500' : ''}`}
             value={formData.sizeofbag}
             readOnly
           />
+          {errors.sizeofbag && (
+            <div className="text-red-500 text-sm mt-1">{errors.sizeofbag}</div>
+          )}
         </div>
         <div className="mb-5">
           <label className="made-tea">Number of Bags</label>
@@ -229,7 +284,7 @@ const Dispatch = () => {
               type="number"
               name="numofbags"
               placeholder="10"
-              className="control2"
+              className={`control2 ${errors.numofbags ? 'border-red-500' : ''}`}
               onChange={handleInputChange}
               value={formData.numofbags}
               required
@@ -239,7 +294,8 @@ const Dispatch = () => {
               name="numofbags"
               value={formData.numofbags}
               onChange={handleInputChange}
-              className="bags_no"
+              className={`bags_no ${errors.numofbags ? 'border-red-500' : ''}`}
+              required
             >
               <option value="">Select number of bags</option>
               <option
@@ -276,9 +332,15 @@ const Dispatch = () => {
               <option value="40B">40B</option>
             </select>
           )}
+          {errors.numofbags && (
+            <div className="text-red-500 text-sm mt-1">{errors.numofbags}</div>
+          )}
         </div>
-        <div className="bg-[#54ed50] w-[150px] text-center rounded-[5px] text-[23px] desktop:ml-[43%] mt-3 laptop:ml-[41%] ">
-          <button disabled={loading} type="submit">
+        <div className="bg-[#54ed50] w-[150px] text-center rounded-[5px] text-[23px] desktop:ml-[43%] mt-3 laptop:ml-[41%]">
+          <button 
+            disabled={loading} 
+            type="submit"
+          >
             {loading ? <HashLoader size={35} color="#ffffff" /> : "Submit"}
           </button>
         </div>

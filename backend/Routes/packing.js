@@ -14,8 +14,8 @@ import {
 import { authenticate, restrict } from "../utils/verifyToken.js";
 
 const router = express.Router();
-// router.post("/sale", authenticate, restrict(['admin']), saleDetails);
 router.post("/details", authenticate, restrict(['admin']), packingDetails);
+router.post("/sale", authenticate, restrict(['admin']), saleDetails);
 router.get("/all", getAllPackingDetails);
 router.put("/update", authenticate, restrict(['admin']), updatePackingDetails);
 router.get("/date", getDateDetails);

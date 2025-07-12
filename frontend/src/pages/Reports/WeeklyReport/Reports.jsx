@@ -154,14 +154,14 @@ const Reports = () => {
               </tbody>
               <tfoot>
                 <tr>
-                  <td colSpan="4" className="text-center text-gray-500 px-4 py-2">
+                  <td colSpan="4" className="text-center text-gray-300 px-4 py-2">
                     Total Number of Bags: {currentData.reduce((acc, item) => {
                       return acc + item.numofbags;
                     }, 0)}
                   </td>
                 </tr>
                 <tr>
-                  <td colSpan="4" className="text-center text-gray-500 px-4 py-2">
+                  <td colSpan="4" className="text-center text-gray-300 px-4 py-2">
                     Total Weight of Bags:
                     {currentData.reduce((acc, item) => {
                       return acc + item.numofbags * item.sizeofbag;

@@ -117,7 +117,7 @@ const DispatchReport = () => {
                             <tbody>
                                 {currentData.length === 0 ? (
                                     <tr>
-                                        <td colSpan="5" className="text-center text-gray-500 px-4 py-2">
+                                        <td colSpan="5" className="text-center text-gray-300 px-4 py-2">
                                             This date has no data entered
                                         </td>
                                     </tr>
@@ -145,7 +145,7 @@ const DispatchReport = () => {
                             </tbody>
                             <tfoot>
                                 <tr>
-                                    <td colSpan="4" className="text-center text-gray-500 px-4 py-2">
+                                    <td colSpan="5" className="text-center text-gray-300 px-4 py-2">
                                         Total Number of Bags: {currentData.reduce((acc, item) => {
                                             let numBags = 0;
                                             if (item.data.numofbags === "10B") {
@@ -168,7 +168,7 @@ const DispatchReport = () => {
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td colSpan="4" className="text-center text-gray-500 px-4 py-2">
+                                    <td colSpan="5" className="text-center text-gray-300 px-4 py-2">
                                         Total Weight of Bags:
                                         {currentData.reduce((acc, item) => {
                                             let numBags = 0;
@@ -199,7 +199,7 @@ const DispatchReport = () => {
                             <button
                                 onClick={() => handlePageChange(currentPage - 1)}
                                 disabled={currentPage === 1}
-                                className="px-4 py-2 mx-1 border border-gray-300 text-gray-500"
+                                className="px-4 py-2 mx-1 border border-gray-300 text-gray-300"
                             >
                                 <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                                     <path fillRule="evenodd" d="M7.707 4.293a1 1 0 010 1.414L4.414 9H16a1 1 0 110 2H4.414l3.293 3.293a1 1 0 01-1.414 1.414l-5-5a1 1 0 010-1.414l5-5a1 1 0 011.414 0z" clipRule="evenodd" />
@@ -209,7 +209,7 @@ const DispatchReport = () => {
                                 <button
                                     key={day}
                                     onClick={() => handleDayChange(day)}
-                                    className={`px-4 py-2 mx-1 border border-gray-300 ${currentDay === day ? "bg-[#29d83e] text-white" : "text-gray-500"
+                                    className={`px-4 py-2 mx-1 border border-gray-300 ${currentDay === day ? "bg-[#29d83e] text-white" : "text-gray-300"
                                         }`}
                                 >
                                     {day}
@@ -218,7 +218,7 @@ const DispatchReport = () => {
                             <button
                                 onClick={() => handlePageChange(currentPage + 1)}
                                 disabled={currentPage === totalPages}
-                                className="px-4 py-2 mx-1 border border-gray-300 text-gray-500"
+                                className="px-4 py-2 mx-1 border border-gray-300 text-gray-300"
                             >
                                 <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                                     <path fillRule="evenodd" d="M12.293 15.707a1 1 0 010-1.414L15.586 11H4a1 1 0 110-2h11.586l-3.293-3.293a1 1 0 011.414-1.414l5 5a1 1 0 010 1.414l-5 5a1 1 0 01-1.414 0z" clipRule="evenodd" />

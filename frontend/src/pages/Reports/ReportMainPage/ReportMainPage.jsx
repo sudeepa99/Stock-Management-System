@@ -278,7 +278,9 @@ const ReportMainPage = () => {
                                                 {item.date ? new Date(item.date).toLocaleDateString() : ""}
                                             </td>
                                             <td className="px-4 py-2 border border-gray-300">{item.sizeofbag}</td>
-                                            <td className="px-4 py-2 border border-gray-300">{item.numofbags}</td>
+                                           <td className="px-4 py-2 border border-gray-300">
+  {item.numofbags.replace(/B$/, '')}
+</td>
                                             <td className="px-4 py-2 border border-gray-300">{item.broker}</td>
                                         </tr>
                                     ))

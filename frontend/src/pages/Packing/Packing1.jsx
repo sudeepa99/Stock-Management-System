@@ -38,7 +38,6 @@ const Packing1 = () => {
       setGetTrue(!data.data);
       toast.success(result.message);
     } catch (err) {
-      toast.error(err.message);
     } finally {
       setLoading(false);
     }
@@ -119,12 +118,12 @@ const Packing1 = () => {
                 onChange={handleInputChange}
                 required
               />
-            </div>
-            {error && (
+               {error && (
               <div className="error-message" style={{ color: "red" }}>
                 {error}
               </div>
             )}
+            </div>
           </div>
           <div className="bg-[#54ed50] w-[150px] text-center rounded-[5px] text-[23px] desktop:ml-[43%] mt-3 laptop:ml-[41%] ">
             <button disabled={loading} type="submit">

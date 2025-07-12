@@ -140,7 +140,7 @@ const Packing2 = () => {
   };
 
   return (
-    <form className="main-container" onSubmit={submitHandler}>
+    <form className="main-container" onSubmit={submitHandler} noValidate>
       <p className="b1">{today}</p>
       <p className="b2">
         Please enter the following details to continue the process.
@@ -154,8 +154,9 @@ const Packing2 = () => {
           placeholder="0001"
           className="control2"
           value={formData.invoiceNo}
-          min={minSize || 0}
+          min={minSize || 1}
           onChange={handleInputChange}
+          noValidate
         />
       </div>
       <div className="mb-5">
@@ -166,6 +167,7 @@ const Packing2 = () => {
           value={formData.teaMark}
           onChange={handleInputChange}
           className="tea_category"
+          disabled={!formData.invoiceNo}
         >
           <option value="">Select the tea category</option>
           {Object.keys(teaMarks).map((grade) => (
@@ -183,6 +185,7 @@ const Packing2 = () => {
           value={formData.teacategory}
           onChange={handleInputChange}
           className="tea_category"
+          disabled={!formData.invoiceNo || !formData.teaMark}
         >
           <option value="">Select the tea category</option>
           {Object.keys(teaGrades).map((grade) => (
@@ -193,13 +196,7 @@ const Packing2 = () => {
         </select>
       </div>
 
-      <div className="mb-5">
-        {error && (
-          <p className="error-msg" style={{ color: "red" }}>
-            {error}
-          </p>
-        )}{" "}
-        {/* Display error message here */}
+      <div className="mb-5">  
         <label className="made-tea">Weight of Bag</label>
         <br />
         <input
@@ -210,21 +207,42 @@ const Packing2 = () => {
           value={formData.sizeofbag}
           min={minSize || 0}
           onChange={handleInputChange}
+          disabled={!formData.invoiceNo || !formData.teaMark || !formData.teacategory}
+          noValidate
         />
+        {/* Display error message here */}
+         {error && (
+          <p className="error-msg" style={{ color: "red" }}>
+            {error}
+          </p>
+        )}{" "}
       </div>
 
       <div className="mb-5">
-        <label className="made-tea">Num Of Bag</label>
-        <br />
-        <input
-          type="number"
-          name="numofbags"
-          placeholder="0"
-          className="control2"
-          value={formData.numofbags}
-          onChange={handleInputChange}
-        />
-      </div>
+  <label className="made-tea">Num Of Bag</label>
+  <br />
+  <input
+    type="number"
+    name="numofbags"
+    placeholder="0"
+    className="control2"
+    value={formData.numofbags}
+    onChange={handleInputChange}
+    disabled={
+      !formData.invoiceNo || 
+      !formData.teaMark || 
+      !formData.teacategory || 
+      !formData.sizeofbag
+    }
+    min="1"
+    noValidate
+  />
+  {formData.numofbags <= 0 && formData.numofbags !== '' && (
+    <div className="error-message" style={{ color: 'red', fontSize: '14px', marginTop: '5px' }}>
+      Number of bags must be greater than 0
+    </div>
+  )}
+</div>
 
       <div className="bg-[#54ed50] w-[150px] text-center rounded-[5px] text-[23px] desktop:ml-[43%] mt-3 laptop:ml-[41%] ">
         <button disabled={loading} type="submit">

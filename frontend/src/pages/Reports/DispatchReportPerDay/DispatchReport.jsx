@@ -85,25 +85,29 @@ const DispatchReport = () => {
                             <p className="b3">Today {today}</p>
                         </div>
                         {/* Date Selector */}
-                        <div className="absolute flex flex-row top-[100px] right-[175px] ">
-                            <span >Select Date</span>
-                        </div>
-                        <div className="absolute flex flex-row top-[100px] right-[10px] bg-transparent ">
-                            <select
-                                name="selectDate"
-                                className="px-3 py-2 border text-[#ffffff] border-gray-300 bg-transparent"
-                                value={selectedDate}
-                                onChange={handleDateChange}
-                                style={{ color: "#ffffff" }}
-                            >
-                                <option value="" className="bg-transparent text-[#ffffff]">Select a Date</option>
-                                {Object.keys(data || {}).map((date) => (
-                                    <option key={date} value={date} className="bg-[#1f2327] text-[#ffffff]">
-                                        {date}
-                                    </option>
-                                ))}
-                            </select>
-                        </div>
+<div className="absolute flex flex-row top-[100px] right-[175px] ">
+    <span>Select Date</span>
+</div>
+<div className="absolute flex flex-row top-[100px] right-[10px] bg-transparent ">
+    <select
+        name="selectDate"
+        className="px-3 py-2 border text-[#ffffff] border-gray-300 bg-[#1f2327] appearance-none"
+        value={selectedDate}
+        onChange={handleDateChange}
+        style={{ 
+            color: "#ffffff", 
+            backgroundColor: "#1f2327",
+            border: "1px solid #374151"
+        }}
+    >
+        <option value="" className="bg-[#1f2327] text-[#ffffff]">Select a Date</option>
+        {Object.keys(data || {}).map((date) => (
+            <option key={date} value={date} className="bg-[#1f2327] text-[#ffffff]">
+                {date}
+            </option>
+        ))}
+    </select>
+</div>
 
                     </div>
 
@@ -128,7 +132,7 @@ const DispatchReport = () => {
                             <tbody>
                                 {currentData.length === 0 ? (
                                     <tr>
-                                        <td colSpan="4" className="text-center text-gray-500 px-4 py-2">
+                                        <td colSpan="4" className="text-center text-gray-300 px-4 py-2">
                                             No data available for the selected date
                                         </td>
                                     </tr>
@@ -153,7 +157,7 @@ const DispatchReport = () => {
                             </tbody>
                             <tfoot>
                                 <tr>
-                                    <td colSpan="4" className="text-center text-gray-500 px-4 py-2">
+                                    <td colSpan="4" className="text-center text-gray-300 px-4 py-2">
                                         Total Number of Bags: {currentData.reduce((acc, item) => {
                                             let numBags = 0;
                                             if (item.data.numofbags === "10B") {
@@ -176,7 +180,7 @@ const DispatchReport = () => {
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td colSpan="4" className="text-center text-gray-500 px-4 py-2">
+                                    <td colSpan="4" className="text-center text-gray-300 px-4 py-2">
                                         Total Weight of Bags:
                                         {currentData.reduce((acc, item) => {
                                             let numBags = 0;
