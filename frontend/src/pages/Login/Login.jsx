@@ -4,7 +4,6 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import HashLoader from "react-spinners/HashLoader.js";
 
-import "./Login.css"; // For custom styling
 import loginImg from "../../assets/images/Login_image.png"; // changed to lowercase for consistency
 import logo from "../../assets/images/logo.png";
 import { BASE_URL } from "../../config.js";
@@ -60,59 +59,56 @@ const LoginPage = () => {
     }
   };
   return (
-    <div className="login-page">
-      <div className="login-container">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-green-50 to-green-100">
+      <div className=" flex w-[900px] bg-white shadow-2xl rounded-2xl overflow-hidden">
         {/* Left Section */}
-        <div className="login-form">
-          <div className="logo-container">
-            <div>
-              <img src={logo} />
-              <p className="text-[34px] font-bold py-4 ml-24 text-[#000]">
-                Stock Management System
-              </p>
-            </div>
+        <div className="w-1/2 p-10 flex flex-col justify-center">
+          <div className="flex items-center space-x-4 mb-6">
+            <img src={logo} alt="logo" className="w-14" />
+            <p className="text-2xl font-bold text-gray-800">
+              Stock Management System
+            </p>
           </div>
 
-          <div className="input-container bg-greyColor">
-            <p className="text-[40px] font-bold text-[#000] ml-2">Login</p>
-            <form onSubmit={submitHandler} noValidate>
-              <div className="input-field">
-                <FaEnvelope className="absolute text-black left-[17.5%]" />
-                <input
-                  type="email"
-                  placeholder="Enter Your Email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleInputChange}
-                  required
-                />
-              </div>
-              <div className="input-field">
-                <FaLock className="absolute text-black left-[17.5%]" />
-                <input
-                  type="password"
-                  placeholder="Enter Your Password"
-                  name="password"
-                  value={formData.password}
-                  onChange={handleInputChange}
-                  required
-                />
-              </div>
-              <div className="flex justify-center pt-4">
-                <button
-                  type="submit"
-                  className="w-[50%] bg-primaryColor text-white text-[25px] leading-[30px] rounded-lg px-4 py-2 tracking-wide font"
-                >
-                  {loading ? <HashLoader size={25} color="#fff" /> : "Login"}
-                </button>
-              </div>
-            </form>
-          </div>
+          <h2 className="text-xl font-semibold text-gray-700 mb-6">Login</h2>
+
+          <form onSubmit={submitHandler} className="space-y-5">
+            <div className="flex items-center border rounded-lg px-3 py-2 bg-gray-50 focus-within:ring-2 focus-within:ring-green-400">
+              <FaEnvelope className="text-gray-500 mr-2" />
+              <input
+                type="email"
+                placeholder="Enter your email"
+                name="email"
+                value={formData.email}
+                onChange={handleInputChange}
+                className="w-full bg-transparent outline-none"
+              />
+            </div>
+
+            <div className="flex items-center border rounded-lg px-3 py-2 bg-gray-50 focus-within:ring-2 focus-within:ring-green-400">
+              <FaLock className="text-gray-500 mr-2" />
+              <input
+                type="password"
+                placeholder="Enter your password"
+                name="password"
+                value={formData.password}
+                onChange={handleInputChange}
+                className="w-full bg-transparent outline-none"
+              />
+            </div>
+
+            <button
+              type="submit"
+              className="w-full py-3 bg-green-500 text-white text-lg rounded-xl font-semibold hover:bg-green-600 hover:scale-[1.02] shadow-md transition-all duration-200"
+            >
+              {loading ? <HashLoader size={25} color="#fff" /> : "Login"}
+            </button>
+          </form>
         </div>
 
         {/* Right Section */}
-        <div className="login-image">
-          <img src={loginImg} alt="Login" />
+        <div className="w-1/2 bg-green-50 flex items-center justify-center">
+          <img src={loginImg} alt="Login" className="w-3/4" />
         </div>
       </div>
     </div>
