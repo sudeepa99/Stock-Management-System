@@ -3,11 +3,15 @@ import { Outlet } from "react-router-dom";
 
 import Navbar from "../components/Navbar";
 
-  const AppLayout = () => (
+const AppLayout = () => (
   <>
-    <Navbar />
-    <Outlet />
+    <div className="flex">
+      <Navbar />
+      <div className="flex-1">
+        <Outlet />
+      </div>
+    </div>
   </>
 );
 
-export default AppLayout
+export default AppLayout;

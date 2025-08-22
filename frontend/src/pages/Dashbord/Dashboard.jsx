@@ -1,21 +1,24 @@
 import React, { useState, useEffect } from "react";
-import HashLoader from "react-spinners/HashLoader";
-import { BASE_URL } from "../../config";
-import "./Dashboard.css";
 import { toast } from "react-toastify";
 import {
-  PieChart, Pie, Cell, Tooltip, Legend,
+  PieChart,
+  Pie,
+  Cell,
+  Tooltip,
+  Legend,
   XAxis,
   YAxis,
   ResponsiveContainer,
-  LineChart, Line,
+  LineChart,
+  Line,
+  CartesianGrid,
 } from "recharts";
-import { FaLock, FaUser } from "react-icons/fa";
 import { useContext } from "react";
+
 import { authContext } from "../../context/AuthContext";
+import { BASE_URL } from "../../config";
 
 const Dashboard = () => {
-
   const [brokerData, setBrokerData] = useState([]);
   const [dispatchData, setDispatchData] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -37,7 +40,9 @@ const Dashboard = () => {
         const responseData = await res.json();
 
         if (!res.ok) {
-          throw new Error(responseData.message || "Failed to fetch made tea data");
+          throw new Error(
+            responseData.message || "Failed to fetch made tea data"
+          );
         }
 
         // Process broker data
@@ -53,14 +58,14 @@ const Dashboard = () => {
             item.data.numofbags === "10B"
               ? 10
               : item.data.numofbags === "20B"
-                ? 20
-                : item.data.numofbags === "15B"
-                  ? 15
-                  : item.data.numofbags === "30B"
-                    ? 30
-                    : item.data.numofbags === "40B"
-                      ? 40
-                      : 0;
+              ? 20
+              : item.data.numofbags === "15B"
+              ? 15
+              : item.data.numofbags === "30B"
+              ? 30
+              : item.data.numofbags === "40B"
+              ? 40
+              : 0;
 
           const totalWeight = numBags * (item.data.sizeofbag || 0); // Ensure sizeofbag is handled safely
 
@@ -93,30 +98,33 @@ const Dashboard = () => {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
-            "Authorization": `Bearer ${localStorage.getItem("token")}`,
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
         });
-
 
         const responseData = await res.json();
 
         if (!res.ok) {
-          throw new Error(responseData.message || "Failed to fetch dispatch data");
+          throw new Error(
+            responseData.message || "Failed to fetch dispatch data"
+          );
         }
 
         // Process dispatch data for bar chart
-        const dispatchDataProcessed = Object.keys(responseData.data || {}).map((date) => {
-          const dateData = responseData.data[date] || [];
-          const totalBags = dateData.reduce((acc, item) => {
-            let numBags = parseInt(item.data.numofbags.replace("B", "")) || 0;
-            return acc + numBags;
-          }, 0);
-          const totalWeight = dateData.reduce((acc, item) => {
-            let numBags = parseInt(item.data.numofbags.replace("B", "")) || 0;
-            return acc + numBags * item.data.sizeofbag;
-          }, 0);
-          return { date, totalBags, totalWeight };
-        });
+        const dispatchDataProcessed = Object.keys(responseData.data || {}).map(
+          (date) => {
+            const dateData = responseData.data[date] || [];
+            const totalBags = dateData.reduce((acc, item) => {
+              let numBags = parseInt(item.data.numofbags.replace("B", "")) || 0;
+              return acc + numBags;
+            }, 0);
+            const totalWeight = dateData.reduce((acc, item) => {
+              let numBags = parseInt(item.data.numofbags.replace("B", "")) || 0;
+              return acc + numBags * item.data.sizeofbag;
+            }, 0);
+            return { date, totalBags, totalWeight };
+          }
+        );
 
         setDispatchData(dispatchDataProcessed);
       } catch (err) {
@@ -175,7 +183,7 @@ const Dashboard = () => {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${localStorage.getItem("token")}`,
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
         body: JSON.stringify({ endDate }),
       });
@@ -194,175 +202,120 @@ const Dashboard = () => {
     }
   };
 
-
   // Colors for the pie chart
-  const COLORS = ["#ffb400", "#0020ff", "#A020F0",];
+  const COLORS = ["#ffb400", "#0020ff", "#A020F0"];
 
   useEffect(() => {
     getMadeTeaF();
   }, []);
 
   return (
-    <div className="container">
-      <div
-        className="main-container">
-        <div>
-          <div className="flex-col gap-3">
-            <p className="b1">Current Status {today}</p>
-          </div>
-          <div>
+    <div className="bg-[#f5fff8] min-h-screen p-6">
+      {/* Main Content */}
+      <div className="flex-1 p-6">
+        {/* Header */}
+        <div className="flex justify-between items-center mb-6">
+          <h1 className="text-2xl font-bold text-gray-700">
+            Current Status – {today}
+          </h1>
+          {user ? (
+            <p className="text-gray-600">
+              Hello, <span className="font-semibold">{user.name}</span>
+            </p>
+          ) : (
+            <p className="text-gray-500">Please log in</p>
+          )}
+        </div>
 
-            <div className="b2">
-              <p>Date       : {today}</p>
-              <p>Sale Number: {data?.saleDetails?.saleNo ? (
-                <p className="text-xl">{data.saleDetails.saleNo}</p>
-              ) : (
-                <p className="text-x4 text-[#fb3c52] width-full" >Please add new sale</p>
-              )}</p>
-            </div>
-          </div>
-          <div className="absolute flex flex-row top-[15px] right-[10px]">
-            <FaUser className="text-2xl" />
-            {user ? (
-              <div>
-                <h2>Hello, {user.name}!</h2>
-              </div>
+        {/* Sale Details */}
+        <div className="bg-white shadow-sm rounded-xl p-4 mb-6 border">
+          <p className="text-gray-600">Date: {today}</p>
+          <p className="text-gray-600">
+            Sale Number:{" "}
+            {data?.saleDetails?.saleNo ? (
+              <span className="font-semibold text-green-600">
+                {data.saleDetails.saleNo}
+              </span>
             ) : (
-              <p>Please log in to access the Dashboard.</p>
+              <span className="text-red-500">Please add new sale</span>
             )}
-          </div>
+          </p>
         </div>
-        {/* <div className="flex flex-wrap justify-center gap-1 w-[100%] mb-8" style={{ width: "800px", marginTop: "50px" }}> */}
 
-        <div className="flex flex-wrap justify-center gap-1 w-[100%] mb-8" style={{ width: "800px", marginTop: "50px" }}>
-          <div className="flex justify-center items-start gap-6">
-            <div className="flex flex-col items-center " style={{ width: "180px", top: "200px", borderRadius: "15px", boxShadow: "0 0 10px rgba(0, 0, 0, 0.5)" }}>
-              <div className="mb-5">
-                <label className=" text-center">
-                  Catalogue Start Date
-                </label>
-                <button type="button" className="flex items-center rounded-[5px] text-[16px] w-[150px] mt-3 ">
-                  <span className="md-5">
-                    {data?.saleDetails.startDate
-                      ? new Date(data.saleDetails.startDate).toLocaleDateString()
-                      : ""}
-                  </span>
-                  <i className="fas fa-calendar-alt text-xl dash-button md-8 mr-1 ml-3 text-blue-500"></i>
-                  {/* Added margin-right for spacing */}
-                </button>
-
-              </div>
-            </div>
-            <div className="flex flex-col items-center " style={{ width: "180px", top: "200px", borderRadius: "15px", boxShadow: "0 0 10px rgba(0, 0, 0, 0.5)" }}>
-              <div className="mb-5">
-                <label className=" text-center">
-                  Catalogue End Date
-                </label>
-
-
-                <button type="button" className="flex items-center rounded-[5px] text-[16px] w-[150px] mt-3 ">
-                  <span className="md-5">
-
-                    {data?.saleDetails.endDate
-                      ? new Date(data.saleDetails.endDate).toLocaleDateString()
-                      : ""}   </span>
-                  <i className="fas fa-calendar-alt text-xl dash-button md-8 mr-1 ml-3 text-blue-500 "></i>
-                </button>
-              </div>
-            </div>
-            <div className="flex flex-col items-center " style={{ width: "180px", top: "200px", borderRadius: "15px", boxShadow: "0 0 10px rgba(0, 0, 0, 0.5)" }}>
-              <div className="mb-5">
-                <label className=" text-center">
-                  Amount of green leaf
-                </label>
-                <button type="button" className="flex items-center rounded-[5px] text-[16px] w-[150px] mt-3 ">
-                  <span className="md-5 ml-6">
-                    {data?.packingDetails &&
-                      data.packingDetails.greenleaves !== null
-                      ? data.packingDetails.greenleaves
-                      : "Not add data"}</span>
-                  {/* SVG for two green leaves */}
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    fill="currentColor"
-                    className="dash-button md-8 mr-1 ml-6 text-blue-500"
-                    width="24"
-                    height="24"
-                  >
-                    <path
-                      d="M12 2C8.13 2 5 5.13 5 8.5c0 2.49 1.69 4.65 3.85 6.57.58.48 1.15.93 1.65 1.33.65.54 1.15 1.03 1.5 1.6.34-.57.85-1.06 1.5-1.6.5-.4 1.07-.85 1.65-1.33C17.31 13.15 19 11.99 19 8.5c0-3.37-3.13-6.5-7-6.5zM12 10c-.55 0-1-.45-1-1V6c0-.55.45-1 1-1s1 .45 1 1v3c0 .55-.45 1-1 1z"
-                    />
-                  </svg>
-                </button>
-              </div>
-
-            </div><div className="flex flex-col items-center " style={{ width: "180px", top: "200px", borderRadius: "15px", boxShadow: "0 0 10px rgba(0, 0, 0, 0.5)" }}>
-              <div className="mb-5">
-                <label className=" text-center">
-                  Amount of tea made
-                </label>
-                <button type="button" className="flex items-center rounded-[5px] text-[16px] w-[150px] mt-3 ">
-                  <span className="md-5 ml-6">
-                    {data?.packingDetails && data.packingDetails.madetea !== null
-                      ? data.packingDetails.madetea
-                      : "Not add data"}
-                  </span>              <i className="fas fa-calendar-day text-xl dash-button md-8 mr-1 ml-6 text-blue-500 "></i>
-                </button>
-              </div>
-
-            </div>
-            <div className="flex flex-col items-center " style={{ width: "180px", top: "200px", borderRadius: "15px", boxShadow: "0 0 10px rgba(0, 0, 0, 0.5)" }}>               
-  <div className="flex flex-col items-center " style={{ width: "180px", top: "200px", borderRadius: "15px", boxShadow: "0 0 10px rgba(0, 0, 0, 0.5)" }}>               
-  <div className="flex flex-col items-center " style={{ width: "180px", top: "200px", borderRadius: "15px", boxShadow: "0 0 10px rgba(0, 0, 0, 0.5)" }}>               
-  <div className="mb-5">                 
-    <label className="text-center text-white block mb-3">                   
-      Update End date                 
-    </label>                 
-    <form onSubmit={submitHandler}>                   
-      <input                     
-        type="date"                     
-        name="endDate"                     
-        className="text-white bg-transparent border border-white rounded-md px-3 py-2 w-full [color-scheme:dark] mb-4"                     
-        value={endDate}                     
-        required                     
-        min={new Date().toISOString().split("T")[0]}                     
-        onChange={(e) => setEndDate(e.target.value)}                   
-      />                   
-      <button 
-        disabled={loading} 
-        type="submit" 
-        className="flex items-center justify-center rounded-[5px] text-[16px] w-[60px] h-[36px] mx-auto bg-[#54ed50] text-black font-medium"
-      >                     
-        {loading ? <HashLoader size={35} color="#ffffff" /> : "Save"}                   
-      </button>                 
-    </form>               
-  </div>             
-</div>            
-</div>            
-</div>
+        {/* Stat Cards */}
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8">
+          <div className="bg-white rounded-xl shadow-sm border p-4 text-center">
+            <h3 className="text-sm text-gray-500">Catalogue Start Date</h3>
+            <p className="mt-2 font-semibold text-green-600">
+              {data?.saleDetails.startDate
+                ? new Date(data.saleDetails.startDate).toLocaleDateString()
+                : "-"}
+            </p>
+          </div>
+          <div className="bg-white rounded-xl shadow-sm border p-4 text-center">
+            <h3 className="text-sm text-gray-500">Catalogue End Date</h3>
+            <p className="mt-2 font-semibold text-green-600">
+              {data?.saleDetails.endDate
+                ? new Date(data.saleDetails.endDate).toLocaleDateString()
+                : "-"}
+            </p>
+          </div>
+          <div className="bg-white rounded-xl shadow-sm border p-4 text-center">
+            <h3 className="text-sm text-gray-500">Green Leaf</h3>
+            <p className="mt-2 font-semibold text-green-600">
+              {data?.packingDetails?.greenleaves ?? "-"}
+            </p>
+          </div>
+          <div className="bg-white rounded-xl shadow-sm border p-4 text-center">
+            <h3 className="text-sm text-gray-500">Tea Made</h3>
+            <p className="mt-2 font-semibold text-green-600">
+              {data?.packingDetails?.madetea ?? "-"}
+            </p>
+          </div>
+          <div className="bg-white rounded-xl shadow-sm border p-4 text-center">
+            <h3 className="text-sm text-gray-500">Update End Date</h3>
+            <form onSubmit={submitHandler} className="mt-2">
+              <input
+                type="date"
+                className="border rounded-lg px-2 py-1 text-sm w-full"
+                value={endDate}
+                onChange={(e) => setEndDate(e.target.value)}
+                required
+              />
+              <button
+                type="submit"
+                disabled={loading}
+                className="mt-2 w-full bg-green-500 hover:bg-green-600 text-white rounded-lg py-1 text-sm"
+              >
+                {loading ? "Saving..." : "Save"}
+              </button>
+            </form>
           </div>
         </div>
 
-        <div className="flex flex-wrap justify-center gap-1 w-[100%] mb-8" style={{ width: "800px", marginTop: "50px" }}>
-          <div className="flex justify-center items-start gap-6">
-            {/* Pie Chart - 25% Width */}
-            <div className="flex flex-col items-center " style={{ width: "25%", top: "200px", borderRadius: "15px", boxShadow: "0 0 10px rgba(0, 0, 0, 0.5)" }}>
-              <h2 className="text-xl text-center mb-8">Broker Details</h2>
-              {chartData && chartData.length > 0 ? (
-                <PieChart width={300} height={300}>
+        {/* Charts */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="bg-white border rounded-xl shadow-sm p-4">
+            <h2 className="text-lg font-semibold text-gray-700 mb-4">
+              Broker Details
+            </h2>
+            {chartData && chartData.length > 0 ? (
+              <ResponsiveContainer width="100%" height={300}>
+                <PieChart>
                   <Pie
                     data={chartData}
                     cx="50%"
                     cy="50%"
-                    outerRadius={80}
-                    innerRadius={40}
-                    fill="#A020F0"
                     dataKey="value"
+                    outerRadius={100}
+                    innerRadius={40}
                     label
                   >
                     {chartData.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                      <Cell
+                        key={`cell-${index}`}
+                        fill={COLORS[index % COLORS.length]}
+                      />
                     ))}
                   </Pie>
                   <Tooltip
@@ -370,9 +323,9 @@ const Dashboard = () => {
                       if (payload && payload.length > 0) {
                         const { name, numBags } = payload[0].payload;
                         return (
-                          <div className="custom-tooltip">
-                            <p>{name}</p>
-                            <p>Num of bags:{numBags}</p>
+                          <div className="bg-white p-2 border rounded shadow">
+                            <p className="font-semibold">{name}</p>
+                            <p>Number of bags: {numBags}</p>
                           </div>
                         );
                       }
@@ -381,75 +334,51 @@ const Dashboard = () => {
                   />
                   <Legend />
                 </PieChart>
+              </ResponsiveContainer>
+            ) : (
+              <div className="h-64 flex items-center justify-center">
+                <p className="text-gray-500">No broker data available</p>
+              </div>
+            )}
+          </div>
 
-              ) : (
-                <div style={{ width: "300px", height: "300px", display: "flex", justifyContent: "center" }}><p className="text-gray-500 mt-4">Opps! No data available</p></div>
-              )}
-            </div>
-
-            {/* Bar Chart - 75% Width */}
-            <div
-              className="flex flex-col items-center"
-              style={{
-                width: "750px",
-                height: "480px",
-                color: "#fff",
-                borderRadius: "15px",
-                boxShadow: "0 0 10px rgba(0, 0, 0, 0.5)",
-              }}
-            >
-              <h2 className="text-xl text-center mb-4">Dispatch Data Overview</h2>
-              {dispatchData && dispatchData.length > 0 ? (
-                <ResponsiveContainer width="100%" height={450}>
-                  <LineChart data={dispatchData}>
-                    <XAxis
-                      dataKey="date"
-                      interval={0}
-                      tick={{ angle: -90, textAnchor: "end" }}
-                      height={90}
-                      style={{ color: "red" }}
-                    />
-                    <YAxis />
-                    <Tooltip
-                      contentStyle={{
-                        border: "1px solid #ddd",
-                        background: "none",
-                        borderRadius: "8px",
-                        boxShadow: "0px 2px 6px rgba(0,0,0,0.1)",
-                      }}
-                      wrapperStyle={{ outline: "none" }}
-                      itemStyle={{ background: "none", fontSize: "14px" }}
-                      labelStyle={{
-                        background: "none",
-                        color: "#888",
-                        fontWeight: "bold",
-                        fontSize: "16px",
-                      }}
-                      labelFormatter={(label) => `Date: ${label}`}
-                      separator=" | "
-                      cursor={{
-                        fill: "none",
-                        stroke: "#000",
-                        strokeWidth: 2,
-                      }}
-                      isAnimationActive={false}
-                    />
-                    <Line type="monotone" dataKey="totalBags" stroke="#A020F0" name="Total Bags" />
-                    <Line type="monotone" dataKey="totalWeight" stroke="#0020ff" name="Total Weight (kg)" />
-                    <Legend
-                      contentStyle={{ border: "1px solid #ccc", background: "none", color: "#000" }}
-                      wrapperStyle={{ outline: "none" }}
-                    />
-                  </LineChart>
-                </ResponsiveContainer>
-              ) : (
-                <p className="text-gray-500 mt-4">This will show when you add new sale details.</p>
-              )}
-            </div>
+          <div className="bg-white border rounded-xl shadow-sm p-4">
+            <h2 className="text-lg font-semibold text-gray-700 mb-4">
+              Dispatch Data Overview
+            </h2>
+            {dispatchData && dispatchData.length > 0 ? (
+              <ResponsiveContainer width="100%" height={300}>
+                <LineChart data={dispatchData}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="date" />
+                  <YAxis />
+                  <Tooltip />
+                  <Legend />
+                  <Line
+                    type="monotone"
+                    dataKey="totalBags"
+                    stroke="#00B050"
+                    strokeWidth={2}
+                    name="Total Bags"
+                  />
+                  <Line
+                    type="monotone"
+                    dataKey="totalWeight"
+                    stroke="#0020ff"
+                    strokeWidth={2}
+                    name="Total Weight (kg)"
+                  />
+                </LineChart>
+              </ResponsiveContainer>
+            ) : (
+              <div className="h-64 flex items-center justify-center">
+                <p className="text-gray-500">No dispatch data available</p>
+              </div>
+            )}
           </div>
         </div>
       </div>
-    </div >
+    </div>
   );
 };
 
