@@ -239,7 +239,7 @@ const Packing2 = () => {
           </div>
 
           {/* Number of Bags */}
-          <div>
+          <div className="md:col-span-2">
             <label className="block text-sm font-semibold text-gray-700 mb-2">
               Number of Bags
             </label>
