@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import { BASE_URL } from "../../config.js";
 import { toast } from "react-toastify";
 import HashLoader from "react-spinners/HashLoader";
-import "./packing.css";
+
+import { BASE_URL } from "../../config.js";
 
 const Packing2 = () => {
   const [loading, setLoading] = useState(false);
@@ -112,7 +112,7 @@ const Packing2 = () => {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${localStorage.getItem("token")}`,
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
         body: JSON.stringify(payload),
       });
@@ -140,116 +140,146 @@ const Packing2 = () => {
   };
 
   return (
-    <form className="main-container" onSubmit={submitHandler} noValidate>
-      <p className="b1">{today}</p>
-      <p className="b2">
-        Please enter the following details to continue the process.
-      </p>
-      <div className="mb-5">
-        <label className="green-leaf">Invoice Number</label>
-        <br />
-        <input
-          type="number"
-          name="invoiceNo"
-          placeholder="0001"
-          className="control2"
-          value={formData.invoiceNo}
-          min={minSize || 1}
-          onChange={handleInputChange}
-          noValidate
-        />
-      </div>
-      <div className="mb-5">
-        <label className="green-leaf">Tea Mark</label>
-        <br />
-        <select
-          name="teaMark"
-          value={formData.teaMark}
-          onChange={handleInputChange}
-          className="tea_category"
-          disabled={!formData.invoiceNo}
-        >
-          <option value="">Select the tea category</option>
-          {Object.keys(teaMarks).map((grade) => (
-            <option key={grade} value={grade}>
-              {grade}
-            </option>
-          ))}
-        </select>
-      </div>
-      <div className="mb-5">
-        <label className="green-leaf">Tea Category</label>
-        <br />
-        <select
-          name="teacategory"
-          value={formData.teacategory}
-          onChange={handleInputChange}
-          className="tea_category"
-          disabled={!formData.invoiceNo || !formData.teaMark}
-        >
-          <option value="">Select the tea category</option>
-          {Object.keys(teaGrades).map((grade) => (
-            <option key={grade} value={grade}>
-              {grade}
-            </option>
-          ))}
-        </select>
-      </div>
-
-      <div className="mb-5">  
-        <label className="made-tea">Weight of Bag</label>
-        <br />
-        <input
-          type="number"
-          name="sizeofbag"
-          placeholder="kg"
-          className="control2"
-          value={formData.sizeofbag}
-          min={minSize || 0}
-          onChange={handleInputChange}
-          disabled={!formData.invoiceNo || !formData.teaMark || !formData.teacategory}
-          noValidate
-        />
-        {/* Display error message here */}
-         {error && (
-          <p className="error-msg" style={{ color: "red" }}>
-            {error}
+    <div className="bg-white rounded-xl shadow-lg border p-8 max-w-2xl mx-auto">
+      <form onSubmit={submitHandler} noValidate className="space-y-6">
+        {/* Header Section */}
+        <div className="text-center mb-6">
+          <h2 className="text-3xl font-bold text-gray-800 mb-2">{today}</h2>
+          <p className="text-gray-600 text-lg">
+            Please enter the following details to continue the process.
           </p>
-        )}{" "}
-      </div>
+        </div>
 
-      <div className="mb-5">
-  <label className="made-tea">Num Of Bag</label>
-  <br />
-  <input
-    type="number"
-    name="numofbags"
-    placeholder="0"
-    className="control2"
-    value={formData.numofbags}
-    onChange={handleInputChange}
-    disabled={
-      !formData.invoiceNo || 
-      !formData.teaMark || 
-      !formData.teacategory || 
-      !formData.sizeofbag
-    }
-    min="1"
-    noValidate
-  />
-  {formData.numofbags <= 0 && formData.numofbags !== '' && (
-    <div className="error-message" style={{ color: 'red', fontSize: '14px', marginTop: '5px' }}>
-      Number of bags must be greater than 0
+        {/* Form Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* Invoice Number */}
+          <div>
+            <label className="block text-sm font-semibold text-gray-700 mb-2">
+              Invoice Number
+            </label>
+            <input
+              type="number"
+              name="invoiceNo"
+              placeholder="0001"
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors"
+              value={formData.invoiceNo}
+              min="1"
+              onChange={handleInputChange}
+            />
+          </div>
+
+          {/* Tea Mark */}
+          <div>
+            <label className="block text-sm font-semibold text-gray-700 mb-2">
+              Tea Mark
+            </label>
+            <select
+              name="teaMark"
+              value={formData.teaMark}
+              onChange={handleInputChange}
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors"
+              disabled={!formData.invoiceNo}
+            >
+              <option value="">Select tea mark</option>
+              {Object.entries(teaMarks).map(([key, value]) => (
+                <option key={key} value={key}>
+                  {value}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Tea Category */}
+          <div>
+            <label className="block text-sm font-semibold text-gray-700 mb-2">
+              Tea Category
+            </label>
+            <select
+              name="teacategory"
+              value={formData.teacategory}
+              onChange={handleInputChange}
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors"
+              disabled={!formData.invoiceNo || !formData.teaMark}
+            >
+              <option value="">Select tea category</option>
+              {Object.keys(teaGrades).map((grade) => (
+                <option key={grade} value={grade}>
+                  {grade}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Weight of Bag */}
+          <div>
+            <label className="block text-sm font-semibold text-gray-700 mb-2">
+              Weight of Bag (kg)
+            </label>
+            <input
+              type="number"
+              name="sizeofbag"
+              placeholder="0.00"
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors"
+              value={formData.sizeofbag}
+              min={minSize || 0}
+              max={maxSize || 100}
+              step="0.01"
+              onChange={handleInputChange}
+              disabled={
+                !formData.invoiceNo ||
+                !formData.teaMark ||
+                !formData.teacategory
+              }
+            />
+            {minSize && maxSize && (
+              <p className="text-sm text-gray-500 mt-1">
+                Valid range: {minSize} - {maxSize} kg
+              </p>
+            )}
+          </div>
+
+          {/* Number of Bags */}
+          <div>
+            <label className="block text-sm font-semibold text-gray-700 mb-2">
+              Number of Bags
+            </label>
+            <input
+              type="number"
+              name="numofbags"
+              placeholder="0"
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors"
+              value={formData.numofbags}
+              onChange={handleInputChange}
+              disabled={
+                !formData.invoiceNo ||
+                !formData.teaMark ||
+                !formData.teacategory ||
+                !formData.sizeofbag
+              }
+              min="1"
+            />
+          </div>
+        </div>
+
+        {/* Error Message */}
+        {error && (
+          <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+            <p className="text-red-600 text-sm">{error}</p>
+          </div>
+        )}
+
+        {/* Submit Button */}
+        <div className="flex justify-center pt-4">
+          <button
+            disabled={loading}
+            type="submit"
+            className="bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-8 rounded-lg transition-colors flex items-center justify-center min-w-[180px] shadow-md hover:shadow-lg transition-shadow disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {loading ? <HashLoader size={20} color="#ffffff" /> : "Submit"}
+          </button>
+        </div>
+      </form>
     </div>
-  )}
-</div>
-
-      <div className="bg-[#54ed50] w-[150px] text-center rounded-[5px] text-[23px] desktop:ml-[43%] mt-3 laptop:ml-[41%] ">
-        <button disabled={loading} type="submit">
-          {loading ? <HashLoader size={35} color="#ffffff" /> : "Submit"}
-        </button>
-      </div>
-    </form>
   );
 };
 

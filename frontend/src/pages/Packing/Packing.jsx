@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
-import { BASE_URL } from "../../config";
 import { toast } from "react-toastify";
 import HashLoader from "react-spinners/HashLoader";
-import "./packing.css";
+
+import { BASE_URL } from "../../config";
+
 import Packing1 from "./Packing1.jsx";
 import Packing2 from "./Packing2.jsx";
 
@@ -100,71 +101,106 @@ const Packing = () => {
   }, []);
 
   return (
-    <div className="container">
-      {getEndDate ? (
-        <form className="sub-container" onSubmit={submitHandler}>
-          <p className="b1">Sale Details</p>
-          <p className="b2">
-            Please enter the following details to continue the process.
-          </p>
-          <div className="mb-5">
-            <label className="sale">Sale Number</label>
-            <br />
-            <input
-              type="text"
-              name="saleNo"
-              className="control2"
-              value={formData.saleNo}
-              onChange={handleInputChange}
-              required
-            />
-          </div>
-          <div className="row">
+    <div className="p-6 bg-[#f5fff8] min-h-screen flex items-center justify-center">
+      <div className="max-w-2xl w-full">
+        {getEndDate ? (
+          <form
+            className="bg-white rounded-xl shadow-lg border p-8"
+            onSubmit={submitHandler}
+          >
+            {/* Header Section */}
+            <div className="text-center mb-8">
+              <h2 className="text-3xl font-bold text-gray-800 mb-2">
+                Sale Details
+              </h2>
+              <p className="text-gray-600 text-lg">
+                Please enter the following details to continue the process.
+              </p>
+            </div>
+
+            {/* Sale Number Input */}
             <div className="mb-6">
-              <label>Catalogue Start Date</label>
+              <label className="block text-sm font-semibold text-gray-700 mb-3">
+                Sale Number
+              </label>
               <input
-                type="date"
-                name="startDate"
-                className="control"
-                value={formData.startDate}
+                type="text"
+                name="saleNo"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors text-lg"
+                value={formData.saleNo}
                 onChange={handleInputChange}
                 required
-                min={new Date().toISOString().split("T")[0]}
+                placeholder="Enter sale number"
               />
             </div>
-            <div className="mb-6">
-              <label>Catalogue End Date</label>
-              <input
-                type="date"
-                name="endDate"
-                className="control"
-                value={formData.endDate}
-                onChange={handleInputChange}
-                required
-                min={
-                  formData.startDate || new Date().toISOString().split("T")[0]
-                }
-              />
-              <span className="error-message">
-                {formData.endDate < formData.startDate && (
-                  <span style={{ color: "red" }}>
-                    End date cannot be earlier than start date.
-                  </span>
-                )}{" "}
-              </span>
+
+            {/* Date Inputs */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-3">
+                  Catalogue Start Date
+                </label>
+                <input
+                  type="date"
+                  name="startDate"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors"
+                  value={formData.startDate}
+                  onChange={handleInputChange}
+                  required
+                  min={new Date().toISOString().split("T")[0]}
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-3">
+                  Catalogue End Date
+                </label>
+                <input
+                  type="date"
+                  name="endDate"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors"
+                  value={formData.endDate}
+                  onChange={handleInputChange}
+                  required
+                  min={
+                    formData.startDate || new Date().toISOString().split("T")[0]
+                  }
+                />
+              </div>
             </div>
-          </div>
-          <div className="bg-[#54ed50] w-[150px] text-center rounded-[5px] text-[23px] desktop:ml-[43%] mt-3 laptop:ml-[41%] ">
-            <button disabled={loading} type="submit" className="">
-              {loading ? <HashLoader size={35} color="#ffffff" /> : "Submit"}
-            </button>
-          </div>
-        </form>
-      ) : madeTea ? (
-        <Packing2 />
-      ) : (
-        <Packing1 />
-      )}
+
+            {/* Error Message */}
+            {error && (
+              <div className="mb-6 p-3 bg-red-50 border border-red-200 rounded-lg">
+                <p className="text-red-600 text-sm">{error}</p>
+              </div>
+            )}
+
+            {/* Info Box */}
+            <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-6">
+              <p className="text-green-700 text-sm">
+                <strong>Note:</strong> Ensure the end date is not earlier than
+                the start date.
+              </p>
+            </div>
+
+            {/* Submit Button - Fixed */}
+            <div className="flex justify-center">
+              <button
+                disabled={loading}
+                type="submit"
+                className="bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-8 rounded-lg transition-colors flex items-center justify-center min-w-[180px] shadow-md hover:shadow-lg transition-shadow disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {loading ? <HashLoader size={20} color="#ffffff" /> : "Submit"}
+              </button>
+            </div>
+          </form>
+        ) : madeTea ? (
+          <Packing2 />
+        ) : (
+          <Packing1 />
+        )}
+      </div>
     </div>
   );
 };
