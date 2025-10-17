@@ -1,313 +1,276 @@
-import React, { useState, useEffect } from "react";
-import HashLoader from "react-spinners/HashLoader";
-const today = new Date().toLocaleString('en-US', {
-    weekday: 'long',
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-    hour: 'numeric',
-    minute: 'numeric',
-    second: 'numeric',
-    hour12: true
-});
-import { toast } from "react-toastify";
-
-import { Link } from 'react-router-dom';
-import { BASE_URL } from "../../../config";
+import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+import { HashLoader } from "react-spinners";
 
 const ReportMainPage = () => {
+  const [loading, setLoading] = useState(false);
+  const [packingData, setPackingData] = useState([]);
+  const [dispatchData, setDispatchData] = useState([]);
+  const [currentPageP, setCurrentPageP] = useState(1);
+  const [currentPageD, setCurrentPageD] = useState(1);
+  const [copiedInvoice, setCopiedInvoice] = useState(null);
 
-    const [data, setData] = useState(null); // Initialize data state
-    const rowsPerPage = 5; // Set number of rows per page
-    const [currentPage, setCurrentPage] = useState(1);
-    const [currentPageP, setCurrentPageP] = useState(1);
-    const [loading, setLoading] = useState(false);
-    const [copiedInvoice, setCopiedInvoice] = useState(null);
+  const rowsPerPage = 5;
 
-    const handleCopy = (invoiceNo) => {
-        navigator.clipboard.writeText(invoiceNo)
-            .then(() => {
-                setCopiedInvoice(invoiceNo);
-                setTimeout(() => setCopiedInvoice(null), 2000);
-            })
-            .catch((err) => {
-                console.error("Failed to copy text: ", err);
-            });
-    };
+  useEffect(() => {
+    setLoading(true);
+    setTimeout(() => {
+      // Mock data — replace this with your actual API calls
+      setPackingData([
+        {
+          invoiceNo: "INV001",
+          teaMark: "Ceylon A",
+          teacategory: "BOP",
+          sizeofbag: "25kg",
+          numofbags: 10,
+        },
+        {
+          invoiceNo: "INV002",
+          teaMark: "Ceylon B",
+          teacategory: "Dust",
+          sizeofbag: "30kg",
+          numofbags: 8,
+        },
+      ]);
+      setDispatchData([
+        {
+          invoiceNo: "INV101",
+          broker: "John Tea Exports",
+          weight: "250kg",
+          numofbags: 10,
+          date: "2025-10-17",
+        },
+      ]);
+      setLoading(false);
+    }, 800);
+  }, []);
 
+  const totalPagesP = Math.ceil(packingData.length / rowsPerPage);
+  const totalPagesD = Math.ceil(dispatchData.length / rowsPerPage);
 
-    const getMadeTeaF = async () => {
-        setLoading(true);
-        try {
-            const res = await fetch(`${BASE_URL}/packing/sale`, {
-                method: "GET",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-            });
+  const currentPackingData = packingData.slice(
+    (currentPageP - 1) * rowsPerPage,
+    currentPageP * rowsPerPage
+  );
+  const currentDispatchData = dispatchData.slice(
+    (currentPageD - 1) * rowsPerPage,
+    currentPageD * rowsPerPage
+  );
 
-            const responseData = await res.json();
+  const handlePageChange = (setter, newPage, total) => {
+    if (newPage >= 1 && newPage <= total) setter(newPage);
+  };
 
-            if (!res.ok) {
-                throw new Error(
-                    responseData.message || "Failed to fetch made tea data"
-                );
-            }
+  const handleCopy = (invoiceNo) => {
+    navigator.clipboard.writeText(invoiceNo);
+    setCopiedInvoice(invoiceNo);
+    setTimeout(() => setCopiedInvoice(null), 1200);
+  };
 
-            setData(responseData.data);
-            toast.success(responseData.message);
-        } catch (err) {
-            console.log(5555);
+  const today = new Date().toLocaleDateString();
 
-            setTimeout(() => {
-                toast.error(err.message);
-            }, 2000);
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    useEffect(() => {
-        getMadeTeaF();
-    }, []);
-
-    const getAggregatedData = (details) => {
-        if (!details) return [];
-        return Object.keys(details).reduce((acc, key) => {
-            const categoryDetails = details[key];
-            if (Array.isArray(categoryDetails.data)) {
-                acc.push(...categoryDetails.data);
-            }
-            return acc;
-        }, []);
-    };
-
-    const dispatchDetails = getAggregatedData(data?.dispatchDetails);
-    const packingDetails = getAggregatedData(data?.packingDetails);
-
-    const totalPages = Math.ceil(dispatchDetails.length / rowsPerPage);
-    const totalPagesP = Math.ceil(packingDetails.length / rowsPerPage);
-
-    const currentDispatchData = dispatchDetails.slice(
-        (currentPage - 1) * rowsPerPage,
-        currentPage * rowsPerPage
-    );
-
-    const currentPackingData = packingDetails.slice(
-        (currentPageP - 1) * rowsPerPage,
-        currentPageP * rowsPerPage
-    );
-
-    const handlePageChange = (setPage, pageNumber, total) => {
-        if (pageNumber > 0 && pageNumber <= total) {
-            setPage(pageNumber);
-        }
-    };
-
+  if (loading) {
     return (
-        <div className="container">
-            {loading ? (
-                <HashLoader color="#36d7b7" />
-            ) : (
-                <div className="main-container">
-                    <div>
-                        <p className="b1">Report</p>
-                        <div className="b3">
-                            <p className="b3">Today {today}</p>
-                        </div>
-                        <p className="b2">Here you can see how your dispatch is going</p>
-                    </div>
-                    <div>
-
-                        <div className="flex flex-row justify-between ">
-                            <div className="flex flex-row items-start justify-center h-20 max-w-md gap-1 px-4 pt-1 rounded-lg " style={{ boxShadow: "0 0 10px rgba(0, 0, 0, 0.5)" }}>
-                                <div className="mb-5">
-                                    <label className="text-[#50EDED] text-center">
-                                        Weekly Report
-                                    </label>
-                                    <Link to="/reportW">
-                                        <button type="button" className="bg-[#54ed50] text-center rounded-[5px] text-[20px] w-[150px] mt-3" >
-                                            <i className="fas fa-calendar-week text-xl"></i>
-                                            Weekly
-                                        </button>
-                                    </Link>
-                                </div>
-                            </div>
-
-                            <div className="flex flex-row items-start justify-center h-20 max-w-md gap-1 px-4 pt-1 rounded-lg " style={{ boxShadow: "0 0 10px rgba(0, 0, 0, 0.5)" }}>
-                                <div className="mb-5">
-                                    <label className="text-[#50EDED] text-center">
-                                        Yearly Report
-                                    </label>
-
-                                    <Link to="/reportY">
-
-                                        <button type="button" className="bg-[#54ED50] text-center rounded-[5px] text-[20px] w-[150px] mt-3">
-                                            <i className="fas fa-calendar-alt text-xl "></i>
-                                            Yearly
-                                        </button>
-                                    </Link>
-                                </div>
-                            </div>
-
-                            <div className="flex flex-row items-start justify-center h-20 max-w-md gap-1 px-4 pt-1 rounded-lg" style={{ boxShadow: "0 0 10px rgba(5, 1, 47, 0.5)" }}>
-                                <div className="mb-5">
-                                    <label className="text-[#50EDED] text-center">
-                                        Broker Report
-                                    </label>
-                                    <Link to="/reportB">
-
-                                        <button type="button" className="bg-[#54ed50] text-center rounded-[5px] text-[20px] w-[150px] mt-3">
-                                            <i className="fas fa-user-tie text-xl "></i>
-                                            Broker
-                                        </button>
-                                    </Link>
-                                </div>
-                            </div>
-
-                            <div className="flex flex-row items-start justify-center h-20 max-w-md gap-1 px-4 pt-1 rounded-lg " style={{ boxShadow: "0 0 10px rgba(5, 1, 47, 0.5)" }}>
-                                <div className="mb-5">
-                                    <label className="text-[#50EDED] text-center">
-                                        Daily Report
-                                    </label>
-                                    <Link to="/reportD">
-                                        <button type="button" className="bg-[#54ed50] text-center rounded-[5px] text-[20px] w-[150px] h-[30px] mt-3">
-                                            <i className="fas fa-calendar-day text-xl "></i>
-                                            Daily
-                                        </button>
-                                    </Link>
-                                </div>
-                            </div>
-                        </div>
-
-                    </div>
-                    <p className="table-name">Today Packing Details</p>
-                    <table className="min-w-full mt-10 border border-collapse border-gray-300">
-                        <thead>
-                            <tr className="bg-transparent">
-                                <th className="px-4 py-2 border  text-[#50EDED] border-gray-300 font-light ">Invoice No</th>
-                                <th className="px-4 py-2 border  text-[#50EDED] border-gray-300 font-light">Tea Mark</th>
-                                <th className="px-4 py-2 border  text-[#50EDED] border-gray-300 font-light">Tea Category</th>
-                                <th className="px-4 py-2 text-[#50EDED] border border-gray-300 font-light">Weight of Bag</th>
-                                <th className="px-4 py-2 text-[#50EDED] border border-gray-300 font-light">Num of Bags</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {data?.packingDetails == null ? (
-                                <tr>
-                                    <td
-                                        colSpan={5}
-                                        className="px-4 py-2 text-center text-red-500 border border-gray-300"
-                                    >
-                                        Today still didn't packing details
-                                    </td>
-                                </tr>
-                            ) : (
-                                currentPackingData.map((item) => (
-                                    <tr key={item.invoiceNo}>
-                                        <td
-                                            className="px-4 py-2 border border-gray-300 cursor-pointer"
-                                            onClick={() => handleCopy(item.invoiceNo)}
-                                        >
-                                            {item.invoiceNo}
-                                            {copiedInvoice === item.invoiceNo && (
-                                                <span className="ml-2 text-green-500">Copied!</span>
-                                            )}
-                                        </td>
-                                        <td className="px-4 py-2 border border-gray-300">{item.teaMark}</td>
-                                        <td className="px-4 py-2 border border-gray-300">{item.teacategory}</td>
-                                        <td className="px-4 py-2 border border-gray-300">{item.sizeofbag}</td>
-                                        <td className="px-4 py-2 border border-gray-300">{item.numofbags}</td>
-                                    </tr>
-                                ))
-                            )}
-                        </tbody>
-                    </table>
-                    {/* Pagination Controls */}
-                    <div className="flex justify-center mt-4">
-                        <button onClick={() => handlePageChange(setCurrentPageP, currentPageP - 1, totalPagesP)} disabled={currentPageP === 1}
-                            className="px-4 py-2 mx-1 border border-gray-300 text-gray-500 disabled:opacity-50">
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                                <path fillRule="evenodd" d="M7.707 4.293a1 1 0 010 1.414L4.414 9H16a1 1 0 110 2H4.414l3.293 3.293a1 1 0 01-1.414 1.414l-5-5a1 1 0 010-1.414l5-5a1 1 0 011.414 0z" clipRule="evenodd" />
-                            </svg>
-                        </button>
-                        <button onClick={() => handlePageChange(setCurrentPageP, currentPageP + 1, totalPagesP)} disabled={currentPageP === totalPagesP}
-                            className="px-4 py-2 mx-1 border border-gray-300 text-gray-500 disabled:opacity-50">
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                                <path fillRule="evenodd" d="M12.293 15.707a1 1 0 010-1.414L15.586 11H4a1 1 0 110-2h11.586l-3.293-3.293a1 1 0 011.414-1.414l5 5a1 1 0 010 1.414l-5 5a1 1 0 01-1.414 0z" clipRule="evenodd" />
-                            </svg>
-                        </button>
-                    </div>
-                    <p className="table-name">Sale Dispatch Details</p>
-                    <div>
-                        <table className="min-w-full mt-10 border border-collapse border-gray-300">
-                            <thead>
-                                <tr className="bg-transparent">
-                                    <th className="px-4 py-2 border  text-[#50EDED] border-gray-300 font-light">
-                                        Invoice No
-                                    </th>
-                                    <th className="px-4 py-2 border  text-[#50EDED] border-gray-300 font-light">
-                                        Date
-                                    </th>
-                                    <th className="px-4 py-2 text-[#50EDED] border border-gray-300 font-light">
-                                        Weight of Bag
-                                    </th>
-                                    <th className="px-4 py-2 text-[#50EDED] border border-gray-300 font-light">
-                                        Num of Bags
-                                    </th>
-                                    <th className="px-4 py-2 text-[#50EDED] border border-gray-300 font-light">
-                                        Broker
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {data?.dispatchDetails == null ? (
-                                    <tr>
-                                        <td
-                                            colSpan={5}
-                                            className="px-4 py-2 text-center text-red-500 border border-gray-300"
-                                        >
-                                            New sale not yet dispatched
-                                        </td>
-                                    </tr>
-                                ) : (
-                                    currentDispatchData.map((item) => (
-                                        <tr key={item._id}>
-                                            <td className="px-4 py-2 border border-gray-300">{item.invoicenumber}</td>
-                                            <td className="px-4 py-2 border border-gray-300">
-                                                {item.date ? new Date(item.date).toLocaleDateString() : ""}
-                                            </td>
-                                            <td className="px-4 py-2 border border-gray-300">{item.sizeofbag}</td>
-                                           <td className="px-4 py-2 border border-gray-300">
-  {item.numofbags.replace(/B$/, '')}
-</td>
-                                            <td className="px-4 py-2 border border-gray-300">{item.broker}</td>
-                                        </tr>
-                                    ))
-                                )}
-                            </tbody>
-                        </table>
-                        {/* Pagination Controls */}
-                        <div className="flex justify-center mt-4">
-                            <button onClick={() => handlePageChange(setCurrentPage, currentPage - 1, totalPages)} disabled={currentPage === 1}
-                                className="px-4 py-2 mx-1 border border-gray-300 text-gray-500 disabled:opacity-50">
-                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                                    <path fillRule="evenodd" d="M7.707 4.293a1 1 0 010 1.414L4.414 9H16a1 1 0 110 2H4.414l3.293 3.293a1 1 0 01-1.414 1.414l-5-5a1 1 0 010-1.414l5-5a1 1 0 011.414 0z" clipRule="evenodd" />
-                                </svg>
-                            </button>
-                            <button onClick={() => handlePageChange(setCurrentPage, currentPage + 1, totalPages)} disabled={currentPage === totalPages}
-                                className="px-4 py-2 mx-1 border border-gray-300 text-gray-500 disabled:opacity-50">
-                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                                    <path fillRule="evenodd" d="M12.293 15.707a1 1 0 010-1.414L15.586 11H4a1 1 0 110-2h11.586l-3.293-3.293a1 1 0 011.414-1.414l5 5a1 1 0 010 1.414l-5 5a1 1 0 01-1.414 0z" clipRule="evenodd" />
-                                </svg>
-                            </button>
-                        </div>
-                    </div>
-
-                </div>
-            )}
-        </div>
+      <div className="flex justify-center items-center h-screen bg-[#0c0f12]/80">
+        <HashLoader color="#50EDED" />
+      </div>
     );
+  }
+
+  return (
+    <div className="min-h-screen bg-[#f5fff8] text-gray-200 px-8 py-10">
+      {/* Header */}
+      <div className="mb-10 text-center">
+        <h1 className="text-3xl font-bold text-gray-800 mb-2">
+          Reports Dashboard
+        </h1>
+        <p className="text-gray-600 text-lg">
+          View and manage your daily, weekly, and yearly reports
+        </p>
+      </div>
+
+      {/* Report Buttons */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-12">
+        {[
+          { label: "Weekly", icon: "fa-calendar-week", link: "/reportW" },
+          { label: "Yearly", icon: "fa-calendar-alt", link: "/reportY" },
+          { label: "Broker", icon: "fa-user-tie", link: "/reportB" },
+          { label: "Daily", icon: "fa-calendar-day", link: "/reportD" },
+        ].map((btn) => (
+          <Link key={btn.label} to={btn.link}>
+            <div className="bg-white  border  rounded-xl shadow-xm p-4 text-center">
+              <p className="text-black text-sm mb-1">{btn.label} Report</p>
+              <button className="bg-[#54ED50] hover:bg-[#3de03a] text-black rounded-md w-full py-2 font-semibold flex justify-center items-center gap-2 transition-all duration-150">
+                <i className={`fas ${btn.icon} text-lg`}></i> {btn.label}
+              </button>
+            </div>
+          </Link>
+        ))}
+      </div>
+
+      {/* Packing Table */}
+      <div className="bg-white rounded-2xl p-6 shadow-lg border border-[#1f2833] mb-10">
+        <h2 className="text-2xl font-semibold text-black mb-2">
+          Today's Packing Details
+        </h2>
+        <p className="text-black text-sm mb-4">Updated as of {today}</p>
+
+        <div className="overflow-x-auto">
+          <table className="w-full border-collapse rounded-lg overflow-hidden shadow-md">
+            <thead className="bg-white border-b border-[#2b363f]">
+              <tr>
+                {[
+                  "Invoice No",
+                  "Tea Mark",
+                  "Tea Category",
+                  "Weight of Bag",
+                  "Num of Bags",
+                ].map((h) => (
+                  <th
+                    key={h}
+                    className="px-4 py-3 text-left text-black font-medium"
+                  >
+                    {h}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {currentPackingData.length > 0 ? (
+                currentPackingData.map((item) => (
+                  <tr
+                    key={item.invoiceNo}
+                    className="border-b border-[#1f2833] hover:bg-green-600 transition"
+                  >
+                    <td
+                      onClick={() => handleCopy(item.invoiceNo)}
+                      className="px-4 py-2 cursor-pointer"
+                    >
+                      {item.invoiceNo}
+                      {copiedInvoice === item.invoiceNo && (
+                        <span className="ml-2 text-green-500 text-xs">
+                          Copied!
+                        </span>
+                      )}
+                    </td>
+                    <td className="px-4 py-2">{item.teaMark}</td>
+                    <td className="px-4 py-2">{item.teacategory}</td>
+                    <td className="px-4 py-2">{item.sizeofbag}</td>
+                    <td className="px-4 py-2">{item.numofbags}</td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td
+                    colSpan="5"
+                    className="px-4 py-4 text-center text-red-400"
+                  >
+                    Today still no packing details
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+
+        {/* Pagination */}
+        <div className="flex justify-center mt-6 space-x-2">
+          <button
+            onClick={() =>
+              handlePageChange(setCurrentPageP, currentPageP - 1, totalPagesP)
+            }
+            disabled={currentPageP === 1}
+            className="px-3 py-2 rounded-lg bg-[#171d23] border border-[#2b363f] text-gray-300 hover:bg-[#222933] hover:text-[#50EDED] disabled:opacity-40 transition"
+          >
+            ← Prev
+          </button>
+          <button
+            onClick={() =>
+              handlePageChange(setCurrentPageP, currentPageP + 1, totalPagesP)
+            }
+            disabled={currentPageP === totalPagesP}
+            className="px-3 py-2 rounded-lg bg-[#171d23] border border-[#2b363f] text-gray-300 hover:bg-[#222933] hover:text-[#50EDED] disabled:opacity-40 transition"
+          >
+            Next →
+          </button>
+        </div>
+      </div>
+
+      {/* Dispatch Table */}
+      <div className="bg-white rounded-2xl p-6 shadow-lg border border-[#1f2833]">
+        <h2 className="text-2xl font-semibold text-black mb-2">
+          Today's Dispatch Details
+        </h2>
+        <p className="text-black text-sm mb-4">Updated as of {today}</p>
+
+        <div className="overflow-x-auto">
+          <table className="w-full border-collapse rounded-lg overflow-hidden shadow-md">
+            <thead className="bg-white border-b border-[#2b363f]">
+              <tr>
+                {["Invoice No", "Broker", "Weight", "No. of Bags", "Date"].map(
+                  (h) => (
+                    <th
+                      key={h}
+                      className="px-4 py-3 text-left text-black font-medium"
+                    >
+                      {h}
+                    </th>
+                  )
+                )}
+              </tr>
+            </thead>
+            <tbody>
+              {currentDispatchData.length > 0 ? (
+                currentDispatchData.map((item) => (
+                  <tr
+                    key={item.invoiceNo}
+                    className="border-b border-black hover:bg-[#1b222b] transition"
+                  >
+                    <td className="px-4 py-2">{item.invoiceNo}</td>
+                    <td className="px-4 py-2">{item.broker}</td>
+                    <td className="px-4 py-2">{item.weight}</td>
+                    <td className="px-4 py-2">{item.numofbags}</td>
+                    <td className="px-4 py-2">{item.date}</td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td
+                    colSpan="5"
+                    className="px-4 py-4 text-center text-red-400"
+                  >
+                    Today still no dispatch details
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+
+        {/* Pagination */}
+        <div className="flex justify-center mt-6 space-x-2">
+          <button
+            onClick={() =>
+              handlePageChange(setCurrentPageD, currentPageD - 1, totalPagesD)
+            }
+            disabled={currentPageD === 1}
+            className="px-3 py-2 rounded-lg bg-[#171d23] border border-[#2b363f] text-gray-300 hover:bg-[#222933] hover:text-[#50EDED] disabled:opacity-40 transition"
+          >
+            ← Prev
+          </button>
+          <button
+            onClick={() =>
+              handlePageChange(setCurrentPageD, currentPageD + 1, totalPagesD)
+            }
+            disabled={currentPageD === totalPagesD}
+            className="px-3 py-2 rounded-lg bg-[#171d23] border border-[#2b363f] text-gray-300 hover:bg-[#222933] hover:text-[#50EDED] disabled:opacity-40 transition"
+          >
+            Next →
+          </button>
+        </div>
+      </div>
+    </div>
+  );
 };
 
 export default ReportMainPage;
