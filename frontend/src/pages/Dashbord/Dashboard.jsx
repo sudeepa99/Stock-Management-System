@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { toast } from "react-toastify";
 import {
   PieChart,
@@ -25,7 +25,7 @@ const Dashboard = () => {
   const [data, setData] = useState(null);
   const today = new Date().toLocaleDateString();
   const [endDate, setEndDate] = useState(today);
-  const { user, role, token } = useContext(authContext);
+  const { user } = useContext(authContext);
   useEffect(() => {
     const getMadeTeaF = async () => {
       setLoading(true);
@@ -128,6 +128,7 @@ const Dashboard = () => {
 
         setDispatchData(dispatchDataProcessed);
       } catch (err) {
+        console.error(err);
       } finally {
         setLoading(false);
       }

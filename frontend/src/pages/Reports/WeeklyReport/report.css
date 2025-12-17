@@ -16,6 +16,7 @@
   height: 50%;
   position: fixed;
   color: #f3f4f3;
+  background-color: rgb(247, 12, 125);
 }
 .catalogue-list {
   max-height: 400px; /* Adjust the height as needed */

@@ -71,7 +71,7 @@ const ReportMainPage = () => {
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center h-screen bg-[#0c0f12]/80">
+      <div className="flex justify-center items-center h-screen bg-white">
         <HashLoader color="#50EDED" />
       </div>
     );
@@ -111,7 +111,7 @@ const ReportMainPage = () => {
       {/* Packing Table */}
       <div className="bg-white rounded-2xl p-6 shadow-lg border border-[#1f2833] mb-10">
         <h2 className="text-2xl font-semibold text-black mb-2">
-          Today's Packing Details
+          Todays Packing Details
         </h2>
         <p className="text-black text-sm mb-4">Updated as of {today}</p>
 
@@ -128,7 +128,7 @@ const ReportMainPage = () => {
                 ].map((h) => (
                   <th
                     key={h}
-                    className="px-4 py-3 text-left text-black font-medium"
+                    className="px-4 py-3 text-left text-black font-semibold"
                   >
                     {h}
                   </th>
@@ -140,15 +140,15 @@ const ReportMainPage = () => {
                 currentPackingData.map((item) => (
                   <tr
                     key={item.invoiceNo}
-                    className="border-b border-[#1f2833] hover:bg-green-600 transition"
+                    className="border-b border-[#1f2833]  transition text-black"
                   >
                     <td
                       onClick={() => handleCopy(item.invoiceNo)}
-                      className="px-4 py-2 cursor-pointer"
+                      className="px-4 py-2 cursor-pointer text-black"
                     >
                       {item.invoiceNo}
                       {copiedInvoice === item.invoiceNo && (
-                        <span className="ml-2 text-green-500 text-xs">
+                        <span className="ml-2 text-blue-950 text-xs">
                           Copied!
                         </span>
                       )}
@@ -180,7 +180,7 @@ const ReportMainPage = () => {
               handlePageChange(setCurrentPageP, currentPageP - 1, totalPagesP)
             }
             disabled={currentPageP === 1}
-            className="px-3 py-2 rounded-lg bg-[#171d23] border border-[#2b363f] text-gray-300 hover:bg-[#222933] hover:text-[#50EDED] disabled:opacity-40 transition"
+            className="px-3 py-2 rounded-lg bg-green-200 border border-[#2b363f] text-black"
           >
             ← Prev
           </button>
@@ -189,7 +189,7 @@ const ReportMainPage = () => {
               handlePageChange(setCurrentPageP, currentPageP + 1, totalPagesP)
             }
             disabled={currentPageP === totalPagesP}
-            className="px-3 py-2 rounded-lg bg-[#171d23] border border-[#2b363f] text-gray-300 hover:bg-[#222933] hover:text-[#50EDED] disabled:opacity-40 transition"
+            className="px-3 py-2 rounded-lg bg-green-200 border border-[#2b363f] text-black "
           >
             Next →
           </button>
@@ -199,7 +199,7 @@ const ReportMainPage = () => {
       {/* Dispatch Table */}
       <div className="bg-white rounded-2xl p-6 shadow-lg border border-[#1f2833]">
         <h2 className="text-2xl font-semibold text-black mb-2">
-          Today's Dispatch Details
+          Today Dispatch Details
         </h2>
         <p className="text-black text-sm mb-4">Updated as of {today}</p>
 
@@ -211,7 +211,7 @@ const ReportMainPage = () => {
                   (h) => (
                     <th
                       key={h}
-                      className="px-4 py-3 text-left text-black font-medium"
+                      className="px-4 py-3 text-left text-black font-semibold"
                     >
                       {h}
                     </th>
@@ -224,7 +224,7 @@ const ReportMainPage = () => {
                 currentDispatchData.map((item) => (
                   <tr
                     key={item.invoiceNo}
-                    className="border-b border-black hover:bg-[#1b222b] transition"
+                    className="border-b border-black  transition text-black"
                   >
                     <td className="px-4 py-2">{item.invoiceNo}</td>
                     <td className="px-4 py-2">{item.broker}</td>
@@ -254,7 +254,7 @@ const ReportMainPage = () => {
               handlePageChange(setCurrentPageD, currentPageD - 1, totalPagesD)
             }
             disabled={currentPageD === 1}
-            className="px-3 py-2 rounded-lg bg-[#171d23] border border-[#2b363f] text-gray-300 hover:bg-[#222933] hover:text-[#50EDED] disabled:opacity-40 transition"
+            className="px-3 py-2 rounded-lg bg-green-200 border border-[#2b363f] text-black "
           >
             ← Prev
           </button>
@@ -263,7 +263,7 @@ const ReportMainPage = () => {
               handlePageChange(setCurrentPageD, currentPageD + 1, totalPagesD)
             }
             disabled={currentPageD === totalPagesD}
-            className="px-3 py-2 rounded-lg bg-[#171d23] border border-[#2b363f] text-gray-300 hover:bg-[#222933] hover:text-[#50EDED] disabled:opacity-40 transition"
+            className="px-3 py-2 rounded-lg bg-green-200 border border-[#2b363f] text-black "
           >
             Next →
           </button>

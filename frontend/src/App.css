@@ -22,7 +22,7 @@ body {
   align-items: center;
   justify-content: center;
   font-size: 3rem;
-  background-color: #1F2327;
+  background-color: #1f2327;
   color: rgba(0, 0, 0, 0.5);
   padding-top: 30px;
 }
@@ -45,7 +45,7 @@ body {
 }
 
 .nav-menu {
-  background-color: #1F2327;
+  background-color: #1f2327;
   width: 250px;
   height: calc(100vh - 80px);
   display: flex;
@@ -137,7 +137,7 @@ body {
   align-items: center;
 }
 .logout-button {
-  background-color: #1F2327;
+  background-color: #1f2327;
   border: none;
   color: #fff;
   font-size: 18px;
@@ -170,22 +170,21 @@ body {
   font-weight: bold;
 }
 
-.main-container{
+.main-container {
   height: 100vh;
-  overflow-y: scroll; 
-  overflow-x: hidden; 
+  overflow-y: scroll;
+  overflow-x: hidden;
   position: relative;
-  background-color:  #1f2327;
+  background-color: #1f2327;
   align-content: center;
   padding: 150px;
   margin: 0px;
-  margin-left: 40px ;
+  margin-left: 40px;
   margin-top: 35px;
   margin-bottom: 130px;
   width: 100%;
   border-radius: 10px;
 }
-
 
 .sub-container {
   height: 100vh;
@@ -200,7 +199,6 @@ body {
   width: 100%;
   border-radius: 10px;
 }
-
 
 /* report section */
 
@@ -249,28 +247,26 @@ body {
   margin: 0;
 }
 
-
-.box-report{
+.box-report {
   height: 20vh;
   border-radius: 20px;
   max-width: 50px;
- text-align: center;
- color: white;
- margin: 0 auto;
- margin-top: 5vh;
- box-shadow: 0 0 10px #0066ff;
- display: flex;
-
+  text-align: center;
+  color: white;
+  margin: 0 auto;
+  margin-top: 5vh;
+  box-shadow: 0 0 10px #0066ff;
+  display: flex;
 }
 
-.b2{
+.b2 {
   position: absolute;
   top: 30px;
   left: 10px;
   font-size: 12px;
 }
 
-.b5{
+.b5 {
   position: absolute;
   top: 50px;
   left: 10px;
@@ -278,28 +274,27 @@ body {
   color: #00ff08;
 }
 
-.b3{
+.b3 {
   position: absolute;
   top: 20px;
   left: 68%;
   width: 200px;
   font-size: 12px;
   border-radius: 10px;
- text-align: center;
- color: white;
- margin: 0 auto;
- box-shadow: 0 0 10px #000;
- display: flex;
+  text-align: center;
+  color: transparent;
+  margin: 0 auto;
+  box-shadow: 0 0 10px #000;
+  display: flex;
 }
-.b4{
-  top:20px;
+.b4 {
+  top: 20px;
 }
 
-.b6{
-  top:20px;
+.b6 {
+  top: 20px;
   left: 10px;
 }
-
 
 .date-number-selection {
   display: flex;
@@ -318,9 +313,9 @@ body {
   align-items: center;
   width: 100px;
   height: 30px;
-  border-radius: 5px; 
+  border-radius: 5px;
   background-color: transparent;
-  border: 3px solid #575759; 
+  border: 3px solid #575759;
   margin: 10px;
   cursor: pointer;
 }
@@ -329,8 +324,6 @@ body {
   background-color: transparent;
   color: #54ed50;
 }
-
-
 
 .date-selection-div {
   display: flex;
@@ -359,7 +352,6 @@ body {
   color: #54ed50;
 }
 
-
 .sale-number-selection {
   display: flex;
   justify-content: space-between;
@@ -377,9 +369,9 @@ body {
   align-items: center;
   width: 50px;
   height: 50px;
-  border-radius: 50%; 
+  border-radius: 50%;
   background-color: transparent;
-  border: 2px solid #575759; 
+  border: 2px solid #575759;
   margin: 10px;
   cursor: pointer;
 }
@@ -389,19 +381,17 @@ body {
   color: #54ed50;
 }
 
-.dash-button{
+.dash-button {
   display: flex;
   justify-content: center;
   align-items: center;
   width: 35px;
   height: 35px;
-  border-radius: 50%; 
+  border-radius: 50%;
   background-color: rgb(23, 23, 23);
-  border: 2px solid #575759; 
+  border: 2px solid #575759;
   cursor: pointer;
 }
-
-
 
 .sale-selection-div {
   display: flex;
@@ -430,16 +420,15 @@ body {
   color: #54ed50;
 }
 
-.custom-tooltip{
+.custom-tooltip {
   background-color: transparent;
   color: #54ed50;
 }
 
-.test{
+.test {
   background-color: #ab3da9;
   color: #82ca9d;
-  color:#ffb400 ;
+  color: #ffb400;
   color: #0020ff;
-  color:#A020F0 ;
-  
+  color: #a020f0;
 }
