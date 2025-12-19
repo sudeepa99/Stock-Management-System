@@ -77,52 +77,43 @@ const DispatchReport = () => {
       {loading ? (
         <HashLoader color="#36d7b7" />
       ) : (
-        <div
-          className="relative h-screen w-full  p-[150px] 
-            ml-[40px] mt-[35px] mb-[130px]  bg-white border  rounded-xl shadow-xm  text-center"
-        >
+        <div className="bg-white rounded-2xl shadow-lg w-full max-w-6xl p-8">
           <div>
-            <div className="flex-col gap-3">
-              <p className="b1">Dispatch Report per day</p>
-              <div className="b5">
-                <Link to="/report">
-                  <i
-                    className="fas fa-arrow-left"
-                    style={{ marginRight: "8px" }}
-                  ></i>
-                  Go to Main Report
+            <div className="flex justify-between items-center mb-6">
+              {/* Left */}
+              <div>
+                <h1 className="text-3xl font-bold text-gray-800">
+                  Dispatch Report per day
+                </h1>
+                <Link
+                  to="/report"
+                  className="text-green-600 hover:text-green-700 flex items-center gap-2 mt-1"
+                >
+                  ← Go to Main Report
                 </Link>
               </div>
-            </div>
-            <div className="">
-              <p className="">Today {today}</p>
-            </div>
-            {/* Date Selector */}
-            <div className="absolute flex flex-row top-[100px] right-[175px] ">
-              <span>Select Date</span>
-            </div>
-            <div className="absolute flex flex-row top-[100px] right-[10px] bg-transparent ">
-              <select
-                name="selectDate"
-                className="px-3 py-2 border text-black border-gray-800 bg-transparent appearance-none"
-                value={selectedDate}
-                onChange={handleDateChange}
-              >
-                <option value="" className="bg-[#1f2327] text-[#ffffff]">
-                  Select a Date
-                </option>
-                {Object.keys(data || {}).map((date) => (
-                  <option
-                    key={date}
-                    value={date}
-                    className="bg-[#1f2327] text-[#ffffff]"
-                  >
-                    {date}
-                  </option>
-                ))}
-              </select>
+
+              {/* Right */}
+              <div className="flex flex-col items-end gap-2">
+                <select
+                  className="px-4 py-2 border border-gray-300 rounded-lg text-black"
+                  value={selectedDate}
+                  onChange={handleDateChange}
+                >
+                  {Object.keys(data || {}).map((date) => (
+                    <option key={date} value={date}>
+                      {date}
+                    </option>
+                  ))}
+                </select>
+
+                <p className="text-sm text-gray-600">{today}</p>
+              </div>
             </div>
           </div>
+          {/* Date Selector */}
+
+          {/* </div> */}
 
           <div>
             <table className="min-w-full mt-10 border border-collapse border-gray-300">

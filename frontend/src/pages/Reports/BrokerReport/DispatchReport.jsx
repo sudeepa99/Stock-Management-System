@@ -82,25 +82,24 @@ const DispatchReport = () => {
       {loading ? (
         <HashLoader color="#36d7b7" />
       ) : (
-        <div
-          className="relative h-screen w-full bg-[#fbfcfd] p-[150px] 
-            ml-[40px] mt-[35px] mb-[130px] rounded-[10px]"
-        >
+        <div className="bg-white rounded-2xl shadow-lg w-full max-w-6xl p-8">
           <div>
-            <div className="flex-col gap-3">
-              <p className="b1">Weekly Report according to brokers</p>
-              <div className="b5">
-                <Link to="/report">
-                  <i
-                    className="fas fa-arrow-left"
-                    style={{ marginRight: "8px" }}
-                  ></i>
-                  Go to Main Report
+            <div className="flex justify-between items-start mb-4">
+              <div>
+                <h1 className="text-3xl font-bold text-gray-800 mb-2">
+                  Weekly Report According to Brokers
+                </h1>
+                <Link
+                  to="/report"
+                  className="text-green-600 hover:text-green-700 flex items-center gap-2"
+                >
+                  <i className="fas fa-arrow-left"></i> Go to Main Report
                 </Link>
               </div>
-            </div>
-            <div className="">
-              <p className=""> {today}</p>
+              <div className="text-right">
+                <p className="text-sm text-black font-semibold">Today</p>
+                <p className="text-gray-800 font-medium">{today}</p>
+              </div>
             </div>
           </div>
 

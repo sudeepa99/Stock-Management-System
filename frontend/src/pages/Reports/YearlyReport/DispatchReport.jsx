@@ -103,20 +103,24 @@ const DispatchReport = () => {
         <HashLoader color="#36d7b7" />
       ) : (
         <div className="bg-white rounded-2xl shadow-lg w-full max-w-6xl p-8">
-          {/* Header Section */}
-          <div className="flex flex-col gap-3 mb-6">
-            <p className="text-2xl font-semibold text-gray-800">
-              Yearly Dispatch Report
-            </p>
-            <div>
-              <Link
-                to="/report"
-                className="text-green-600 hover:text-green-700 flex items-center gap-2"
-              >
-                <i className="fas fa-arrow-left"></i> Go to Main Report
-              </Link>
+          <div className="mb-8">
+            <div className="flex justify-between items-start mb-4">
+              <div>
+                <h1 className="text-3xl font-bold text-gray-800 mb-2">
+                  Yearly Dispatch Report
+                </h1>
+                <Link
+                  to="/report"
+                  className="text-green-600 hover:text-green-700 flex items-center gap-2"
+                >
+                  <i className="fas fa-arrow-left"></i> Go to Main Report
+                </Link>
+              </div>
+              <div className="text-right">
+                <p className="text-sm text-black font-semibold">Today</p>
+                <p className="text-gray-800 font-medium">{today}</p>
+              </div>
             </div>
-            <p className="text-gray-500">{today}</p>
           </div>
 
           {/* Sale Number Section */}
@@ -212,7 +216,7 @@ const DispatchReport = () => {
               </p>
               <table className="min-w-full border border-gray-200 rounded-lg mb-10">
                 <thead>
-                  <tr className="bg-green-50 text-green-700 font-semibold">
+                  <tr className="bg-green-50 text-black font-semibold">
                     <th className="px-4 py-2 border border-gray-200">
                       Invoice No
                     </th>
@@ -299,7 +303,7 @@ const DispatchReport = () => {
               </p>
               <table className="min-w-full border border-gray-200 rounded-lg">
                 <thead>
-                  <tr className="bg-green-50 text-green-700 font-semibold">
+                  <tr className="bg-green-50 text-black font-semibold">
                     <th className="px-4 py-2 border border-gray-200">
                       Invoice No
                     </th>

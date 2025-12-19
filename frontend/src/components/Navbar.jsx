@@ -26,16 +26,15 @@ const Navbar = () => {
   };
 
   return (
-    <div className="flex flex-col w-64 bg-white border-r shadow-sm min-h-screen">
+    <div className="flex flex-col w-64 bg-white border-r shadow-sm h-screen">
       {/* Header */}
       <div className="flex items-center gap-2 px-6 py-4 border-b">
         <img src={CompanyLogo} alt="Company Logo" className="h-8 w-8" />
-
         <span className="text-green-600 font-bold text-lg">Ceciliyan</span>
       </div>
 
       {/* Menu Items */}
-      <ul className="flex-1 px-4 py-6 space-y-2">
+      <ul className="flex-1 px-4 py-6 space-y-2 overflow-y-auto scrollbar-hide">
         {filteredSidebarData.map((item, index) => {
           const isActive = isActivePath(item.path);
           return (
@@ -75,7 +74,7 @@ const Navbar = () => {
         <img src={LogoutIcon} alt="Logout" className="h-5 w-5" />
         <span>Logout</span>
       </button>
-      <style jsx>{`
+      <style>{`
         .filter-gray {
           filter: invert(39%) sepia(10%) saturate(70%) hue-rotate(173deg)
             brightness(92%) contrast(86%);

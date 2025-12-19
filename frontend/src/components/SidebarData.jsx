@@ -1,14 +1,14 @@
-import React from "react";
 import DashboardIcon from "../assets/icons/Group 1.png";
 import PackingIcon from "../assets/icons/packing.png";
 import DispatchIcon from "../assets/icons/dispatch.png";
-import ReportsIcon from "../assets/icons/reports.png";
 
 export const SidebarData = [
   {
     title: "Dashboard",
     path: "/dashboard",
-    icon: <img src={DashboardIcon} alt="Dashboard" className="dashboard-icon" />,
+    icon: (
+      <img src={DashboardIcon} alt="Dashboard" className="dashboard-icon" />
+    ),
     cName: "nav-text dashboard",
     roles: ["viewer", "admin"],
   },
@@ -34,4 +34,3 @@ export const SidebarData = [
     roles: ["viewer", "admin"],
   },
 ];
-
